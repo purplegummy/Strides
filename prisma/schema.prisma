@@ -39,9 +39,23 @@ model User {
   sessions      Session[]
   accounts      Account[]
   posts         Post[]
+  exploredPoints ExploredPoint[]
 
   @@unique([email])
   @@map("user")
+}
+
+model ExploredPoint {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lat       Float
+  lng       Float
+  accuracyM Float?
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([userId, lat, lng])
 }
 
 model Session {
