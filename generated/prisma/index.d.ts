@@ -24,6 +24,11 @@ export type Post = $Result.DefaultSelection<Prisma.$PostPayload>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model ExploredPoint
+ * 
+ */
+export type ExploredPoint = $Result.DefaultSelection<Prisma.$ExploredPointPayload>
+/**
  * Model Session
  * 
  */
@@ -176,6 +181,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.exploredPoint`: Exposes CRUD operations for the **ExploredPoint** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ExploredPoints
+    * const exploredPoints = await prisma.exploredPoint.findMany()
+    * ```
+    */
+  get exploredPoint(): Prisma.ExploredPointDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.session`: Exposes CRUD operations for the **Session** model.
@@ -649,6 +664,7 @@ export namespace Prisma {
   export const ModelName: {
     Post: 'Post',
     User: 'User',
+    ExploredPoint: 'ExploredPoint',
     Session: 'Session',
     Account: 'Account',
     Verification: 'Verification'
@@ -670,7 +686,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "user" | "session" | "account" | "verification"
+      modelProps: "post" | "user" | "exploredPoint" | "session" | "account" | "verification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -819,6 +835,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      ExploredPoint: {
+        payload: Prisma.$ExploredPointPayload<ExtArgs>
+        fields: Prisma.ExploredPointFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ExploredPointFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ExploredPointFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload>
+          }
+          findFirst: {
+            args: Prisma.ExploredPointFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ExploredPointFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload>
+          }
+          findMany: {
+            args: Prisma.ExploredPointFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload>[]
+          }
+          create: {
+            args: Prisma.ExploredPointCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload>
+          }
+          createMany: {
+            args: Prisma.ExploredPointCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ExploredPointCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload>[]
+          }
+          delete: {
+            args: Prisma.ExploredPointDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload>
+          }
+          update: {
+            args: Prisma.ExploredPointUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload>
+          }
+          deleteMany: {
+            args: Prisma.ExploredPointDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ExploredPointUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ExploredPointUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload>[]
+          }
+          upsert: {
+            args: Prisma.ExploredPointUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ExploredPointPayload>
+          }
+          aggregate: {
+            args: Prisma.ExploredPointAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateExploredPoint>
+          }
+          groupBy: {
+            args: Prisma.ExploredPointGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ExploredPointGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ExploredPointCountArgs<ExtArgs>
+            result: $Utils.Optional<ExploredPointCountAggregateOutputType> | number
           }
         }
       }
@@ -1142,6 +1232,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     post?: PostOmit
     user?: UserOmit
+    exploredPoint?: ExploredPointOmit
     session?: SessionOmit
     account?: AccountOmit
     verification?: VerificationOmit
@@ -1228,12 +1319,14 @@ export namespace Prisma {
     sessions: number
     accounts: number
     posts: number
+    exploredPoints: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     posts?: boolean | UserCountOutputTypeCountPostsArgs
+    exploredPoints?: boolean | UserCountOutputTypeCountExploredPointsArgs
   }
 
   // Custom InputTypes
@@ -1266,6 +1359,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountPostsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PostWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountExploredPointsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExploredPointWhereInput
   }
 
 
@@ -2514,6 +2614,7 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
+    exploredPoints?: boolean | User$exploredPointsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2552,6 +2653,7 @@ export namespace Prisma {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
+    exploredPoints?: boolean | User$exploredPointsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2563,6 +2665,7 @@ export namespace Prisma {
       sessions: Prisma.$SessionPayload<ExtArgs>[]
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
+      exploredPoints: Prisma.$ExploredPointPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2969,6 +3072,7 @@ export namespace Prisma {
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    exploredPoints<T extends User$exploredPointsArgs<ExtArgs> = {}>(args?: Subset<T, User$exploredPointsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3465,6 +3569,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.exploredPoints
+   */
+  export type User$exploredPointsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    where?: ExploredPointWhereInput
+    orderBy?: ExploredPointOrderByWithRelationInput | ExploredPointOrderByWithRelationInput[]
+    cursor?: ExploredPointWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ExploredPointScalarFieldEnum | ExploredPointScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3480,6 +3608,1119 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ExploredPoint
+   */
+
+  export type AggregateExploredPoint = {
+    _count: ExploredPointCountAggregateOutputType | null
+    _avg: ExploredPointAvgAggregateOutputType | null
+    _sum: ExploredPointSumAggregateOutputType | null
+    _min: ExploredPointMinAggregateOutputType | null
+    _max: ExploredPointMaxAggregateOutputType | null
+  }
+
+  export type ExploredPointAvgAggregateOutputType = {
+    lat: number | null
+    lng: number | null
+    accuracyM: number | null
+  }
+
+  export type ExploredPointSumAggregateOutputType = {
+    lat: number | null
+    lng: number | null
+    accuracyM: number | null
+  }
+
+  export type ExploredPointMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    lat: number | null
+    lng: number | null
+    accuracyM: number | null
+    createdAt: Date | null
+  }
+
+  export type ExploredPointMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    lat: number | null
+    lng: number | null
+    accuracyM: number | null
+    createdAt: Date | null
+  }
+
+  export type ExploredPointCountAggregateOutputType = {
+    id: number
+    userId: number
+    lat: number
+    lng: number
+    accuracyM: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type ExploredPointAvgAggregateInputType = {
+    lat?: true
+    lng?: true
+    accuracyM?: true
+  }
+
+  export type ExploredPointSumAggregateInputType = {
+    lat?: true
+    lng?: true
+    accuracyM?: true
+  }
+
+  export type ExploredPointMinAggregateInputType = {
+    id?: true
+    userId?: true
+    lat?: true
+    lng?: true
+    accuracyM?: true
+    createdAt?: true
+  }
+
+  export type ExploredPointMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    lat?: true
+    lng?: true
+    accuracyM?: true
+    createdAt?: true
+  }
+
+  export type ExploredPointCountAggregateInputType = {
+    id?: true
+    userId?: true
+    lat?: true
+    lng?: true
+    accuracyM?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type ExploredPointAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExploredPoint to aggregate.
+     */
+    where?: ExploredPointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExploredPoints to fetch.
+     */
+    orderBy?: ExploredPointOrderByWithRelationInput | ExploredPointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: ExploredPointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExploredPoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExploredPoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned ExploredPoints
+    **/
+    _count?: true | ExploredPointCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: ExploredPointAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: ExploredPointSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: ExploredPointMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: ExploredPointMaxAggregateInputType
+  }
+
+  export type GetExploredPointAggregateType<T extends ExploredPointAggregateArgs> = {
+        [P in keyof T & keyof AggregateExploredPoint]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateExploredPoint[P]>
+      : GetScalarType<T[P], AggregateExploredPoint[P]>
+  }
+
+
+
+
+  export type ExploredPointGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ExploredPointWhereInput
+    orderBy?: ExploredPointOrderByWithAggregationInput | ExploredPointOrderByWithAggregationInput[]
+    by: ExploredPointScalarFieldEnum[] | ExploredPointScalarFieldEnum
+    having?: ExploredPointScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ExploredPointCountAggregateInputType | true
+    _avg?: ExploredPointAvgAggregateInputType
+    _sum?: ExploredPointSumAggregateInputType
+    _min?: ExploredPointMinAggregateInputType
+    _max?: ExploredPointMaxAggregateInputType
+  }
+
+  export type ExploredPointGroupByOutputType = {
+    id: string
+    userId: string
+    lat: number
+    lng: number
+    accuracyM: number | null
+    createdAt: Date
+    _count: ExploredPointCountAggregateOutputType | null
+    _avg: ExploredPointAvgAggregateOutputType | null
+    _sum: ExploredPointSumAggregateOutputType | null
+    _min: ExploredPointMinAggregateOutputType | null
+    _max: ExploredPointMaxAggregateOutputType | null
+  }
+
+  type GetExploredPointGroupByPayload<T extends ExploredPointGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ExploredPointGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ExploredPointGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ExploredPointGroupByOutputType[P]>
+            : GetScalarType<T[P], ExploredPointGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ExploredPointSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    lat?: boolean
+    lng?: boolean
+    accuracyM?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exploredPoint"]>
+
+  export type ExploredPointSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    lat?: boolean
+    lng?: boolean
+    accuracyM?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exploredPoint"]>
+
+  export type ExploredPointSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    lat?: boolean
+    lng?: boolean
+    accuracyM?: boolean
+    createdAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["exploredPoint"]>
+
+  export type ExploredPointSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    lat?: boolean
+    lng?: boolean
+    accuracyM?: boolean
+    createdAt?: boolean
+  }
+
+  export type ExploredPointOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "lat" | "lng" | "accuracyM" | "createdAt", ExtArgs["result"]["exploredPoint"]>
+  export type ExploredPointInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ExploredPointIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type ExploredPointIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $ExploredPointPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ExploredPoint"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      lat: number
+      lng: number
+      accuracyM: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["exploredPoint"]>
+    composites: {}
+  }
+
+  type ExploredPointGetPayload<S extends boolean | null | undefined | ExploredPointDefaultArgs> = $Result.GetResult<Prisma.$ExploredPointPayload, S>
+
+  type ExploredPointCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ExploredPointFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ExploredPointCountAggregateInputType | true
+    }
+
+  export interface ExploredPointDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ExploredPoint'], meta: { name: 'ExploredPoint' } }
+    /**
+     * Find zero or one ExploredPoint that matches the filter.
+     * @param {ExploredPointFindUniqueArgs} args - Arguments to find a ExploredPoint
+     * @example
+     * // Get one ExploredPoint
+     * const exploredPoint = await prisma.exploredPoint.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ExploredPointFindUniqueArgs>(args: SelectSubset<T, ExploredPointFindUniqueArgs<ExtArgs>>): Prisma__ExploredPointClient<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ExploredPoint that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ExploredPointFindUniqueOrThrowArgs} args - Arguments to find a ExploredPoint
+     * @example
+     * // Get one ExploredPoint
+     * const exploredPoint = await prisma.exploredPoint.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ExploredPointFindUniqueOrThrowArgs>(args: SelectSubset<T, ExploredPointFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ExploredPointClient<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExploredPoint that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExploredPointFindFirstArgs} args - Arguments to find a ExploredPoint
+     * @example
+     * // Get one ExploredPoint
+     * const exploredPoint = await prisma.exploredPoint.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ExploredPointFindFirstArgs>(args?: SelectSubset<T, ExploredPointFindFirstArgs<ExtArgs>>): Prisma__ExploredPointClient<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ExploredPoint that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExploredPointFindFirstOrThrowArgs} args - Arguments to find a ExploredPoint
+     * @example
+     * // Get one ExploredPoint
+     * const exploredPoint = await prisma.exploredPoint.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ExploredPointFindFirstOrThrowArgs>(args?: SelectSubset<T, ExploredPointFindFirstOrThrowArgs<ExtArgs>>): Prisma__ExploredPointClient<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ExploredPoints that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExploredPointFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ExploredPoints
+     * const exploredPoints = await prisma.exploredPoint.findMany()
+     * 
+     * // Get first 10 ExploredPoints
+     * const exploredPoints = await prisma.exploredPoint.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const exploredPointWithIdOnly = await prisma.exploredPoint.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends ExploredPointFindManyArgs>(args?: SelectSubset<T, ExploredPointFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ExploredPoint.
+     * @param {ExploredPointCreateArgs} args - Arguments to create a ExploredPoint.
+     * @example
+     * // Create one ExploredPoint
+     * const ExploredPoint = await prisma.exploredPoint.create({
+     *   data: {
+     *     // ... data to create a ExploredPoint
+     *   }
+     * })
+     * 
+     */
+    create<T extends ExploredPointCreateArgs>(args: SelectSubset<T, ExploredPointCreateArgs<ExtArgs>>): Prisma__ExploredPointClient<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ExploredPoints.
+     * @param {ExploredPointCreateManyArgs} args - Arguments to create many ExploredPoints.
+     * @example
+     * // Create many ExploredPoints
+     * const exploredPoint = await prisma.exploredPoint.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends ExploredPointCreateManyArgs>(args?: SelectSubset<T, ExploredPointCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ExploredPoints and returns the data saved in the database.
+     * @param {ExploredPointCreateManyAndReturnArgs} args - Arguments to create many ExploredPoints.
+     * @example
+     * // Create many ExploredPoints
+     * const exploredPoint = await prisma.exploredPoint.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many ExploredPoints and only return the `id`
+     * const exploredPointWithIdOnly = await prisma.exploredPoint.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends ExploredPointCreateManyAndReturnArgs>(args?: SelectSubset<T, ExploredPointCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ExploredPoint.
+     * @param {ExploredPointDeleteArgs} args - Arguments to delete one ExploredPoint.
+     * @example
+     * // Delete one ExploredPoint
+     * const ExploredPoint = await prisma.exploredPoint.delete({
+     *   where: {
+     *     // ... filter to delete one ExploredPoint
+     *   }
+     * })
+     * 
+     */
+    delete<T extends ExploredPointDeleteArgs>(args: SelectSubset<T, ExploredPointDeleteArgs<ExtArgs>>): Prisma__ExploredPointClient<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ExploredPoint.
+     * @param {ExploredPointUpdateArgs} args - Arguments to update one ExploredPoint.
+     * @example
+     * // Update one ExploredPoint
+     * const exploredPoint = await prisma.exploredPoint.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends ExploredPointUpdateArgs>(args: SelectSubset<T, ExploredPointUpdateArgs<ExtArgs>>): Prisma__ExploredPointClient<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ExploredPoints.
+     * @param {ExploredPointDeleteManyArgs} args - Arguments to filter ExploredPoints to delete.
+     * @example
+     * // Delete a few ExploredPoints
+     * const { count } = await prisma.exploredPoint.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends ExploredPointDeleteManyArgs>(args?: SelectSubset<T, ExploredPointDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExploredPoints.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExploredPointUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ExploredPoints
+     * const exploredPoint = await prisma.exploredPoint.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends ExploredPointUpdateManyArgs>(args: SelectSubset<T, ExploredPointUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ExploredPoints and returns the data updated in the database.
+     * @param {ExploredPointUpdateManyAndReturnArgs} args - Arguments to update many ExploredPoints.
+     * @example
+     * // Update many ExploredPoints
+     * const exploredPoint = await prisma.exploredPoint.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more ExploredPoints and only return the `id`
+     * const exploredPointWithIdOnly = await prisma.exploredPoint.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends ExploredPointUpdateManyAndReturnArgs>(args: SelectSubset<T, ExploredPointUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ExploredPoint.
+     * @param {ExploredPointUpsertArgs} args - Arguments to update or create a ExploredPoint.
+     * @example
+     * // Update or create a ExploredPoint
+     * const exploredPoint = await prisma.exploredPoint.upsert({
+     *   create: {
+     *     // ... data to create a ExploredPoint
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ExploredPoint we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ExploredPointUpsertArgs>(args: SelectSubset<T, ExploredPointUpsertArgs<ExtArgs>>): Prisma__ExploredPointClient<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ExploredPoints.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExploredPointCountArgs} args - Arguments to filter ExploredPoints to count.
+     * @example
+     * // Count the number of ExploredPoints
+     * const count = await prisma.exploredPoint.count({
+     *   where: {
+     *     // ... the filter for the ExploredPoints we want to count
+     *   }
+     * })
+    **/
+    count<T extends ExploredPointCountArgs>(
+      args?: Subset<T, ExploredPointCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ExploredPointCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ExploredPoint.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExploredPointAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ExploredPointAggregateArgs>(args: Subset<T, ExploredPointAggregateArgs>): Prisma.PrismaPromise<GetExploredPointAggregateType<T>>
+
+    /**
+     * Group by ExploredPoint.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ExploredPointGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends ExploredPointGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ExploredPointGroupByArgs['orderBy'] }
+        : { orderBy?: ExploredPointGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ExploredPointGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetExploredPointGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ExploredPoint model
+   */
+  readonly fields: ExploredPointFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ExploredPoint.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ExploredPointClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ExploredPoint model
+   */
+  interface ExploredPointFieldRefs {
+    readonly id: FieldRef<"ExploredPoint", 'String'>
+    readonly userId: FieldRef<"ExploredPoint", 'String'>
+    readonly lat: FieldRef<"ExploredPoint", 'Float'>
+    readonly lng: FieldRef<"ExploredPoint", 'Float'>
+    readonly accuracyM: FieldRef<"ExploredPoint", 'Float'>
+    readonly createdAt: FieldRef<"ExploredPoint", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * ExploredPoint findUnique
+   */
+  export type ExploredPointFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    /**
+     * Filter, which ExploredPoint to fetch.
+     */
+    where: ExploredPointWhereUniqueInput
+  }
+
+  /**
+   * ExploredPoint findUniqueOrThrow
+   */
+  export type ExploredPointFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    /**
+     * Filter, which ExploredPoint to fetch.
+     */
+    where: ExploredPointWhereUniqueInput
+  }
+
+  /**
+   * ExploredPoint findFirst
+   */
+  export type ExploredPointFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    /**
+     * Filter, which ExploredPoint to fetch.
+     */
+    where?: ExploredPointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExploredPoints to fetch.
+     */
+    orderBy?: ExploredPointOrderByWithRelationInput | ExploredPointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExploredPoints.
+     */
+    cursor?: ExploredPointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExploredPoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExploredPoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExploredPoints.
+     */
+    distinct?: ExploredPointScalarFieldEnum | ExploredPointScalarFieldEnum[]
+  }
+
+  /**
+   * ExploredPoint findFirstOrThrow
+   */
+  export type ExploredPointFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    /**
+     * Filter, which ExploredPoint to fetch.
+     */
+    where?: ExploredPointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExploredPoints to fetch.
+     */
+    orderBy?: ExploredPointOrderByWithRelationInput | ExploredPointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for ExploredPoints.
+     */
+    cursor?: ExploredPointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExploredPoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExploredPoints.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of ExploredPoints.
+     */
+    distinct?: ExploredPointScalarFieldEnum | ExploredPointScalarFieldEnum[]
+  }
+
+  /**
+   * ExploredPoint findMany
+   */
+  export type ExploredPointFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    /**
+     * Filter, which ExploredPoints to fetch.
+     */
+    where?: ExploredPointWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of ExploredPoints to fetch.
+     */
+    orderBy?: ExploredPointOrderByWithRelationInput | ExploredPointOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing ExploredPoints.
+     */
+    cursor?: ExploredPointWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` ExploredPoints from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` ExploredPoints.
+     */
+    skip?: number
+    distinct?: ExploredPointScalarFieldEnum | ExploredPointScalarFieldEnum[]
+  }
+
+  /**
+   * ExploredPoint create
+   */
+  export type ExploredPointCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ExploredPoint.
+     */
+    data: XOR<ExploredPointCreateInput, ExploredPointUncheckedCreateInput>
+  }
+
+  /**
+   * ExploredPoint createMany
+   */
+  export type ExploredPointCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ExploredPoints.
+     */
+    data: ExploredPointCreateManyInput | ExploredPointCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ExploredPoint createManyAndReturn
+   */
+  export type ExploredPointCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * The data used to create many ExploredPoints.
+     */
+    data: ExploredPointCreateManyInput | ExploredPointCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExploredPoint update
+   */
+  export type ExploredPointUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ExploredPoint.
+     */
+    data: XOR<ExploredPointUpdateInput, ExploredPointUncheckedUpdateInput>
+    /**
+     * Choose, which ExploredPoint to update.
+     */
+    where: ExploredPointWhereUniqueInput
+  }
+
+  /**
+   * ExploredPoint updateMany
+   */
+  export type ExploredPointUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ExploredPoints.
+     */
+    data: XOR<ExploredPointUpdateManyMutationInput, ExploredPointUncheckedUpdateManyInput>
+    /**
+     * Filter which ExploredPoints to update
+     */
+    where?: ExploredPointWhereInput
+    /**
+     * Limit how many ExploredPoints to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExploredPoint updateManyAndReturn
+   */
+  export type ExploredPointUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * The data used to update ExploredPoints.
+     */
+    data: XOR<ExploredPointUpdateManyMutationInput, ExploredPointUncheckedUpdateManyInput>
+    /**
+     * Filter which ExploredPoints to update
+     */
+    where?: ExploredPointWhereInput
+    /**
+     * Limit how many ExploredPoints to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ExploredPoint upsert
+   */
+  export type ExploredPointUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ExploredPoint to update in case it exists.
+     */
+    where: ExploredPointWhereUniqueInput
+    /**
+     * In case the ExploredPoint found by the `where` argument doesn't exist, create a new ExploredPoint with this data.
+     */
+    create: XOR<ExploredPointCreateInput, ExploredPointUncheckedCreateInput>
+    /**
+     * In case the ExploredPoint was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ExploredPointUpdateInput, ExploredPointUncheckedUpdateInput>
+  }
+
+  /**
+   * ExploredPoint delete
+   */
+  export type ExploredPointDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
+    /**
+     * Filter which ExploredPoint to delete.
+     */
+    where: ExploredPointWhereUniqueInput
+  }
+
+  /**
+   * ExploredPoint deleteMany
+   */
+  export type ExploredPointDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ExploredPoints to delete
+     */
+    where?: ExploredPointWhereInput
+    /**
+     * Limit how many ExploredPoints to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ExploredPoint without action
+   */
+  export type ExploredPointDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ExploredPoint
+     */
+    select?: ExploredPointSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ExploredPoint
+     */
+    omit?: ExploredPointOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ExploredPointInclude<ExtArgs> | null
   }
 
 
@@ -6788,6 +8029,18 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const ExploredPointScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    lat: 'lat',
+    lng: 'lng',
+    accuracyM: 'accuracyM',
+    createdAt: 'createdAt'
+  };
+
+  export type ExploredPointScalarFieldEnum = (typeof ExploredPointScalarFieldEnum)[keyof typeof ExploredPointScalarFieldEnum]
+
+
   export const SessionScalarFieldEnum: {
     id: 'id',
     expiresAt: 'expiresAt',
@@ -6898,6 +8151,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -6983,6 +8250,7 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     posts?: PostListRelationFilter
+    exploredPoints?: ExploredPointListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -6996,6 +8264,7 @@ export namespace Prisma {
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
+    exploredPoints?: ExploredPointOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -7012,6 +8281,7 @@ export namespace Prisma {
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     posts?: PostListRelationFilter
+    exploredPoints?: ExploredPointListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -7038,6 +8308,68 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type ExploredPointWhereInput = {
+    AND?: ExploredPointWhereInput | ExploredPointWhereInput[]
+    OR?: ExploredPointWhereInput[]
+    NOT?: ExploredPointWhereInput | ExploredPointWhereInput[]
+    id?: StringFilter<"ExploredPoint"> | string
+    userId?: StringFilter<"ExploredPoint"> | string
+    lat?: FloatFilter<"ExploredPoint"> | number
+    lng?: FloatFilter<"ExploredPoint"> | number
+    accuracyM?: FloatNullableFilter<"ExploredPoint"> | number | null
+    createdAt?: DateTimeFilter<"ExploredPoint"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type ExploredPointOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    accuracyM?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type ExploredPointWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: ExploredPointWhereInput | ExploredPointWhereInput[]
+    OR?: ExploredPointWhereInput[]
+    NOT?: ExploredPointWhereInput | ExploredPointWhereInput[]
+    userId?: StringFilter<"ExploredPoint"> | string
+    lat?: FloatFilter<"ExploredPoint"> | number
+    lng?: FloatFilter<"ExploredPoint"> | number
+    accuracyM?: FloatNullableFilter<"ExploredPoint"> | number | null
+    createdAt?: DateTimeFilter<"ExploredPoint"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type ExploredPointOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    accuracyM?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: ExploredPointCountOrderByAggregateInput
+    _avg?: ExploredPointAvgOrderByAggregateInput
+    _max?: ExploredPointMaxOrderByAggregateInput
+    _min?: ExploredPointMinOrderByAggregateInput
+    _sum?: ExploredPointSumOrderByAggregateInput
+  }
+
+  export type ExploredPointScalarWhereWithAggregatesInput = {
+    AND?: ExploredPointScalarWhereWithAggregatesInput | ExploredPointScalarWhereWithAggregatesInput[]
+    OR?: ExploredPointScalarWhereWithAggregatesInput[]
+    NOT?: ExploredPointScalarWhereWithAggregatesInput | ExploredPointScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"ExploredPoint"> | string
+    userId?: StringWithAggregatesFilter<"ExploredPoint"> | string
+    lat?: FloatWithAggregatesFilter<"ExploredPoint"> | number
+    lng?: FloatWithAggregatesFilter<"ExploredPoint"> | number
+    accuracyM?: FloatNullableWithAggregatesFilter<"ExploredPoint"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"ExploredPoint"> | Date | string
   }
 
   export type SessionWhereInput = {
@@ -7328,6 +8660,7 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -7341,6 +8674,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -7354,6 +8688,7 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -7367,6 +8702,7 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -7397,6 +8733,68 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExploredPointCreateInput = {
+    id?: string
+    lat: number
+    lng: number
+    accuracyM?: number | null
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutExploredPointsInput
+  }
+
+  export type ExploredPointUncheckedCreateInput = {
+    id?: string
+    userId: string
+    lat: number
+    lng: number
+    accuracyM?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ExploredPointUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    accuracyM?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutExploredPointsNestedInput
+  }
+
+  export type ExploredPointUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    accuracyM?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExploredPointCreateManyInput = {
+    id?: string
+    userId: string
+    lat: number
+    lng: number
+    accuracyM?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ExploredPointUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    accuracyM?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExploredPointUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    accuracyM?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type SessionCreateInput = {
@@ -7774,6 +9172,12 @@ export namespace Prisma {
     none?: PostWhereInput
   }
 
+  export type ExploredPointListRelationFilter = {
+    every?: ExploredPointWhereInput
+    some?: ExploredPointWhereInput
+    none?: ExploredPointWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -7788,6 +9192,10 @@ export namespace Prisma {
   }
 
   export type PostOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ExploredPointOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -7845,6 +9253,99 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type ExploredPointCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    accuracyM?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ExploredPointAvgOrderByAggregateInput = {
+    lat?: SortOrder
+    lng?: SortOrder
+    accuracyM?: SortOrder
+  }
+
+  export type ExploredPointMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    accuracyM?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ExploredPointMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    accuracyM?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type ExploredPointSumOrderByAggregateInput = {
+    lat?: SortOrder
+    lng?: SortOrder
+    accuracyM?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
   export type SessionCountOrderByAggregateInput = {
@@ -8023,6 +9524,13 @@ export namespace Prisma {
     connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
   }
 
+  export type ExploredPointCreateNestedManyWithoutUserInput = {
+    create?: XOR<ExploredPointCreateWithoutUserInput, ExploredPointUncheckedCreateWithoutUserInput> | ExploredPointCreateWithoutUserInput[] | ExploredPointUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExploredPointCreateOrConnectWithoutUserInput | ExploredPointCreateOrConnectWithoutUserInput[]
+    createMany?: ExploredPointCreateManyUserInputEnvelope
+    connect?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -8042,6 +9550,13 @@ export namespace Prisma {
     connectOrCreate?: PostCreateOrConnectWithoutCreatedByInput | PostCreateOrConnectWithoutCreatedByInput[]
     createMany?: PostCreateManyCreatedByInputEnvelope
     connect?: PostWhereUniqueInput | PostWhereUniqueInput[]
+  }
+
+  export type ExploredPointUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<ExploredPointCreateWithoutUserInput, ExploredPointUncheckedCreateWithoutUserInput> | ExploredPointCreateWithoutUserInput[] | ExploredPointUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExploredPointCreateOrConnectWithoutUserInput | ExploredPointCreateOrConnectWithoutUserInput[]
+    createMany?: ExploredPointCreateManyUserInputEnvelope
+    connect?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -8094,6 +9609,20 @@ export namespace Prisma {
     deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
   }
 
+  export type ExploredPointUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ExploredPointCreateWithoutUserInput, ExploredPointUncheckedCreateWithoutUserInput> | ExploredPointCreateWithoutUserInput[] | ExploredPointUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExploredPointCreateOrConnectWithoutUserInput | ExploredPointCreateOrConnectWithoutUserInput[]
+    upsert?: ExploredPointUpsertWithWhereUniqueWithoutUserInput | ExploredPointUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ExploredPointCreateManyUserInputEnvelope
+    set?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+    disconnect?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+    delete?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+    connect?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+    update?: ExploredPointUpdateWithWhereUniqueWithoutUserInput | ExploredPointUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ExploredPointUpdateManyWithWhereWithoutUserInput | ExploredPointUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ExploredPointScalarWhereInput | ExploredPointScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -8134,6 +9663,50 @@ export namespace Prisma {
     update?: PostUpdateWithWhereUniqueWithoutCreatedByInput | PostUpdateWithWhereUniqueWithoutCreatedByInput[]
     updateMany?: PostUpdateManyWithWhereWithoutCreatedByInput | PostUpdateManyWithWhereWithoutCreatedByInput[]
     deleteMany?: PostScalarWhereInput | PostScalarWhereInput[]
+  }
+
+  export type ExploredPointUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<ExploredPointCreateWithoutUserInput, ExploredPointUncheckedCreateWithoutUserInput> | ExploredPointCreateWithoutUserInput[] | ExploredPointUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: ExploredPointCreateOrConnectWithoutUserInput | ExploredPointCreateOrConnectWithoutUserInput[]
+    upsert?: ExploredPointUpsertWithWhereUniqueWithoutUserInput | ExploredPointUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: ExploredPointCreateManyUserInputEnvelope
+    set?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+    disconnect?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+    delete?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+    connect?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+    update?: ExploredPointUpdateWithWhereUniqueWithoutUserInput | ExploredPointUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: ExploredPointUpdateManyWithWhereWithoutUserInput | ExploredPointUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: ExploredPointScalarWhereInput | ExploredPointScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutExploredPointsInput = {
+    create?: XOR<UserCreateWithoutExploredPointsInput, UserUncheckedCreateWithoutExploredPointsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExploredPointsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type UserUpdateOneRequiredWithoutExploredPointsNestedInput = {
+    create?: XOR<UserCreateWithoutExploredPointsInput, UserUncheckedCreateWithoutExploredPointsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutExploredPointsInput
+    upsert?: UserUpsertWithoutExploredPointsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutExploredPointsInput, UserUpdateWithoutExploredPointsInput>, UserUncheckedUpdateWithoutExploredPointsInput>
   }
 
   export type UserCreateNestedOneWithoutSessionsInput = {
@@ -8290,6 +9863,60 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type NestedFloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -8325,6 +9952,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -8337,6 +9965,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -8365,6 +9994,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -8377,6 +10007,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -8473,6 +10104,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ExploredPointCreateWithoutUserInput = {
+    id?: string
+    lat: number
+    lng: number
+    accuracyM?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ExploredPointUncheckedCreateWithoutUserInput = {
+    id?: string
+    lat: number
+    lng: number
+    accuracyM?: number | null
+    createdAt?: Date | string
+  }
+
+  export type ExploredPointCreateOrConnectWithoutUserInput = {
+    where: ExploredPointWhereUniqueInput
+    create: XOR<ExploredPointCreateWithoutUserInput, ExploredPointUncheckedCreateWithoutUserInput>
+  }
+
+  export type ExploredPointCreateManyUserInputEnvelope = {
+    data: ExploredPointCreateManyUserInput | ExploredPointCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type SessionUpsertWithWhereUniqueWithoutUserInput = {
     where: SessionWhereUniqueInput
     update: XOR<SessionUpdateWithoutUserInput, SessionUncheckedUpdateWithoutUserInput>
@@ -8565,6 +10222,102 @@ export namespace Prisma {
     createdById?: StringFilter<"Post"> | string
   }
 
+  export type ExploredPointUpsertWithWhereUniqueWithoutUserInput = {
+    where: ExploredPointWhereUniqueInput
+    update: XOR<ExploredPointUpdateWithoutUserInput, ExploredPointUncheckedUpdateWithoutUserInput>
+    create: XOR<ExploredPointCreateWithoutUserInput, ExploredPointUncheckedCreateWithoutUserInput>
+  }
+
+  export type ExploredPointUpdateWithWhereUniqueWithoutUserInput = {
+    where: ExploredPointWhereUniqueInput
+    data: XOR<ExploredPointUpdateWithoutUserInput, ExploredPointUncheckedUpdateWithoutUserInput>
+  }
+
+  export type ExploredPointUpdateManyWithWhereWithoutUserInput = {
+    where: ExploredPointScalarWhereInput
+    data: XOR<ExploredPointUpdateManyMutationInput, ExploredPointUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type ExploredPointScalarWhereInput = {
+    AND?: ExploredPointScalarWhereInput | ExploredPointScalarWhereInput[]
+    OR?: ExploredPointScalarWhereInput[]
+    NOT?: ExploredPointScalarWhereInput | ExploredPointScalarWhereInput[]
+    id?: StringFilter<"ExploredPoint"> | string
+    userId?: StringFilter<"ExploredPoint"> | string
+    lat?: FloatFilter<"ExploredPoint"> | number
+    lng?: FloatFilter<"ExploredPoint"> | number
+    accuracyM?: FloatNullableFilter<"ExploredPoint"> | number | null
+    createdAt?: DateTimeFilter<"ExploredPoint"> | Date | string
+  }
+
+  export type UserCreateWithoutExploredPointsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutExploredPointsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutExploredPointsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutExploredPointsInput, UserUncheckedCreateWithoutExploredPointsInput>
+  }
+
+  export type UserUpsertWithoutExploredPointsInput = {
+    update: XOR<UserUpdateWithoutExploredPointsInput, UserUncheckedUpdateWithoutExploredPointsInput>
+    create: XOR<UserCreateWithoutExploredPointsInput, UserUncheckedCreateWithoutExploredPointsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutExploredPointsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutExploredPointsInput, UserUncheckedUpdateWithoutExploredPointsInput>
+  }
+
+  export type UserUpdateWithoutExploredPointsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutExploredPointsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+  }
+
   export type UserCreateWithoutSessionsInput = {
     id: string
     name: string
@@ -8575,6 +10328,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -8587,6 +10341,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -8615,6 +10370,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -8627,6 +10383,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -8639,6 +10396,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -8651,6 +10409,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -8679,6 +10438,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -8691,6 +10451,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -8723,6 +10484,14 @@ export namespace Prisma {
     name: string
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type ExploredPointCreateManyUserInput = {
+    id?: string
+    lat: number
+    lng: number
+    accuracyM?: number | null
+    createdAt?: Date | string
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -8819,6 +10588,30 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExploredPointUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    accuracyM?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExploredPointUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    accuracyM?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ExploredPointUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    accuracyM?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
