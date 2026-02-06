@@ -139,6 +139,15 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.ExploredPointScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  lat: 'lat',
+  lng: 'lng',
+  accuracyM: 'accuracyM',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SessionScalarFieldEnum = {
   id: 'id',
   expiresAt: 'expiresAt',
@@ -194,6 +203,7 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Post: 'Post',
   User: 'User',
+  ExploredPoint: 'ExploredPoint',
   Session: 'Session',
   Account: 'Account',
   Verification: 'Verification'

@@ -9,7 +9,7 @@ export function GithubSignInButton() {
       onClick={async () => {
         const res = await authClient.signIn.social({
           provider: "github",
-          callbackURL: "/",
+          callbackURL: "/app",
         });
 
         // better-fetch response shape: either { data, error: null } or { data: null, error }
