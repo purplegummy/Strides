@@ -52,6 +52,9 @@ export function MapClient({
   user: MapUser;
   mode?: MapClientMode;
 }) {
+  // Temporarily disable fog-of-war overlay.
+  const fogEnabled = false;
+
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const watchIdRef = useRef<number | null>(null);
@@ -181,6 +184,7 @@ export function MapClient({
   }, []);
 
   const drawFog = useCallback(() => {
+    if (!fogEnabled) return;
     const map = mapRef.current?.getMap();
     const canvas = fogCanvasRef.current;
     if (!map || !canvas) return;
@@ -237,10 +241,11 @@ export function MapClient({
       ctx.arc(projected.x, projected.y, radiusPx, 0, Math.PI * 2);
       ctx.fill();
     }
-  }, [displayPosition, exploredPoints]);
+  }, [displayPosition, exploredPoints, fogEnabled]);
 
   // Keep fog in sync with map interactions
   useEffect(() => {
+    if (!fogEnabled) return;
     if (!mapReady) return;
     const map = mapRef.current?.getMap();
     if (!map) return;
@@ -264,13 +269,14 @@ export function MapClient({
       map.off("rotate", handler);
       map.off("pitch", handler);
     };
-  }, [drawFog, mapReady]);
+  }, [drawFog, fogEnabled, mapReady]);
 
   // Redraw when points/position change
   useEffect(() => {
+    if (!fogEnabled) return;
     if (!mapReady) return;
     drawFog();
-  }, [drawFog, mapReady]);
+  }, [drawFog, fogEnabled, mapReady]);
 
   // Flush queued points periodically
   const flush = useCallback(() => {
@@ -701,10 +707,12 @@ export function MapClient({
           </svg>
         </button>
 
-        <canvas
-          ref={fogCanvasRef}
-          className="pointer-events-none absolute inset-0 h-full w-full"
-        />
+        {fogEnabled ? (
+          <canvas
+            ref={fogCanvasRef}
+            className="pointer-events-none absolute inset-0 h-full w-full"
+          />
+        ) : null}
       </div>
     </div>
   );
