@@ -78,7 +78,7 @@ Pins change color based on engagement:
 ## Installation (Development)
 
 ```bash
-git clone <https://github.com/DreElamin/Strides>
+git clone <https://github.com/purplegummy/Strides>
 cd Strides
 npm install
 npm run dev
