@@ -1,29 +1,84 @@
-# Create T3 App
+# Strides
+**A Gamified Real-World Exploration Web App**
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Strides is a mobile-first web application that turns the real world into an interactive game map. Users unlock areas of the map by physically walking, discover hidden location-based pins left by others, and earn progress through exploration and engagement.
 
-## What's next? How do I make an app with this?
+---
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Project Overview
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+Strides gamifies real-world movement using geolocation, maps, and lightweight social mechanics. The system encourages exploration, outdoor activity, and local discovery through game-like progression systems.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+The app combines:
+- Real-time location tracking  
+- Map-based fog-of-war exploration  
+- Hidden location discoveries  
+- Social appreciation mechanics  
+- Badges and challenges  
 
-## Learn More
+---
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Core Concept
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+When users open Strides on their phone:
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+1. The map appears mostly covered in “fog.”
+2. As users walk in real life, areas they visit become unlocked.
+3. Users can discover hidden pins left by others.
+4. Pins gain engagement and evolve into rarity tiers.
+5. Users earn badges, track progress, and compete on leaderboards.
 
-## How do I deploy this?
+The goal is to turn everyday environments into a game world.
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+---
+
+
+## Key Features (Planned)
+
+### Exploration System
+- Fog-of-war map overlay
+- Tile-based discovery tracking
+- Exploration percentage progress
+
+### Hidden Pins
+- Users place location-based pins
+- Pins are hidden until discovered
+- Discovery notifications
+
+### Pin Appreciation System
+- Users can mark pins as “enjoyed”
+- Provides social proof
+- No messaging or comments
+
+### Pin Rarity Evolution
+
+Pins change color based on engagement:
+
+| Tier | Meaning |
+|------|---------|
+| Gray | Common |
+| Green | Notable |
+| Blue | Popular |
+| Purple | Rare |
+| Gold | Legendary |
+
+---
+
+### Gamification
+- Explorer badges
+- Creator badges
+- Daily/weekly/monthly challenges
+
+### Leaderboards
+- Compare exploration stats
+- Track badge achievements
+
+---
+
+## Installation (Development)
+
+```bash
+git clone <https://github.com/DreElamin/Strides>
+cd Strides
+npm install
+npm run dev
