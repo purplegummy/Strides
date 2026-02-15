@@ -87,6 +87,7 @@ export function MapClient({
   );
 
   const addPoints = api.map.addExploredPoints.useMutation();
+  const utils = api.useUtils();
 
   const [localPoints, setLocalPoints] = useState<ExploredPoint[]>([]);
   const lastSampledRef = useRef<ExploredPoint | null>(null);
@@ -287,13 +288,16 @@ export function MapClient({
     addPoints.mutate(
       { points: batch },
       {
+        onSuccess: () => {
+          void utils.map.getExplorationStats.invalidate();
+        },
         onError: () => {
           // best-effort: put back in front
           pendingQueueRef.current.unshift(...batch);
         },
       },
     );
-  }, [addPoints]);
+  }, [addPoints, utils]);
 
   useEffect(() => {
     const id = window.setInterval(flush, 5000);

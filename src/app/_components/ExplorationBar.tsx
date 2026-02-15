@@ -49,6 +49,7 @@ export default function ExplorationBar({
   onPress,
 }: ExplorationBarProps) {
   const clamped = Math.max(0, Math.min(100, percentage));
+  const displayPctFormatted = clamped.toFixed(2);
   const current = getCurrentMilestone(clamped);
   const next = getNextMilestone(clamped);
   const toNext = next ? next.pct - clamped : 0;
@@ -90,7 +91,7 @@ export default function ExplorationBar({
       <button
         className="exp-bar-root"
         onClick={onPress}
-        aria-label={`Exploration progress: ${clamped}%`}
+        aria-label={`Exploration progress: ${displayPctFormatted}%`}
         type="button"
       >
         {/* ── Top row ─────────────────────────────────────────── */}
@@ -115,7 +116,7 @@ export default function ExplorationBar({
           </div>
 
           <div className="exp-pct-badge">
-            <span className="exp-pct-number">{clamped}</span>
+            <span className="exp-pct-number">{displayPctFormatted}</span>
             <span className="exp-pct-symbol">%</span>
           </div>
         </div>
@@ -185,50 +186,7 @@ export default function ExplorationBar({
   );
 }
 
-// ─── Demo wrapper (delete this and just export the component above) ───────────
-export function ExplorationBarDemo() {
-  const [pct, setPct] = useState(32);
 
-  return (
-    <div className="demo-root">
-      <div className="demo-app-frame">
-        {/* Fake map background */}
-        <div className="demo-map" aria-hidden>
-          <div className="demo-fog-layer" />
-          <div className="demo-fog-layer demo-fog-layer--2" />
-          <div className="demo-grid" />
-        </div>
-
-        {/* The actual bar, pinned to the bottom like in-app */}
-        <div className="demo-bar-container">
-          <ExplorationBar
-            percentage={pct}
-            tilesDiscovered={Math.round((pct / 100) * 4096)}
-            totalTiles={4096}
-            streakDays={7}
-            onPress={() => alert("Open full stats screen")}
-          />
-        </div>
-
-        {/* Demo scrubber — remove in production */}
-        <div className="demo-controls">
-          <label className="demo-label">
-            Simulate exploration
-            <input
-              type="range"
-              min={0}
-              max={100}
-              value={pct}
-              onChange={(e) => setPct(Number(e.target.value))}
-              className="demo-slider"
-            />
-          </label>
-          <span className="demo-value">{pct}%</span>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const css = `
