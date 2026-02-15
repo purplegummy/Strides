@@ -1,5 +1,14 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { getCity } from "~/server/config/cities";
+import {
+  computeStreakDays,
+  getTilesInRadius,
+  getTotalTilesForCity,
+  isPointInCity,
+  isTileInCity,
+} from "~/server/utils/exploration";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const mapRouter = createTRPCRouter({
@@ -64,6 +73,46 @@ export const mapRouter = createTRPCRouter({
       });
 
       return { createdCount: created.count };
+    }),
+
+  /**
+   * Returns exploration stats for the current user in a given city.
+   * Used by the ExplorationBar to show tiles discovered, percentage, and streak.
+   */
+  getExplorationStats: protectedProcedure
+    .input(z.object({ cityId: z.string().default("atlanta") }))
+    .query(async ({ ctx, input }) => {
+      const city = getCity(input.cityId);
+      if (!city)
+        throw new TRPCError({ code: "NOT_FOUND", message: "City not found" });
+
+      const points = await ctx.db.exploredPoint.findMany({
+        where: { userId: ctx.session.user.id },
+        select: { lat: true, lng: true, createdAt: true },
+      });
+
+      const discoveredTiles = new Set<string>();
+      for (const p of points) {
+        if (!isPointInCity(p.lat, p.lng, city)) continue;
+        for (const key of getTilesInRadius(p.lat, p.lng, 25, city)) {
+          if (isTileInCity(key, city)) discoveredTiles.add(key);
+        }
+      }
+
+      const totalTiles = getTotalTilesForCity(city);
+      const tilesDiscovered = discoveredTiles.size;
+      const percentage =
+        totalTiles > 0
+          ? Math.min(100, (tilesDiscovered / totalTiles) * 100)
+          : 0;
+      const streakDays = computeStreakDays(points);
+
+      return {
+        percentage,
+        tilesDiscovered,
+        totalTiles,
+        streakDays,
+      };
     }),
 });
 

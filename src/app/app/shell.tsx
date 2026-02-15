@@ -4,8 +4,9 @@ import { useCallback, useMemo, useState } from "react";
 
 import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
+import { api } from "~/trpc/react";
 import { AppTabNav, type AppTab } from "./tab-nav";
-import  ExplorationBar from "~/app/_components/ExplorationBar";
+import ExplorationBar from "~/app/_components/ExplorationBar";
 
 type MapUser = {
   id: string;
@@ -16,6 +17,9 @@ type MapUser = {
 export function AppShell({ user }: { user: MapUser }) {
   const [tab, setTab] = useState<AppTab>("map");
   const [signingOut, setSigningOut] = useState(false);
+
+  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
+  const stats = statsQuery.data;
 
   const signOut = useCallback(async () => {
     if (signingOut) return;
@@ -90,10 +94,10 @@ export function AppShell({ user }: { user: MapUser }) {
 
       <div className="absolute top-0 left-0 right-0 z-10">
         <ExplorationBar
-          percentage={32}          
-          tilesDiscovered={1311}   
-          totalTiles={4096}
-          streakDays={7}           
+          percentage={stats?.percentage ?? 0}
+          tilesDiscovered={stats?.tilesDiscovered ?? 0}
+          totalTiles={stats?.totalTiles ?? 4096}
+          streakDays={stats?.streakDays ?? 0}
         />
       </div>
 
