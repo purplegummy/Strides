@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
 import { AppTabNav, type AppTab } from "./tab-nav";
+import  ExplorationBar from "~/app/_components/ExplorationBar";
 
 type MapUser = {
   id: string;
@@ -86,6 +87,15 @@ export function AppShell({ user }: { user: MapUser }) {
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
       {/* Map stays mounted regardless of tab */}
       <MapClient mode="minimal" user={user} />
+
+      <div className="absolute top-0 left-0 right-0 z-10">
+        <ExplorationBar
+          percentage={32}          
+          tilesDiscovered={1311}   
+          totalTiles={4096}
+          streakDays={7}           
+        />
+      </div>
 
       {/* Overlays/panels */}
       {overlays}
