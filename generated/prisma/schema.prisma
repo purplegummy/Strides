@@ -39,6 +39,8 @@ model User {
   accounts       Account[]
   posts          Post[]
   exploredPoints ExploredPoint[]
+  pins           Pin[]
+  pinUpvotes     PinUpvote[]
 
   @@unique([email])
   @@map("user")
@@ -100,4 +102,31 @@ model Verification {
   updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
+}
+
+model Pin {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  lat         Float
+  lng         Float
+  createdById String
+  createdBy   User        @relation(fields: [createdById], references: [id], onDelete: Cascade)
+  upvotes     PinUpvote[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([createdById])
+  @@index([lat, lng])
+}
+
+model PinUpvote {
+  id        String   @id @default(cuid())
+  pinId     String
+  pin       Pin      @relation(fields: [pinId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([pinId, userId])
 }

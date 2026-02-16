@@ -184,6 +184,24 @@ exports.Prisma.VerificationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.PinScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  lat: 'lat',
+  lng: 'lng',
+  createdById: 'createdById',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.PinUpvoteScalarFieldEnum = {
+  id: 'id',
+  pinId: 'pinId',
+  userId: 'userId',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -206,7 +224,9 @@ exports.Prisma.ModelName = {
   ExploredPoint: 'ExploredPoint',
   Session: 'Session',
   Account: 'Account',
-  Verification: 'Verification'
+  Verification: 'Verification',
+  Pin: 'Pin',
+  PinUpvote: 'PinUpvote'
 };
 
 /**
