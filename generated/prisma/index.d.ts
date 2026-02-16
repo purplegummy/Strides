@@ -43,6 +43,16 @@ export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
  * 
  */
 export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
+/**
+ * Model Pin
+ * 
+ */
+export type Pin = $Result.DefaultSelection<Prisma.$PinPayload>
+/**
+ * Model PinUpvote
+ * 
+ */
+export type PinUpvote = $Result.DefaultSelection<Prisma.$PinUpvotePayload>
 
 /**
  * ##  Prisma Client ʲˢ
@@ -221,6 +231,26 @@ export class PrismaClient<
     * ```
     */
   get verification(): Prisma.VerificationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pin`: Exposes CRUD operations for the **Pin** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Pins
+    * const pins = await prisma.pin.findMany()
+    * ```
+    */
+  get pin(): Prisma.PinDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.pinUpvote`: Exposes CRUD operations for the **PinUpvote** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more PinUpvotes
+    * const pinUpvotes = await prisma.pinUpvote.findMany()
+    * ```
+    */
+  get pinUpvote(): Prisma.PinUpvoteDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -667,7 +697,9 @@ export namespace Prisma {
     ExploredPoint: 'ExploredPoint',
     Session: 'Session',
     Account: 'Account',
-    Verification: 'Verification'
+    Verification: 'Verification',
+    Pin: 'Pin',
+    PinUpvote: 'PinUpvote'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -686,7 +718,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "user" | "exploredPoint" | "session" | "account" | "verification"
+      modelProps: "post" | "user" | "exploredPoint" | "session" | "account" | "verification" | "pin" | "pinUpvote"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1134,6 +1166,154 @@ export namespace Prisma {
           }
         }
       }
+      Pin: {
+        payload: Prisma.$PinPayload<ExtArgs>
+        fields: Prisma.PinFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PinFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PinFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload>
+          }
+          findFirst: {
+            args: Prisma.PinFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PinFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload>
+          }
+          findMany: {
+            args: Prisma.PinFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload>[]
+          }
+          create: {
+            args: Prisma.PinCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload>
+          }
+          createMany: {
+            args: Prisma.PinCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PinCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload>[]
+          }
+          delete: {
+            args: Prisma.PinDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload>
+          }
+          update: {
+            args: Prisma.PinUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload>
+          }
+          deleteMany: {
+            args: Prisma.PinDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PinUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PinUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload>[]
+          }
+          upsert: {
+            args: Prisma.PinUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinPayload>
+          }
+          aggregate: {
+            args: Prisma.PinAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePin>
+          }
+          groupBy: {
+            args: Prisma.PinGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PinGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PinCountArgs<ExtArgs>
+            result: $Utils.Optional<PinCountAggregateOutputType> | number
+          }
+        }
+      }
+      PinUpvote: {
+        payload: Prisma.$PinUpvotePayload<ExtArgs>
+        fields: Prisma.PinUpvoteFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.PinUpvoteFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.PinUpvoteFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload>
+          }
+          findFirst: {
+            args: Prisma.PinUpvoteFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.PinUpvoteFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload>
+          }
+          findMany: {
+            args: Prisma.PinUpvoteFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload>[]
+          }
+          create: {
+            args: Prisma.PinUpvoteCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload>
+          }
+          createMany: {
+            args: Prisma.PinUpvoteCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.PinUpvoteCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload>[]
+          }
+          delete: {
+            args: Prisma.PinUpvoteDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload>
+          }
+          update: {
+            args: Prisma.PinUpvoteUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload>
+          }
+          deleteMany: {
+            args: Prisma.PinUpvoteDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.PinUpvoteUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.PinUpvoteUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload>[]
+          }
+          upsert: {
+            args: Prisma.PinUpvoteUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$PinUpvotePayload>
+          }
+          aggregate: {
+            args: Prisma.PinUpvoteAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregatePinUpvote>
+          }
+          groupBy: {
+            args: Prisma.PinUpvoteGroupByArgs<ExtArgs>
+            result: $Utils.Optional<PinUpvoteGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.PinUpvoteCountArgs<ExtArgs>
+            result: $Utils.Optional<PinUpvoteCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1236,6 +1416,8 @@ export namespace Prisma {
     session?: SessionOmit
     account?: AccountOmit
     verification?: VerificationOmit
+    pin?: PinOmit
+    pinUpvote?: PinUpvoteOmit
   }
 
   /* Types for Logging */
@@ -1320,6 +1502,8 @@ export namespace Prisma {
     accounts: number
     posts: number
     exploredPoints: number
+    pins: number
+    pinUpvotes: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1327,6 +1511,8 @@ export namespace Prisma {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     posts?: boolean | UserCountOutputTypeCountPostsArgs
     exploredPoints?: boolean | UserCountOutputTypeCountExploredPointsArgs
+    pins?: boolean | UserCountOutputTypeCountPinsArgs
+    pinUpvotes?: boolean | UserCountOutputTypeCountPinUpvotesArgs
   }
 
   // Custom InputTypes
@@ -1366,6 +1552,51 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountExploredPointsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ExploredPointWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPinsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PinWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountPinUpvotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PinUpvoteWhereInput
+  }
+
+
+  /**
+   * Count Type PinCountOutputType
+   */
+
+  export type PinCountOutputType = {
+    upvotes: number
+  }
+
+  export type PinCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    upvotes?: boolean | PinCountOutputTypeCountUpvotesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * PinCountOutputType without action
+   */
+  export type PinCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinCountOutputType
+     */
+    select?: PinCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * PinCountOutputType without action
+   */
+  export type PinCountOutputTypeCountUpvotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PinUpvoteWhereInput
   }
 
 
@@ -2615,6 +2846,8 @@ export namespace Prisma {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
     exploredPoints?: boolean | User$exploredPointsArgs<ExtArgs>
+    pins?: boolean | User$pinsArgs<ExtArgs>
+    pinUpvotes?: boolean | User$pinUpvotesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2654,6 +2887,8 @@ export namespace Prisma {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
     exploredPoints?: boolean | User$exploredPointsArgs<ExtArgs>
+    pins?: boolean | User$pinsArgs<ExtArgs>
+    pinUpvotes?: boolean | User$pinUpvotesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2666,6 +2901,8 @@ export namespace Prisma {
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       posts: Prisma.$PostPayload<ExtArgs>[]
       exploredPoints: Prisma.$ExploredPointPayload<ExtArgs>[]
+      pins: Prisma.$PinPayload<ExtArgs>[]
+      pinUpvotes: Prisma.$PinUpvotePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3073,6 +3310,8 @@ export namespace Prisma {
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     posts<T extends User$postsArgs<ExtArgs> = {}>(args?: Subset<T, User$postsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     exploredPoints<T extends User$exploredPointsArgs<ExtArgs> = {}>(args?: Subset<T, User$exploredPointsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    pins<T extends User$pinsArgs<ExtArgs> = {}>(args?: Subset<T, User$pinsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    pinUpvotes<T extends User$pinUpvotesArgs<ExtArgs> = {}>(args?: Subset<T, User$pinUpvotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3590,6 +3829,54 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: ExploredPointScalarFieldEnum | ExploredPointScalarFieldEnum[]
+  }
+
+  /**
+   * User.pins
+   */
+  export type User$pinsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    where?: PinWhereInput
+    orderBy?: PinOrderByWithRelationInput | PinOrderByWithRelationInput[]
+    cursor?: PinWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PinScalarFieldEnum | PinScalarFieldEnum[]
+  }
+
+  /**
+   * User.pinUpvotes
+   */
+  export type User$pinUpvotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    where?: PinUpvoteWhereInput
+    orderBy?: PinUpvoteOrderByWithRelationInput | PinUpvoteOrderByWithRelationInput[]
+    cursor?: PinUpvoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PinUpvoteScalarFieldEnum | PinUpvoteScalarFieldEnum[]
   }
 
   /**
@@ -7992,6 +8279,2224 @@ export namespace Prisma {
 
 
   /**
+   * Model Pin
+   */
+
+  export type AggregatePin = {
+    _count: PinCountAggregateOutputType | null
+    _avg: PinAvgAggregateOutputType | null
+    _sum: PinSumAggregateOutputType | null
+    _min: PinMinAggregateOutputType | null
+    _max: PinMaxAggregateOutputType | null
+  }
+
+  export type PinAvgAggregateOutputType = {
+    lat: number | null
+    lng: number | null
+  }
+
+  export type PinSumAggregateOutputType = {
+    lat: number | null
+    lng: number | null
+  }
+
+  export type PinMinAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    lat: number | null
+    lng: number | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PinMaxAggregateOutputType = {
+    id: string | null
+    title: string | null
+    description: string | null
+    lat: number | null
+    lng: number | null
+    createdById: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type PinCountAggregateOutputType = {
+    id: number
+    title: number
+    description: number
+    lat: number
+    lng: number
+    createdById: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type PinAvgAggregateInputType = {
+    lat?: true
+    lng?: true
+  }
+
+  export type PinSumAggregateInputType = {
+    lat?: true
+    lng?: true
+  }
+
+  export type PinMinAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    lat?: true
+    lng?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PinMaxAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    lat?: true
+    lng?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type PinCountAggregateInputType = {
+    id?: true
+    title?: true
+    description?: true
+    lat?: true
+    lng?: true
+    createdById?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type PinAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Pin to aggregate.
+     */
+    where?: PinWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Pins to fetch.
+     */
+    orderBy?: PinOrderByWithRelationInput | PinOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PinWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Pins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Pins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Pins
+    **/
+    _count?: true | PinCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: PinAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: PinSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PinMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PinMaxAggregateInputType
+  }
+
+  export type GetPinAggregateType<T extends PinAggregateArgs> = {
+        [P in keyof T & keyof AggregatePin]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePin[P]>
+      : GetScalarType<T[P], AggregatePin[P]>
+  }
+
+
+
+
+  export type PinGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PinWhereInput
+    orderBy?: PinOrderByWithAggregationInput | PinOrderByWithAggregationInput[]
+    by: PinScalarFieldEnum[] | PinScalarFieldEnum
+    having?: PinScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PinCountAggregateInputType | true
+    _avg?: PinAvgAggregateInputType
+    _sum?: PinSumAggregateInputType
+    _min?: PinMinAggregateInputType
+    _max?: PinMaxAggregateInputType
+  }
+
+  export type PinGroupByOutputType = {
+    id: string
+    title: string
+    description: string | null
+    lat: number
+    lng: number
+    createdById: string
+    createdAt: Date
+    updatedAt: Date
+    _count: PinCountAggregateOutputType | null
+    _avg: PinAvgAggregateOutputType | null
+    _sum: PinSumAggregateOutputType | null
+    _min: PinMinAggregateOutputType | null
+    _max: PinMaxAggregateOutputType | null
+  }
+
+  type GetPinGroupByPayload<T extends PinGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PinGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PinGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PinGroupByOutputType[P]>
+            : GetScalarType<T[P], PinGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PinSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    lat?: boolean
+    lng?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    upvotes?: boolean | Pin$upvotesArgs<ExtArgs>
+    _count?: boolean | PinCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pin"]>
+
+  export type PinSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    lat?: boolean
+    lng?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pin"]>
+
+  export type PinSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    lat?: boolean
+    lng?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pin"]>
+
+  export type PinSelectScalar = {
+    id?: boolean
+    title?: boolean
+    description?: boolean
+    lat?: boolean
+    lng?: boolean
+    createdById?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type PinOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "description" | "lat" | "lng" | "createdById" | "createdAt" | "updatedAt", ExtArgs["result"]["pin"]>
+  export type PinInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+    upvotes?: boolean | Pin$upvotesArgs<ExtArgs>
+    _count?: boolean | PinCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type PinIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PinIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    createdBy?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $PinPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Pin"
+    objects: {
+      createdBy: Prisma.$UserPayload<ExtArgs>
+      upvotes: Prisma.$PinUpvotePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      title: string
+      description: string | null
+      lat: number
+      lng: number
+      createdById: string
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["pin"]>
+    composites: {}
+  }
+
+  type PinGetPayload<S extends boolean | null | undefined | PinDefaultArgs> = $Result.GetResult<Prisma.$PinPayload, S>
+
+  type PinCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PinFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PinCountAggregateInputType | true
+    }
+
+  export interface PinDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Pin'], meta: { name: 'Pin' } }
+    /**
+     * Find zero or one Pin that matches the filter.
+     * @param {PinFindUniqueArgs} args - Arguments to find a Pin
+     * @example
+     * // Get one Pin
+     * const pin = await prisma.pin.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PinFindUniqueArgs>(args: SelectSubset<T, PinFindUniqueArgs<ExtArgs>>): Prisma__PinClient<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Pin that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PinFindUniqueOrThrowArgs} args - Arguments to find a Pin
+     * @example
+     * // Get one Pin
+     * const pin = await prisma.pin.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PinFindUniqueOrThrowArgs>(args: SelectSubset<T, PinFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PinClient<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Pin that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinFindFirstArgs} args - Arguments to find a Pin
+     * @example
+     * // Get one Pin
+     * const pin = await prisma.pin.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PinFindFirstArgs>(args?: SelectSubset<T, PinFindFirstArgs<ExtArgs>>): Prisma__PinClient<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Pin that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinFindFirstOrThrowArgs} args - Arguments to find a Pin
+     * @example
+     * // Get one Pin
+     * const pin = await prisma.pin.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PinFindFirstOrThrowArgs>(args?: SelectSubset<T, PinFindFirstOrThrowArgs<ExtArgs>>): Prisma__PinClient<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Pins that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Pins
+     * const pins = await prisma.pin.findMany()
+     * 
+     * // Get first 10 Pins
+     * const pins = await prisma.pin.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pinWithIdOnly = await prisma.pin.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PinFindManyArgs>(args?: SelectSubset<T, PinFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Pin.
+     * @param {PinCreateArgs} args - Arguments to create a Pin.
+     * @example
+     * // Create one Pin
+     * const Pin = await prisma.pin.create({
+     *   data: {
+     *     // ... data to create a Pin
+     *   }
+     * })
+     * 
+     */
+    create<T extends PinCreateArgs>(args: SelectSubset<T, PinCreateArgs<ExtArgs>>): Prisma__PinClient<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Pins.
+     * @param {PinCreateManyArgs} args - Arguments to create many Pins.
+     * @example
+     * // Create many Pins
+     * const pin = await prisma.pin.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PinCreateManyArgs>(args?: SelectSubset<T, PinCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Pins and returns the data saved in the database.
+     * @param {PinCreateManyAndReturnArgs} args - Arguments to create many Pins.
+     * @example
+     * // Create many Pins
+     * const pin = await prisma.pin.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Pins and only return the `id`
+     * const pinWithIdOnly = await prisma.pin.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PinCreateManyAndReturnArgs>(args?: SelectSubset<T, PinCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Pin.
+     * @param {PinDeleteArgs} args - Arguments to delete one Pin.
+     * @example
+     * // Delete one Pin
+     * const Pin = await prisma.pin.delete({
+     *   where: {
+     *     // ... filter to delete one Pin
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PinDeleteArgs>(args: SelectSubset<T, PinDeleteArgs<ExtArgs>>): Prisma__PinClient<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Pin.
+     * @param {PinUpdateArgs} args - Arguments to update one Pin.
+     * @example
+     * // Update one Pin
+     * const pin = await prisma.pin.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PinUpdateArgs>(args: SelectSubset<T, PinUpdateArgs<ExtArgs>>): Prisma__PinClient<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Pins.
+     * @param {PinDeleteManyArgs} args - Arguments to filter Pins to delete.
+     * @example
+     * // Delete a few Pins
+     * const { count } = await prisma.pin.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PinDeleteManyArgs>(args?: SelectSubset<T, PinDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Pins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Pins
+     * const pin = await prisma.pin.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PinUpdateManyArgs>(args: SelectSubset<T, PinUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Pins and returns the data updated in the database.
+     * @param {PinUpdateManyAndReturnArgs} args - Arguments to update many Pins.
+     * @example
+     * // Update many Pins
+     * const pin = await prisma.pin.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Pins and only return the `id`
+     * const pinWithIdOnly = await prisma.pin.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PinUpdateManyAndReturnArgs>(args: SelectSubset<T, PinUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Pin.
+     * @param {PinUpsertArgs} args - Arguments to update or create a Pin.
+     * @example
+     * // Update or create a Pin
+     * const pin = await prisma.pin.upsert({
+     *   create: {
+     *     // ... data to create a Pin
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Pin we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PinUpsertArgs>(args: SelectSubset<T, PinUpsertArgs<ExtArgs>>): Prisma__PinClient<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Pins.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinCountArgs} args - Arguments to filter Pins to count.
+     * @example
+     * // Count the number of Pins
+     * const count = await prisma.pin.count({
+     *   where: {
+     *     // ... the filter for the Pins we want to count
+     *   }
+     * })
+    **/
+    count<T extends PinCountArgs>(
+      args?: Subset<T, PinCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PinCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Pin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PinAggregateArgs>(args: Subset<T, PinAggregateArgs>): Prisma.PrismaPromise<GetPinAggregateType<T>>
+
+    /**
+     * Group by Pin.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PinGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PinGroupByArgs['orderBy'] }
+        : { orderBy?: PinGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PinGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPinGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Pin model
+   */
+  readonly fields: PinFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Pin.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PinClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    createdBy<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    upvotes<T extends Pin$upvotesArgs<ExtArgs> = {}>(args?: Subset<T, Pin$upvotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Pin model
+   */
+  interface PinFieldRefs {
+    readonly id: FieldRef<"Pin", 'String'>
+    readonly title: FieldRef<"Pin", 'String'>
+    readonly description: FieldRef<"Pin", 'String'>
+    readonly lat: FieldRef<"Pin", 'Float'>
+    readonly lng: FieldRef<"Pin", 'Float'>
+    readonly createdById: FieldRef<"Pin", 'String'>
+    readonly createdAt: FieldRef<"Pin", 'DateTime'>
+    readonly updatedAt: FieldRef<"Pin", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Pin findUnique
+   */
+  export type PinFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    /**
+     * Filter, which Pin to fetch.
+     */
+    where: PinWhereUniqueInput
+  }
+
+  /**
+   * Pin findUniqueOrThrow
+   */
+  export type PinFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    /**
+     * Filter, which Pin to fetch.
+     */
+    where: PinWhereUniqueInput
+  }
+
+  /**
+   * Pin findFirst
+   */
+  export type PinFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    /**
+     * Filter, which Pin to fetch.
+     */
+    where?: PinWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Pins to fetch.
+     */
+    orderBy?: PinOrderByWithRelationInput | PinOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Pins.
+     */
+    cursor?: PinWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Pins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Pins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Pins.
+     */
+    distinct?: PinScalarFieldEnum | PinScalarFieldEnum[]
+  }
+
+  /**
+   * Pin findFirstOrThrow
+   */
+  export type PinFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    /**
+     * Filter, which Pin to fetch.
+     */
+    where?: PinWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Pins to fetch.
+     */
+    orderBy?: PinOrderByWithRelationInput | PinOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Pins.
+     */
+    cursor?: PinWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Pins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Pins.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Pins.
+     */
+    distinct?: PinScalarFieldEnum | PinScalarFieldEnum[]
+  }
+
+  /**
+   * Pin findMany
+   */
+  export type PinFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    /**
+     * Filter, which Pins to fetch.
+     */
+    where?: PinWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Pins to fetch.
+     */
+    orderBy?: PinOrderByWithRelationInput | PinOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Pins.
+     */
+    cursor?: PinWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Pins from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Pins.
+     */
+    skip?: number
+    distinct?: PinScalarFieldEnum | PinScalarFieldEnum[]
+  }
+
+  /**
+   * Pin create
+   */
+  export type PinCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Pin.
+     */
+    data: XOR<PinCreateInput, PinUncheckedCreateInput>
+  }
+
+  /**
+   * Pin createMany
+   */
+  export type PinCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Pins.
+     */
+    data: PinCreateManyInput | PinCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Pin createManyAndReturn
+   */
+  export type PinCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * The data used to create many Pins.
+     */
+    data: PinCreateManyInput | PinCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Pin update
+   */
+  export type PinUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Pin.
+     */
+    data: XOR<PinUpdateInput, PinUncheckedUpdateInput>
+    /**
+     * Choose, which Pin to update.
+     */
+    where: PinWhereUniqueInput
+  }
+
+  /**
+   * Pin updateMany
+   */
+  export type PinUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Pins.
+     */
+    data: XOR<PinUpdateManyMutationInput, PinUncheckedUpdateManyInput>
+    /**
+     * Filter which Pins to update
+     */
+    where?: PinWhereInput
+    /**
+     * Limit how many Pins to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Pin updateManyAndReturn
+   */
+  export type PinUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * The data used to update Pins.
+     */
+    data: XOR<PinUpdateManyMutationInput, PinUncheckedUpdateManyInput>
+    /**
+     * Filter which Pins to update
+     */
+    where?: PinWhereInput
+    /**
+     * Limit how many Pins to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Pin upsert
+   */
+  export type PinUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Pin to update in case it exists.
+     */
+    where: PinWhereUniqueInput
+    /**
+     * In case the Pin found by the `where` argument doesn't exist, create a new Pin with this data.
+     */
+    create: XOR<PinCreateInput, PinUncheckedCreateInput>
+    /**
+     * In case the Pin was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PinUpdateInput, PinUncheckedUpdateInput>
+  }
+
+  /**
+   * Pin delete
+   */
+  export type PinDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+    /**
+     * Filter which Pin to delete.
+     */
+    where: PinWhereUniqueInput
+  }
+
+  /**
+   * Pin deleteMany
+   */
+  export type PinDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Pins to delete
+     */
+    where?: PinWhereInput
+    /**
+     * Limit how many Pins to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Pin.upvotes
+   */
+  export type Pin$upvotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    where?: PinUpvoteWhereInput
+    orderBy?: PinUpvoteOrderByWithRelationInput | PinUpvoteOrderByWithRelationInput[]
+    cursor?: PinUpvoteWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: PinUpvoteScalarFieldEnum | PinUpvoteScalarFieldEnum[]
+  }
+
+  /**
+   * Pin without action
+   */
+  export type PinDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Pin
+     */
+    select?: PinSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Pin
+     */
+    omit?: PinOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model PinUpvote
+   */
+
+  export type AggregatePinUpvote = {
+    _count: PinUpvoteCountAggregateOutputType | null
+    _min: PinUpvoteMinAggregateOutputType | null
+    _max: PinUpvoteMaxAggregateOutputType | null
+  }
+
+  export type PinUpvoteMinAggregateOutputType = {
+    id: string | null
+    pinId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type PinUpvoteMaxAggregateOutputType = {
+    id: string | null
+    pinId: string | null
+    userId: string | null
+    createdAt: Date | null
+  }
+
+  export type PinUpvoteCountAggregateOutputType = {
+    id: number
+    pinId: number
+    userId: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type PinUpvoteMinAggregateInputType = {
+    id?: true
+    pinId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type PinUpvoteMaxAggregateInputType = {
+    id?: true
+    pinId?: true
+    userId?: true
+    createdAt?: true
+  }
+
+  export type PinUpvoteCountAggregateInputType = {
+    id?: true
+    pinId?: true
+    userId?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type PinUpvoteAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PinUpvote to aggregate.
+     */
+    where?: PinUpvoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PinUpvotes to fetch.
+     */
+    orderBy?: PinUpvoteOrderByWithRelationInput | PinUpvoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: PinUpvoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PinUpvotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PinUpvotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned PinUpvotes
+    **/
+    _count?: true | PinUpvoteCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: PinUpvoteMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: PinUpvoteMaxAggregateInputType
+  }
+
+  export type GetPinUpvoteAggregateType<T extends PinUpvoteAggregateArgs> = {
+        [P in keyof T & keyof AggregatePinUpvote]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregatePinUpvote[P]>
+      : GetScalarType<T[P], AggregatePinUpvote[P]>
+  }
+
+
+
+
+  export type PinUpvoteGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PinUpvoteWhereInput
+    orderBy?: PinUpvoteOrderByWithAggregationInput | PinUpvoteOrderByWithAggregationInput[]
+    by: PinUpvoteScalarFieldEnum[] | PinUpvoteScalarFieldEnum
+    having?: PinUpvoteScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: PinUpvoteCountAggregateInputType | true
+    _min?: PinUpvoteMinAggregateInputType
+    _max?: PinUpvoteMaxAggregateInputType
+  }
+
+  export type PinUpvoteGroupByOutputType = {
+    id: string
+    pinId: string
+    userId: string
+    createdAt: Date
+    _count: PinUpvoteCountAggregateOutputType | null
+    _min: PinUpvoteMinAggregateOutputType | null
+    _max: PinUpvoteMaxAggregateOutputType | null
+  }
+
+  type GetPinUpvoteGroupByPayload<T extends PinUpvoteGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<PinUpvoteGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof PinUpvoteGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], PinUpvoteGroupByOutputType[P]>
+            : GetScalarType<T[P], PinUpvoteGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type PinUpvoteSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pinId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    pin?: boolean | PinDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pinUpvote"]>
+
+  export type PinUpvoteSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pinId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    pin?: boolean | PinDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pinUpvote"]>
+
+  export type PinUpvoteSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    pinId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+    pin?: boolean | PinDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["pinUpvote"]>
+
+  export type PinUpvoteSelectScalar = {
+    id?: boolean
+    pinId?: boolean
+    userId?: boolean
+    createdAt?: boolean
+  }
+
+  export type PinUpvoteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pinId" | "userId" | "createdAt", ExtArgs["result"]["pinUpvote"]>
+  export type PinUpvoteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pin?: boolean | PinDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PinUpvoteIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pin?: boolean | PinDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type PinUpvoteIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    pin?: boolean | PinDefaultArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $PinUpvotePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "PinUpvote"
+    objects: {
+      pin: Prisma.$PinPayload<ExtArgs>
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      pinId: string
+      userId: string
+      createdAt: Date
+    }, ExtArgs["result"]["pinUpvote"]>
+    composites: {}
+  }
+
+  type PinUpvoteGetPayload<S extends boolean | null | undefined | PinUpvoteDefaultArgs> = $Result.GetResult<Prisma.$PinUpvotePayload, S>
+
+  type PinUpvoteCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<PinUpvoteFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: PinUpvoteCountAggregateInputType | true
+    }
+
+  export interface PinUpvoteDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['PinUpvote'], meta: { name: 'PinUpvote' } }
+    /**
+     * Find zero or one PinUpvote that matches the filter.
+     * @param {PinUpvoteFindUniqueArgs} args - Arguments to find a PinUpvote
+     * @example
+     * // Get one PinUpvote
+     * const pinUpvote = await prisma.pinUpvote.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends PinUpvoteFindUniqueArgs>(args: SelectSubset<T, PinUpvoteFindUniqueArgs<ExtArgs>>): Prisma__PinUpvoteClient<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one PinUpvote that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {PinUpvoteFindUniqueOrThrowArgs} args - Arguments to find a PinUpvote
+     * @example
+     * // Get one PinUpvote
+     * const pinUpvote = await prisma.pinUpvote.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends PinUpvoteFindUniqueOrThrowArgs>(args: SelectSubset<T, PinUpvoteFindUniqueOrThrowArgs<ExtArgs>>): Prisma__PinUpvoteClient<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PinUpvote that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinUpvoteFindFirstArgs} args - Arguments to find a PinUpvote
+     * @example
+     * // Get one PinUpvote
+     * const pinUpvote = await prisma.pinUpvote.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends PinUpvoteFindFirstArgs>(args?: SelectSubset<T, PinUpvoteFindFirstArgs<ExtArgs>>): Prisma__PinUpvoteClient<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first PinUpvote that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinUpvoteFindFirstOrThrowArgs} args - Arguments to find a PinUpvote
+     * @example
+     * // Get one PinUpvote
+     * const pinUpvote = await prisma.pinUpvote.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends PinUpvoteFindFirstOrThrowArgs>(args?: SelectSubset<T, PinUpvoteFindFirstOrThrowArgs<ExtArgs>>): Prisma__PinUpvoteClient<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more PinUpvotes that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinUpvoteFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all PinUpvotes
+     * const pinUpvotes = await prisma.pinUpvote.findMany()
+     * 
+     * // Get first 10 PinUpvotes
+     * const pinUpvotes = await prisma.pinUpvote.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const pinUpvoteWithIdOnly = await prisma.pinUpvote.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends PinUpvoteFindManyArgs>(args?: SelectSubset<T, PinUpvoteFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a PinUpvote.
+     * @param {PinUpvoteCreateArgs} args - Arguments to create a PinUpvote.
+     * @example
+     * // Create one PinUpvote
+     * const PinUpvote = await prisma.pinUpvote.create({
+     *   data: {
+     *     // ... data to create a PinUpvote
+     *   }
+     * })
+     * 
+     */
+    create<T extends PinUpvoteCreateArgs>(args: SelectSubset<T, PinUpvoteCreateArgs<ExtArgs>>): Prisma__PinUpvoteClient<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many PinUpvotes.
+     * @param {PinUpvoteCreateManyArgs} args - Arguments to create many PinUpvotes.
+     * @example
+     * // Create many PinUpvotes
+     * const pinUpvote = await prisma.pinUpvote.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends PinUpvoteCreateManyArgs>(args?: SelectSubset<T, PinUpvoteCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many PinUpvotes and returns the data saved in the database.
+     * @param {PinUpvoteCreateManyAndReturnArgs} args - Arguments to create many PinUpvotes.
+     * @example
+     * // Create many PinUpvotes
+     * const pinUpvote = await prisma.pinUpvote.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many PinUpvotes and only return the `id`
+     * const pinUpvoteWithIdOnly = await prisma.pinUpvote.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends PinUpvoteCreateManyAndReturnArgs>(args?: SelectSubset<T, PinUpvoteCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a PinUpvote.
+     * @param {PinUpvoteDeleteArgs} args - Arguments to delete one PinUpvote.
+     * @example
+     * // Delete one PinUpvote
+     * const PinUpvote = await prisma.pinUpvote.delete({
+     *   where: {
+     *     // ... filter to delete one PinUpvote
+     *   }
+     * })
+     * 
+     */
+    delete<T extends PinUpvoteDeleteArgs>(args: SelectSubset<T, PinUpvoteDeleteArgs<ExtArgs>>): Prisma__PinUpvoteClient<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one PinUpvote.
+     * @param {PinUpvoteUpdateArgs} args - Arguments to update one PinUpvote.
+     * @example
+     * // Update one PinUpvote
+     * const pinUpvote = await prisma.pinUpvote.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends PinUpvoteUpdateArgs>(args: SelectSubset<T, PinUpvoteUpdateArgs<ExtArgs>>): Prisma__PinUpvoteClient<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more PinUpvotes.
+     * @param {PinUpvoteDeleteManyArgs} args - Arguments to filter PinUpvotes to delete.
+     * @example
+     * // Delete a few PinUpvotes
+     * const { count } = await prisma.pinUpvote.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends PinUpvoteDeleteManyArgs>(args?: SelectSubset<T, PinUpvoteDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PinUpvotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinUpvoteUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many PinUpvotes
+     * const pinUpvote = await prisma.pinUpvote.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends PinUpvoteUpdateManyArgs>(args: SelectSubset<T, PinUpvoteUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more PinUpvotes and returns the data updated in the database.
+     * @param {PinUpvoteUpdateManyAndReturnArgs} args - Arguments to update many PinUpvotes.
+     * @example
+     * // Update many PinUpvotes
+     * const pinUpvote = await prisma.pinUpvote.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more PinUpvotes and only return the `id`
+     * const pinUpvoteWithIdOnly = await prisma.pinUpvote.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends PinUpvoteUpdateManyAndReturnArgs>(args: SelectSubset<T, PinUpvoteUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one PinUpvote.
+     * @param {PinUpvoteUpsertArgs} args - Arguments to update or create a PinUpvote.
+     * @example
+     * // Update or create a PinUpvote
+     * const pinUpvote = await prisma.pinUpvote.upsert({
+     *   create: {
+     *     // ... data to create a PinUpvote
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the PinUpvote we want to update
+     *   }
+     * })
+     */
+    upsert<T extends PinUpvoteUpsertArgs>(args: SelectSubset<T, PinUpvoteUpsertArgs<ExtArgs>>): Prisma__PinUpvoteClient<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of PinUpvotes.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinUpvoteCountArgs} args - Arguments to filter PinUpvotes to count.
+     * @example
+     * // Count the number of PinUpvotes
+     * const count = await prisma.pinUpvote.count({
+     *   where: {
+     *     // ... the filter for the PinUpvotes we want to count
+     *   }
+     * })
+    **/
+    count<T extends PinUpvoteCountArgs>(
+      args?: Subset<T, PinUpvoteCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], PinUpvoteCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a PinUpvote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinUpvoteAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends PinUpvoteAggregateArgs>(args: Subset<T, PinUpvoteAggregateArgs>): Prisma.PrismaPromise<GetPinUpvoteAggregateType<T>>
+
+    /**
+     * Group by PinUpvote.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {PinUpvoteGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends PinUpvoteGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: PinUpvoteGroupByArgs['orderBy'] }
+        : { orderBy?: PinUpvoteGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, PinUpvoteGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetPinUpvoteGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the PinUpvote model
+   */
+  readonly fields: PinUpvoteFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for PinUpvote.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__PinUpvoteClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    pin<T extends PinDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PinDefaultArgs<ExtArgs>>): Prisma__PinClient<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the PinUpvote model
+   */
+  interface PinUpvoteFieldRefs {
+    readonly id: FieldRef<"PinUpvote", 'String'>
+    readonly pinId: FieldRef<"PinUpvote", 'String'>
+    readonly userId: FieldRef<"PinUpvote", 'String'>
+    readonly createdAt: FieldRef<"PinUpvote", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * PinUpvote findUnique
+   */
+  export type PinUpvoteFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    /**
+     * Filter, which PinUpvote to fetch.
+     */
+    where: PinUpvoteWhereUniqueInput
+  }
+
+  /**
+   * PinUpvote findUniqueOrThrow
+   */
+  export type PinUpvoteFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    /**
+     * Filter, which PinUpvote to fetch.
+     */
+    where: PinUpvoteWhereUniqueInput
+  }
+
+  /**
+   * PinUpvote findFirst
+   */
+  export type PinUpvoteFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    /**
+     * Filter, which PinUpvote to fetch.
+     */
+    where?: PinUpvoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PinUpvotes to fetch.
+     */
+    orderBy?: PinUpvoteOrderByWithRelationInput | PinUpvoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PinUpvotes.
+     */
+    cursor?: PinUpvoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PinUpvotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PinUpvotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PinUpvotes.
+     */
+    distinct?: PinUpvoteScalarFieldEnum | PinUpvoteScalarFieldEnum[]
+  }
+
+  /**
+   * PinUpvote findFirstOrThrow
+   */
+  export type PinUpvoteFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    /**
+     * Filter, which PinUpvote to fetch.
+     */
+    where?: PinUpvoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PinUpvotes to fetch.
+     */
+    orderBy?: PinUpvoteOrderByWithRelationInput | PinUpvoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for PinUpvotes.
+     */
+    cursor?: PinUpvoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PinUpvotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PinUpvotes.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of PinUpvotes.
+     */
+    distinct?: PinUpvoteScalarFieldEnum | PinUpvoteScalarFieldEnum[]
+  }
+
+  /**
+   * PinUpvote findMany
+   */
+  export type PinUpvoteFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    /**
+     * Filter, which PinUpvotes to fetch.
+     */
+    where?: PinUpvoteWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of PinUpvotes to fetch.
+     */
+    orderBy?: PinUpvoteOrderByWithRelationInput | PinUpvoteOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing PinUpvotes.
+     */
+    cursor?: PinUpvoteWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` PinUpvotes from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` PinUpvotes.
+     */
+    skip?: number
+    distinct?: PinUpvoteScalarFieldEnum | PinUpvoteScalarFieldEnum[]
+  }
+
+  /**
+   * PinUpvote create
+   */
+  export type PinUpvoteCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    /**
+     * The data needed to create a PinUpvote.
+     */
+    data: XOR<PinUpvoteCreateInput, PinUpvoteUncheckedCreateInput>
+  }
+
+  /**
+   * PinUpvote createMany
+   */
+  export type PinUpvoteCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many PinUpvotes.
+     */
+    data: PinUpvoteCreateManyInput | PinUpvoteCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * PinUpvote createManyAndReturn
+   */
+  export type PinUpvoteCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * The data used to create many PinUpvotes.
+     */
+    data: PinUpvoteCreateManyInput | PinUpvoteCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PinUpvote update
+   */
+  export type PinUpvoteUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    /**
+     * The data needed to update a PinUpvote.
+     */
+    data: XOR<PinUpvoteUpdateInput, PinUpvoteUncheckedUpdateInput>
+    /**
+     * Choose, which PinUpvote to update.
+     */
+    where: PinUpvoteWhereUniqueInput
+  }
+
+  /**
+   * PinUpvote updateMany
+   */
+  export type PinUpvoteUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update PinUpvotes.
+     */
+    data: XOR<PinUpvoteUpdateManyMutationInput, PinUpvoteUncheckedUpdateManyInput>
+    /**
+     * Filter which PinUpvotes to update
+     */
+    where?: PinUpvoteWhereInput
+    /**
+     * Limit how many PinUpvotes to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * PinUpvote updateManyAndReturn
+   */
+  export type PinUpvoteUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * The data used to update PinUpvotes.
+     */
+    data: XOR<PinUpvoteUpdateManyMutationInput, PinUpvoteUncheckedUpdateManyInput>
+    /**
+     * Filter which PinUpvotes to update
+     */
+    where?: PinUpvoteWhereInput
+    /**
+     * Limit how many PinUpvotes to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * PinUpvote upsert
+   */
+  export type PinUpvoteUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    /**
+     * The filter to search for the PinUpvote to update in case it exists.
+     */
+    where: PinUpvoteWhereUniqueInput
+    /**
+     * In case the PinUpvote found by the `where` argument doesn't exist, create a new PinUpvote with this data.
+     */
+    create: XOR<PinUpvoteCreateInput, PinUpvoteUncheckedCreateInput>
+    /**
+     * In case the PinUpvote was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<PinUpvoteUpdateInput, PinUpvoteUncheckedUpdateInput>
+  }
+
+  /**
+   * PinUpvote delete
+   */
+  export type PinUpvoteDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+    /**
+     * Filter which PinUpvote to delete.
+     */
+    where: PinUpvoteWhereUniqueInput
+  }
+
+  /**
+   * PinUpvote deleteMany
+   */
+  export type PinUpvoteDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which PinUpvotes to delete
+     */
+    where?: PinUpvoteWhereInput
+    /**
+     * Limit how many PinUpvotes to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * PinUpvote without action
+   */
+  export type PinUpvoteDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the PinUpvote
+     */
+    select?: PinUpvoteSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the PinUpvote
+     */
+    omit?: PinUpvoteOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PinUpvoteInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -8084,6 +10589,30 @@ export namespace Prisma {
   };
 
   export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
+
+
+  export const PinScalarFieldEnum: {
+    id: 'id',
+    title: 'title',
+    description: 'description',
+    lat: 'lat',
+    lng: 'lng',
+    createdById: 'createdById',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type PinScalarFieldEnum = (typeof PinScalarFieldEnum)[keyof typeof PinScalarFieldEnum]
+
+
+  export const PinUpvoteScalarFieldEnum: {
+    id: 'id',
+    pinId: 'pinId',
+    userId: 'userId',
+    createdAt: 'createdAt'
+  };
+
+  export type PinUpvoteScalarFieldEnum = (typeof PinUpvoteScalarFieldEnum)[keyof typeof PinUpvoteScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -8251,6 +10780,8 @@ export namespace Prisma {
     accounts?: AccountListRelationFilter
     posts?: PostListRelationFilter
     exploredPoints?: ExploredPointListRelationFilter
+    pins?: PinListRelationFilter
+    pinUpvotes?: PinUpvoteListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -8265,6 +10796,8 @@ export namespace Prisma {
     accounts?: AccountOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
     exploredPoints?: ExploredPointOrderByRelationAggregateInput
+    pins?: PinOrderByRelationAggregateInput
+    pinUpvotes?: PinUpvoteOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -8282,6 +10815,8 @@ export namespace Prisma {
     accounts?: AccountListRelationFilter
     posts?: PostListRelationFilter
     exploredPoints?: ExploredPointListRelationFilter
+    pins?: PinListRelationFilter
+    pinUpvotes?: PinUpvoteListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -8594,6 +11129,134 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Verification"> | Date | string
   }
 
+  export type PinWhereInput = {
+    AND?: PinWhereInput | PinWhereInput[]
+    OR?: PinWhereInput[]
+    NOT?: PinWhereInput | PinWhereInput[]
+    id?: StringFilter<"Pin"> | string
+    title?: StringFilter<"Pin"> | string
+    description?: StringNullableFilter<"Pin"> | string | null
+    lat?: FloatFilter<"Pin"> | number
+    lng?: FloatFilter<"Pin"> | number
+    createdById?: StringFilter<"Pin"> | string
+    createdAt?: DateTimeFilter<"Pin"> | Date | string
+    updatedAt?: DateTimeFilter<"Pin"> | Date | string
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    upvotes?: PinUpvoteListRelationFilter
+  }
+
+  export type PinOrderByWithRelationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    createdBy?: UserOrderByWithRelationInput
+    upvotes?: PinUpvoteOrderByRelationAggregateInput
+  }
+
+  export type PinWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PinWhereInput | PinWhereInput[]
+    OR?: PinWhereInput[]
+    NOT?: PinWhereInput | PinWhereInput[]
+    title?: StringFilter<"Pin"> | string
+    description?: StringNullableFilter<"Pin"> | string | null
+    lat?: FloatFilter<"Pin"> | number
+    lng?: FloatFilter<"Pin"> | number
+    createdById?: StringFilter<"Pin"> | string
+    createdAt?: DateTimeFilter<"Pin"> | Date | string
+    updatedAt?: DateTimeFilter<"Pin"> | Date | string
+    createdBy?: XOR<UserScalarRelationFilter, UserWhereInput>
+    upvotes?: PinUpvoteListRelationFilter
+  }, "id">
+
+  export type PinOrderByWithAggregationInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrderInput | SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: PinCountOrderByAggregateInput
+    _avg?: PinAvgOrderByAggregateInput
+    _max?: PinMaxOrderByAggregateInput
+    _min?: PinMinOrderByAggregateInput
+    _sum?: PinSumOrderByAggregateInput
+  }
+
+  export type PinScalarWhereWithAggregatesInput = {
+    AND?: PinScalarWhereWithAggregatesInput | PinScalarWhereWithAggregatesInput[]
+    OR?: PinScalarWhereWithAggregatesInput[]
+    NOT?: PinScalarWhereWithAggregatesInput | PinScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Pin"> | string
+    title?: StringWithAggregatesFilter<"Pin"> | string
+    description?: StringNullableWithAggregatesFilter<"Pin"> | string | null
+    lat?: FloatWithAggregatesFilter<"Pin"> | number
+    lng?: FloatWithAggregatesFilter<"Pin"> | number
+    createdById?: StringWithAggregatesFilter<"Pin"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Pin"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Pin"> | Date | string
+  }
+
+  export type PinUpvoteWhereInput = {
+    AND?: PinUpvoteWhereInput | PinUpvoteWhereInput[]
+    OR?: PinUpvoteWhereInput[]
+    NOT?: PinUpvoteWhereInput | PinUpvoteWhereInput[]
+    id?: StringFilter<"PinUpvote"> | string
+    pinId?: StringFilter<"PinUpvote"> | string
+    userId?: StringFilter<"PinUpvote"> | string
+    createdAt?: DateTimeFilter<"PinUpvote"> | Date | string
+    pin?: XOR<PinScalarRelationFilter, PinWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type PinUpvoteOrderByWithRelationInput = {
+    id?: SortOrder
+    pinId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    pin?: PinOrderByWithRelationInput
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type PinUpvoteWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: PinUpvoteWhereInput | PinUpvoteWhereInput[]
+    OR?: PinUpvoteWhereInput[]
+    NOT?: PinUpvoteWhereInput | PinUpvoteWhereInput[]
+    pinId?: StringFilter<"PinUpvote"> | string
+    userId?: StringFilter<"PinUpvote"> | string
+    createdAt?: DateTimeFilter<"PinUpvote"> | Date | string
+    pin?: XOR<PinScalarRelationFilter, PinWhereInput>
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id">
+
+  export type PinUpvoteOrderByWithAggregationInput = {
+    id?: SortOrder
+    pinId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+    _count?: PinUpvoteCountOrderByAggregateInput
+    _max?: PinUpvoteMaxOrderByAggregateInput
+    _min?: PinUpvoteMinOrderByAggregateInput
+  }
+
+  export type PinUpvoteScalarWhereWithAggregatesInput = {
+    AND?: PinUpvoteScalarWhereWithAggregatesInput | PinUpvoteScalarWhereWithAggregatesInput[]
+    OR?: PinUpvoteScalarWhereWithAggregatesInput[]
+    NOT?: PinUpvoteScalarWhereWithAggregatesInput | PinUpvoteScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"PinUpvote"> | string
+    pinId?: StringWithAggregatesFilter<"PinUpvote"> | string
+    userId?: StringWithAggregatesFilter<"PinUpvote"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"PinUpvote"> | Date | string
+  }
+
   export type PostCreateInput = {
     id?: string
     name: string
@@ -8661,6 +11324,8 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
+    pins?: PinCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -8675,6 +11340,8 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
+    pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -8689,6 +11356,8 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
+    pins?: PinUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8703,6 +11372,8 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
+    pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -9047,6 +11718,133 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type PinCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    lat: number
+    lng: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutPinsInput
+    upvotes?: PinUpvoteCreateNestedManyWithoutPinInput
+  }
+
+  export type PinUncheckedCreateInput = {
+    id?: string
+    title: string
+    description?: string | null
+    lat: number
+    lng: number
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    upvotes?: PinUpvoteUncheckedCreateNestedManyWithoutPinInput
+  }
+
+  export type PinUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutPinsNestedInput
+    upvotes?: PinUpvoteUpdateManyWithoutPinNestedInput
+  }
+
+  export type PinUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    upvotes?: PinUpvoteUncheckedUpdateManyWithoutPinNestedInput
+  }
+
+  export type PinCreateManyInput = {
+    id?: string
+    title: string
+    description?: string | null
+    lat: number
+    lng: number
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PinUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PinUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PinUpvoteCreateInput = {
+    id?: string
+    createdAt?: Date | string
+    pin: PinCreateNestedOneWithoutUpvotesInput
+    user: UserCreateNestedOneWithoutPinUpvotesInput
+  }
+
+  export type PinUpvoteUncheckedCreateInput = {
+    id?: string
+    pinId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type PinUpvoteUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pin?: PinUpdateOneRequiredWithoutUpvotesNestedInput
+    user?: UserUpdateOneRequiredWithoutPinUpvotesNestedInput
+  }
+
+  export type PinUpvoteUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pinId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PinUpvoteCreateManyInput = {
+    id?: string
+    pinId: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type PinUpvoteUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PinUpvoteUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pinId?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -9178,6 +11976,18 @@ export namespace Prisma {
     none?: ExploredPointWhereInput
   }
 
+  export type PinListRelationFilter = {
+    every?: PinWhereInput
+    some?: PinWhereInput
+    none?: PinWhereInput
+  }
+
+  export type PinUpvoteListRelationFilter = {
+    every?: PinUpvoteWhereInput
+    some?: PinUpvoteWhereInput
+    none?: PinUpvoteWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -9196,6 +12006,14 @@ export namespace Prisma {
   }
 
   export type ExploredPointOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PinOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type PinUpvoteOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -9481,6 +12299,75 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type PinCountOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PinAvgOrderByAggregateInput = {
+    lat?: SortOrder
+    lng?: SortOrder
+  }
+
+  export type PinMaxOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PinMinOrderByAggregateInput = {
+    id?: SortOrder
+    title?: SortOrder
+    description?: SortOrder
+    lat?: SortOrder
+    lng?: SortOrder
+    createdById?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type PinSumOrderByAggregateInput = {
+    lat?: SortOrder
+    lng?: SortOrder
+  }
+
+  export type PinScalarRelationFilter = {
+    is?: PinWhereInput
+    isNot?: PinWhereInput
+  }
+
+  export type PinUpvoteCountOrderByAggregateInput = {
+    id?: SortOrder
+    pinId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PinUpvoteMaxOrderByAggregateInput = {
+    id?: SortOrder
+    pinId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type PinUpvoteMinOrderByAggregateInput = {
+    id?: SortOrder
+    pinId?: SortOrder
+    userId?: SortOrder
+    createdAt?: SortOrder
+  }
+
   export type UserCreateNestedOneWithoutPostsInput = {
     create?: XOR<UserCreateWithoutPostsInput, UserUncheckedCreateWithoutPostsInput>
     connectOrCreate?: UserCreateOrConnectWithoutPostsInput
@@ -9531,6 +12418,20 @@ export namespace Prisma {
     connect?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
   }
 
+  export type PinCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<PinCreateWithoutCreatedByInput, PinUncheckedCreateWithoutCreatedByInput> | PinCreateWithoutCreatedByInput[] | PinUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PinCreateOrConnectWithoutCreatedByInput | PinCreateOrConnectWithoutCreatedByInput[]
+    createMany?: PinCreateManyCreatedByInputEnvelope
+    connect?: PinWhereUniqueInput | PinWhereUniqueInput[]
+  }
+
+  export type PinUpvoteCreateNestedManyWithoutUserInput = {
+    create?: XOR<PinUpvoteCreateWithoutUserInput, PinUpvoteUncheckedCreateWithoutUserInput> | PinUpvoteCreateWithoutUserInput[] | PinUpvoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PinUpvoteCreateOrConnectWithoutUserInput | PinUpvoteCreateOrConnectWithoutUserInput[]
+    createMany?: PinUpvoteCreateManyUserInputEnvelope
+    connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -9557,6 +12458,20 @@ export namespace Prisma {
     connectOrCreate?: ExploredPointCreateOrConnectWithoutUserInput | ExploredPointCreateOrConnectWithoutUserInput[]
     createMany?: ExploredPointCreateManyUserInputEnvelope
     connect?: ExploredPointWhereUniqueInput | ExploredPointWhereUniqueInput[]
+  }
+
+  export type PinUncheckedCreateNestedManyWithoutCreatedByInput = {
+    create?: XOR<PinCreateWithoutCreatedByInput, PinUncheckedCreateWithoutCreatedByInput> | PinCreateWithoutCreatedByInput[] | PinUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PinCreateOrConnectWithoutCreatedByInput | PinCreateOrConnectWithoutCreatedByInput[]
+    createMany?: PinCreateManyCreatedByInputEnvelope
+    connect?: PinWhereUniqueInput | PinWhereUniqueInput[]
+  }
+
+  export type PinUpvoteUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<PinUpvoteCreateWithoutUserInput, PinUpvoteUncheckedCreateWithoutUserInput> | PinUpvoteCreateWithoutUserInput[] | PinUpvoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PinUpvoteCreateOrConnectWithoutUserInput | PinUpvoteCreateOrConnectWithoutUserInput[]
+    createMany?: PinUpvoteCreateManyUserInputEnvelope
+    connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -9623,6 +12538,34 @@ export namespace Prisma {
     deleteMany?: ExploredPointScalarWhereInput | ExploredPointScalarWhereInput[]
   }
 
+  export type PinUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<PinCreateWithoutCreatedByInput, PinUncheckedCreateWithoutCreatedByInput> | PinCreateWithoutCreatedByInput[] | PinUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PinCreateOrConnectWithoutCreatedByInput | PinCreateOrConnectWithoutCreatedByInput[]
+    upsert?: PinUpsertWithWhereUniqueWithoutCreatedByInput | PinUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: PinCreateManyCreatedByInputEnvelope
+    set?: PinWhereUniqueInput | PinWhereUniqueInput[]
+    disconnect?: PinWhereUniqueInput | PinWhereUniqueInput[]
+    delete?: PinWhereUniqueInput | PinWhereUniqueInput[]
+    connect?: PinWhereUniqueInput | PinWhereUniqueInput[]
+    update?: PinUpdateWithWhereUniqueWithoutCreatedByInput | PinUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: PinUpdateManyWithWhereWithoutCreatedByInput | PinUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: PinScalarWhereInput | PinScalarWhereInput[]
+  }
+
+  export type PinUpvoteUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PinUpvoteCreateWithoutUserInput, PinUpvoteUncheckedCreateWithoutUserInput> | PinUpvoteCreateWithoutUserInput[] | PinUpvoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PinUpvoteCreateOrConnectWithoutUserInput | PinUpvoteCreateOrConnectWithoutUserInput[]
+    upsert?: PinUpvoteUpsertWithWhereUniqueWithoutUserInput | PinUpvoteUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PinUpvoteCreateManyUserInputEnvelope
+    set?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    disconnect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    delete?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    update?: PinUpvoteUpdateWithWhereUniqueWithoutUserInput | PinUpvoteUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PinUpvoteUpdateManyWithWhereWithoutUserInput | PinUpvoteUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PinUpvoteScalarWhereInput | PinUpvoteScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -9677,6 +12620,34 @@ export namespace Prisma {
     update?: ExploredPointUpdateWithWhereUniqueWithoutUserInput | ExploredPointUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ExploredPointUpdateManyWithWhereWithoutUserInput | ExploredPointUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ExploredPointScalarWhereInput | ExploredPointScalarWhereInput[]
+  }
+
+  export type PinUncheckedUpdateManyWithoutCreatedByNestedInput = {
+    create?: XOR<PinCreateWithoutCreatedByInput, PinUncheckedCreateWithoutCreatedByInput> | PinCreateWithoutCreatedByInput[] | PinUncheckedCreateWithoutCreatedByInput[]
+    connectOrCreate?: PinCreateOrConnectWithoutCreatedByInput | PinCreateOrConnectWithoutCreatedByInput[]
+    upsert?: PinUpsertWithWhereUniqueWithoutCreatedByInput | PinUpsertWithWhereUniqueWithoutCreatedByInput[]
+    createMany?: PinCreateManyCreatedByInputEnvelope
+    set?: PinWhereUniqueInput | PinWhereUniqueInput[]
+    disconnect?: PinWhereUniqueInput | PinWhereUniqueInput[]
+    delete?: PinWhereUniqueInput | PinWhereUniqueInput[]
+    connect?: PinWhereUniqueInput | PinWhereUniqueInput[]
+    update?: PinUpdateWithWhereUniqueWithoutCreatedByInput | PinUpdateWithWhereUniqueWithoutCreatedByInput[]
+    updateMany?: PinUpdateManyWithWhereWithoutCreatedByInput | PinUpdateManyWithWhereWithoutCreatedByInput[]
+    deleteMany?: PinScalarWhereInput | PinScalarWhereInput[]
+  }
+
+  export type PinUpvoteUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<PinUpvoteCreateWithoutUserInput, PinUpvoteUncheckedCreateWithoutUserInput> | PinUpvoteCreateWithoutUserInput[] | PinUpvoteUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: PinUpvoteCreateOrConnectWithoutUserInput | PinUpvoteCreateOrConnectWithoutUserInput[]
+    upsert?: PinUpvoteUpsertWithWhereUniqueWithoutUserInput | PinUpvoteUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: PinUpvoteCreateManyUserInputEnvelope
+    set?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    disconnect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    delete?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    update?: PinUpvoteUpdateWithWhereUniqueWithoutUserInput | PinUpvoteUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: PinUpvoteUpdateManyWithWhereWithoutUserInput | PinUpvoteUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: PinUpvoteScalarWhereInput | PinUpvoteScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutExploredPointsInput = {
@@ -9739,6 +12710,90 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutAccountsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAccountsInput, UserUpdateWithoutAccountsInput>, UserUncheckedUpdateWithoutAccountsInput>
+  }
+
+  export type UserCreateNestedOneWithoutPinsInput = {
+    create?: XOR<UserCreateWithoutPinsInput, UserUncheckedCreateWithoutPinsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPinsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type PinUpvoteCreateNestedManyWithoutPinInput = {
+    create?: XOR<PinUpvoteCreateWithoutPinInput, PinUpvoteUncheckedCreateWithoutPinInput> | PinUpvoteCreateWithoutPinInput[] | PinUpvoteUncheckedCreateWithoutPinInput[]
+    connectOrCreate?: PinUpvoteCreateOrConnectWithoutPinInput | PinUpvoteCreateOrConnectWithoutPinInput[]
+    createMany?: PinUpvoteCreateManyPinInputEnvelope
+    connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+  }
+
+  export type PinUpvoteUncheckedCreateNestedManyWithoutPinInput = {
+    create?: XOR<PinUpvoteCreateWithoutPinInput, PinUpvoteUncheckedCreateWithoutPinInput> | PinUpvoteCreateWithoutPinInput[] | PinUpvoteUncheckedCreateWithoutPinInput[]
+    connectOrCreate?: PinUpvoteCreateOrConnectWithoutPinInput | PinUpvoteCreateOrConnectWithoutPinInput[]
+    createMany?: PinUpvoteCreateManyPinInputEnvelope
+    connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutPinsNestedInput = {
+    create?: XOR<UserCreateWithoutPinsInput, UserUncheckedCreateWithoutPinsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPinsInput
+    upsert?: UserUpsertWithoutPinsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPinsInput, UserUpdateWithoutPinsInput>, UserUncheckedUpdateWithoutPinsInput>
+  }
+
+  export type PinUpvoteUpdateManyWithoutPinNestedInput = {
+    create?: XOR<PinUpvoteCreateWithoutPinInput, PinUpvoteUncheckedCreateWithoutPinInput> | PinUpvoteCreateWithoutPinInput[] | PinUpvoteUncheckedCreateWithoutPinInput[]
+    connectOrCreate?: PinUpvoteCreateOrConnectWithoutPinInput | PinUpvoteCreateOrConnectWithoutPinInput[]
+    upsert?: PinUpvoteUpsertWithWhereUniqueWithoutPinInput | PinUpvoteUpsertWithWhereUniqueWithoutPinInput[]
+    createMany?: PinUpvoteCreateManyPinInputEnvelope
+    set?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    disconnect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    delete?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    update?: PinUpvoteUpdateWithWhereUniqueWithoutPinInput | PinUpvoteUpdateWithWhereUniqueWithoutPinInput[]
+    updateMany?: PinUpvoteUpdateManyWithWhereWithoutPinInput | PinUpvoteUpdateManyWithWhereWithoutPinInput[]
+    deleteMany?: PinUpvoteScalarWhereInput | PinUpvoteScalarWhereInput[]
+  }
+
+  export type PinUpvoteUncheckedUpdateManyWithoutPinNestedInput = {
+    create?: XOR<PinUpvoteCreateWithoutPinInput, PinUpvoteUncheckedCreateWithoutPinInput> | PinUpvoteCreateWithoutPinInput[] | PinUpvoteUncheckedCreateWithoutPinInput[]
+    connectOrCreate?: PinUpvoteCreateOrConnectWithoutPinInput | PinUpvoteCreateOrConnectWithoutPinInput[]
+    upsert?: PinUpvoteUpsertWithWhereUniqueWithoutPinInput | PinUpvoteUpsertWithWhereUniqueWithoutPinInput[]
+    createMany?: PinUpvoteCreateManyPinInputEnvelope
+    set?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    disconnect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    delete?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
+    update?: PinUpvoteUpdateWithWhereUniqueWithoutPinInput | PinUpvoteUpdateWithWhereUniqueWithoutPinInput[]
+    updateMany?: PinUpvoteUpdateManyWithWhereWithoutPinInput | PinUpvoteUpdateManyWithWhereWithoutPinInput[]
+    deleteMany?: PinUpvoteScalarWhereInput | PinUpvoteScalarWhereInput[]
+  }
+
+  export type PinCreateNestedOneWithoutUpvotesInput = {
+    create?: XOR<PinCreateWithoutUpvotesInput, PinUncheckedCreateWithoutUpvotesInput>
+    connectOrCreate?: PinCreateOrConnectWithoutUpvotesInput
+    connect?: PinWhereUniqueInput
+  }
+
+  export type UserCreateNestedOneWithoutPinUpvotesInput = {
+    create?: XOR<UserCreateWithoutPinUpvotesInput, UserUncheckedCreateWithoutPinUpvotesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPinUpvotesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type PinUpdateOneRequiredWithoutUpvotesNestedInput = {
+    create?: XOR<PinCreateWithoutUpvotesInput, PinUncheckedCreateWithoutUpvotesInput>
+    connectOrCreate?: PinCreateOrConnectWithoutUpvotesInput
+    upsert?: PinUpsertWithoutUpvotesInput
+    connect?: PinWhereUniqueInput
+    update?: XOR<XOR<PinUpdateToOneWithWhereWithoutUpvotesInput, PinUpdateWithoutUpvotesInput>, PinUncheckedUpdateWithoutUpvotesInput>
+  }
+
+  export type UserUpdateOneRequiredWithoutPinUpvotesNestedInput = {
+    create?: XOR<UserCreateWithoutPinUpvotesInput, UserUncheckedCreateWithoutPinUpvotesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutPinUpvotesInput
+    upsert?: UserUpsertWithoutPinUpvotesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutPinUpvotesInput, UserUpdateWithoutPinUpvotesInput>, UserUncheckedUpdateWithoutPinUpvotesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -9953,6 +13008,8 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
+    pins?: PinCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -9966,6 +13023,8 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
+    pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -9995,6 +13054,8 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
+    pins?: PinUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -10008,6 +13069,8 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
+    pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -10127,6 +13190,60 @@ export namespace Prisma {
 
   export type ExploredPointCreateManyUserInputEnvelope = {
     data: ExploredPointCreateManyUserInput | ExploredPointCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PinCreateWithoutCreatedByInput = {
+    id?: string
+    title: string
+    description?: string | null
+    lat: number
+    lng: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    upvotes?: PinUpvoteCreateNestedManyWithoutPinInput
+  }
+
+  export type PinUncheckedCreateWithoutCreatedByInput = {
+    id?: string
+    title: string
+    description?: string | null
+    lat: number
+    lng: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    upvotes?: PinUpvoteUncheckedCreateNestedManyWithoutPinInput
+  }
+
+  export type PinCreateOrConnectWithoutCreatedByInput = {
+    where: PinWhereUniqueInput
+    create: XOR<PinCreateWithoutCreatedByInput, PinUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type PinCreateManyCreatedByInputEnvelope = {
+    data: PinCreateManyCreatedByInput | PinCreateManyCreatedByInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PinUpvoteCreateWithoutUserInput = {
+    id?: string
+    createdAt?: Date | string
+    pin: PinCreateNestedOneWithoutUpvotesInput
+  }
+
+  export type PinUpvoteUncheckedCreateWithoutUserInput = {
+    id?: string
+    pinId: string
+    createdAt?: Date | string
+  }
+
+  export type PinUpvoteCreateOrConnectWithoutUserInput = {
+    where: PinUpvoteWhereUniqueInput
+    create: XOR<PinUpvoteCreateWithoutUserInput, PinUpvoteUncheckedCreateWithoutUserInput>
+  }
+
+  export type PinUpvoteCreateManyUserInputEnvelope = {
+    data: PinUpvoteCreateManyUserInput | PinUpvoteCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -10250,6 +13367,62 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"ExploredPoint"> | Date | string
   }
 
+  export type PinUpsertWithWhereUniqueWithoutCreatedByInput = {
+    where: PinWhereUniqueInput
+    update: XOR<PinUpdateWithoutCreatedByInput, PinUncheckedUpdateWithoutCreatedByInput>
+    create: XOR<PinCreateWithoutCreatedByInput, PinUncheckedCreateWithoutCreatedByInput>
+  }
+
+  export type PinUpdateWithWhereUniqueWithoutCreatedByInput = {
+    where: PinWhereUniqueInput
+    data: XOR<PinUpdateWithoutCreatedByInput, PinUncheckedUpdateWithoutCreatedByInput>
+  }
+
+  export type PinUpdateManyWithWhereWithoutCreatedByInput = {
+    where: PinScalarWhereInput
+    data: XOR<PinUpdateManyMutationInput, PinUncheckedUpdateManyWithoutCreatedByInput>
+  }
+
+  export type PinScalarWhereInput = {
+    AND?: PinScalarWhereInput | PinScalarWhereInput[]
+    OR?: PinScalarWhereInput[]
+    NOT?: PinScalarWhereInput | PinScalarWhereInput[]
+    id?: StringFilter<"Pin"> | string
+    title?: StringFilter<"Pin"> | string
+    description?: StringNullableFilter<"Pin"> | string | null
+    lat?: FloatFilter<"Pin"> | number
+    lng?: FloatFilter<"Pin"> | number
+    createdById?: StringFilter<"Pin"> | string
+    createdAt?: DateTimeFilter<"Pin"> | Date | string
+    updatedAt?: DateTimeFilter<"Pin"> | Date | string
+  }
+
+  export type PinUpvoteUpsertWithWhereUniqueWithoutUserInput = {
+    where: PinUpvoteWhereUniqueInput
+    update: XOR<PinUpvoteUpdateWithoutUserInput, PinUpvoteUncheckedUpdateWithoutUserInput>
+    create: XOR<PinUpvoteCreateWithoutUserInput, PinUpvoteUncheckedCreateWithoutUserInput>
+  }
+
+  export type PinUpvoteUpdateWithWhereUniqueWithoutUserInput = {
+    where: PinUpvoteWhereUniqueInput
+    data: XOR<PinUpvoteUpdateWithoutUserInput, PinUpvoteUncheckedUpdateWithoutUserInput>
+  }
+
+  export type PinUpvoteUpdateManyWithWhereWithoutUserInput = {
+    where: PinUpvoteScalarWhereInput
+    data: XOR<PinUpvoteUpdateManyMutationInput, PinUpvoteUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type PinUpvoteScalarWhereInput = {
+    AND?: PinUpvoteScalarWhereInput | PinUpvoteScalarWhereInput[]
+    OR?: PinUpvoteScalarWhereInput[]
+    NOT?: PinUpvoteScalarWhereInput | PinUpvoteScalarWhereInput[]
+    id?: StringFilter<"PinUpvote"> | string
+    pinId?: StringFilter<"PinUpvote"> | string
+    userId?: StringFilter<"PinUpvote"> | string
+    createdAt?: DateTimeFilter<"PinUpvote"> | Date | string
+  }
+
   export type UserCreateWithoutExploredPointsInput = {
     id: string
     name: string
@@ -10261,6 +13434,8 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
+    pins?: PinCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutExploredPointsInput = {
@@ -10274,6 +13449,8 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutExploredPointsInput = {
@@ -10303,6 +13480,8 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
+    pins?: PinUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExploredPointsInput = {
@@ -10316,6 +13495,8 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -10329,6 +13510,8 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
+    pins?: PinCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -10342,6 +13525,8 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
+    pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -10371,6 +13556,8 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
+    pins?: PinUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -10384,6 +13571,8 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
+    pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -10397,6 +13586,8 @@ export namespace Prisma {
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
+    pins?: PinCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -10410,6 +13601,8 @@ export namespace Prisma {
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
+    pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -10439,6 +13632,8 @@ export namespace Prisma {
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
+    pins?: PinUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -10452,6 +13647,258 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
+    pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserCreateWithoutPinsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
+    pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutPinsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
+    pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutPinsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPinsInput, UserUncheckedCreateWithoutPinsInput>
+  }
+
+  export type PinUpvoteCreateWithoutPinInput = {
+    id?: string
+    createdAt?: Date | string
+    user: UserCreateNestedOneWithoutPinUpvotesInput
+  }
+
+  export type PinUpvoteUncheckedCreateWithoutPinInput = {
+    id?: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type PinUpvoteCreateOrConnectWithoutPinInput = {
+    where: PinUpvoteWhereUniqueInput
+    create: XOR<PinUpvoteCreateWithoutPinInput, PinUpvoteUncheckedCreateWithoutPinInput>
+  }
+
+  export type PinUpvoteCreateManyPinInputEnvelope = {
+    data: PinUpvoteCreateManyPinInput | PinUpvoteCreateManyPinInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutPinsInput = {
+    update: XOR<UserUpdateWithoutPinsInput, UserUncheckedUpdateWithoutPinsInput>
+    create: XOR<UserCreateWithoutPinsInput, UserUncheckedCreateWithoutPinsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPinsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPinsInput, UserUncheckedUpdateWithoutPinsInput>
+  }
+
+  export type UserUpdateWithoutPinsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
+    pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPinsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
+    pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type PinUpvoteUpsertWithWhereUniqueWithoutPinInput = {
+    where: PinUpvoteWhereUniqueInput
+    update: XOR<PinUpvoteUpdateWithoutPinInput, PinUpvoteUncheckedUpdateWithoutPinInput>
+    create: XOR<PinUpvoteCreateWithoutPinInput, PinUpvoteUncheckedCreateWithoutPinInput>
+  }
+
+  export type PinUpvoteUpdateWithWhereUniqueWithoutPinInput = {
+    where: PinUpvoteWhereUniqueInput
+    data: XOR<PinUpvoteUpdateWithoutPinInput, PinUpvoteUncheckedUpdateWithoutPinInput>
+  }
+
+  export type PinUpvoteUpdateManyWithWhereWithoutPinInput = {
+    where: PinUpvoteScalarWhereInput
+    data: XOR<PinUpvoteUpdateManyMutationInput, PinUpvoteUncheckedUpdateManyWithoutPinInput>
+  }
+
+  export type PinCreateWithoutUpvotesInput = {
+    id?: string
+    title: string
+    description?: string | null
+    lat: number
+    lng: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    createdBy: UserCreateNestedOneWithoutPinsInput
+  }
+
+  export type PinUncheckedCreateWithoutUpvotesInput = {
+    id?: string
+    title: string
+    description?: string | null
+    lat: number
+    lng: number
+    createdById: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PinCreateOrConnectWithoutUpvotesInput = {
+    where: PinWhereUniqueInput
+    create: XOR<PinCreateWithoutUpvotesInput, PinUncheckedCreateWithoutUpvotesInput>
+  }
+
+  export type UserCreateWithoutPinUpvotesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
+    pins?: PinCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserUncheckedCreateWithoutPinUpvotesInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
+    pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
+  }
+
+  export type UserCreateOrConnectWithoutPinUpvotesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutPinUpvotesInput, UserUncheckedCreateWithoutPinUpvotesInput>
+  }
+
+  export type PinUpsertWithoutUpvotesInput = {
+    update: XOR<PinUpdateWithoutUpvotesInput, PinUncheckedUpdateWithoutUpvotesInput>
+    create: XOR<PinCreateWithoutUpvotesInput, PinUncheckedCreateWithoutUpvotesInput>
+    where?: PinWhereInput
+  }
+
+  export type PinUpdateToOneWithWhereWithoutUpvotesInput = {
+    where?: PinWhereInput
+    data: XOR<PinUpdateWithoutUpvotesInput, PinUncheckedUpdateWithoutUpvotesInput>
+  }
+
+  export type PinUpdateWithoutUpvotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    createdBy?: UserUpdateOneRequiredWithoutPinsNestedInput
+  }
+
+  export type PinUncheckedUpdateWithoutUpvotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    createdById?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserUpsertWithoutPinUpvotesInput = {
+    update: XOR<UserUpdateWithoutPinUpvotesInput, UserUncheckedUpdateWithoutPinUpvotesInput>
+    create: XOR<UserCreateWithoutPinUpvotesInput, UserUncheckedCreateWithoutPinUpvotesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutPinUpvotesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutPinUpvotesInput, UserUncheckedUpdateWithoutPinUpvotesInput>
+  }
+
+  export type UserUpdateWithoutPinUpvotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
+    pins?: PinUpdateManyWithoutCreatedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutPinUpvotesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
+    pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -10491,6 +13938,22 @@ export namespace Prisma {
     lat: number
     lng: number
     accuracyM?: number | null
+    createdAt?: Date | string
+  }
+
+  export type PinCreateManyCreatedByInput = {
+    id?: string
+    title: string
+    description?: string | null
+    lat: number
+    lng: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type PinUpvoteCreateManyUserInput = {
+    id?: string
+    pinId: string
     createdAt?: Date | string
   }
 
@@ -10611,6 +14074,80 @@ export namespace Prisma {
     lat?: FloatFieldUpdateOperationsInput | number
     lng?: FloatFieldUpdateOperationsInput | number
     accuracyM?: NullableFloatFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PinUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    upvotes?: PinUpvoteUpdateManyWithoutPinNestedInput
+  }
+
+  export type PinUncheckedUpdateWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    upvotes?: PinUpvoteUncheckedUpdateManyWithoutPinNestedInput
+  }
+
+  export type PinUncheckedUpdateManyWithoutCreatedByInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    lat?: FloatFieldUpdateOperationsInput | number
+    lng?: FloatFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PinUpvoteUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    pin?: PinUpdateOneRequiredWithoutUpvotesNestedInput
+  }
+
+  export type PinUpvoteUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pinId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PinUpvoteUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pinId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PinUpvoteCreateManyPinInput = {
+    id?: string
+    userId: string
+    createdAt?: Date | string
+  }
+
+  export type PinUpvoteUpdateWithoutPinInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutPinUpvotesNestedInput
+  }
+
+  export type PinUpvoteUncheckedUpdateWithoutPinInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type PinUpvoteUncheckedUpdateManyWithoutPinInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

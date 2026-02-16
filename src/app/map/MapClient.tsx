@@ -1,12 +1,12 @@
 "use client";
-
 import "mapbox-gl/dist/mapbox-gl.css";
-
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Map, { Marker, NavigationControl, type MapRef } from "react-map-gl/mapbox";
-
 import { env } from "~/env";
 import { api } from "~/trpc/react";
+import { PinMarker, type PinData } from "~/app/_components/PinMarker";
+import { PinSheet } from "~/app/_components/PinSheet";
+import { CreatePinSheet } from "~/app/_components/CreatePinSheet";
 
 type ExploredPoint = {
   lat: number;
@@ -14,23 +14,20 @@ type ExploredPoint = {
   accuracyM?: number;
   createdAt?: Date;
 };
-
 type MapUser = {
   id: string;
   name?: string;
   imageUrl?: string;
 };
-
 type MapClientMode = "full" | "minimal";
 
 function haversineMeters(a: { lat: number; lng: number }, b: { lat: number; lng: number }) {
-  const R = 6371000; // meters
+  const R = 6371000;
   const toRad = (deg: number) => (deg * Math.PI) / 180;
   const dLat = toRad(b.lat - a.lat);
   const dLng = toRad(b.lng - a.lng);
   const lat1 = toRad(a.lat);
   const lat2 = toRad(b.lat);
-
   const s =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
@@ -39,8 +36,7 @@ function haversineMeters(a: { lat: number; lng: number }, b: { lat: number; lng:
 }
 
 function metersPerPixelAtLat(zoom: number, lat: number) {
-  // Mapbox GL world size is 512 * 2^zoom pixels.
-  const earthCircumference = 40075016.68557849; // meters (WGS84)
+  const earthCircumference = 40075016.68557849;
   const latRad = (lat * Math.PI) / 180;
   return (Math.cos(latRad) * earthCircumference) / (512 * Math.pow(2, zoom));
 }
@@ -52,14 +48,11 @@ export function MapClient({
   user: MapUser;
   mode?: MapClientMode;
 }) {
-  // Temporarily disable fog-of-war overlay.
   const fogEnabled = false;
-
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const watchIdRef = useRef<number | null>(null);
   const didFallbackRef = useRef(false);
-
   const [debugOpen, setDebugOpen] = useState(false);
   const [geoStatus, setGeoStatus] = useState<
     "idle" | "requesting" | "available" | "denied" | "unavailable" | "timeout"
@@ -70,8 +63,7 @@ export function MapClient({
   >("unknown");
   const [watchNonce, setWatchNonce] = useState(0);
   const [position, setPosition] = useState<ExploredPoint | null>(null);
-  const [lastKnownPosition, setLastKnownPosition] =
-    useState<ExploredPoint | null>(null);
+  const [lastKnownPosition, setLastKnownPosition] = useState<ExploredPoint | null>(null);
   const [hasCentered, setHasCentered] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [clientInfo, setClientInfo] = useState<{
@@ -81,14 +73,75 @@ export function MapClient({
     userAgent: string;
   } | null>(null);
 
+  // ── Pin state ──────────────────────────────────────────────────────────────
+  const [selectedPin, setSelectedPin] = useState<PinData | null>(null);
+  const [createSheetOpen, setCreateSheetOpen] = useState(false);
+  const [editingPin, setEditingPin] = useState<PinData | null>(null);
+
+  // ── Queries & mutations ────────────────────────────────────────────────────
   const exploredQuery = api.map.getRecentExploredPoints.useQuery(
     { limit: 5000 },
     { staleTime: 10_000, refetchOnWindowFocus: false },
   );
-
   const addPoints = api.map.addExploredPoints.useMutation();
   const utils = api.useUtils();
 
+  const pinsQuery = api.pin.getAll.useQuery(undefined, {
+    staleTime: 15_000,
+    refetchOnWindowFocus: false,
+  });
+
+  const createPin = api.pin.create.useMutation({
+    onSuccess: () => {
+      void utils.pin.getAll.invalidate();
+      setCreateSheetOpen(false);
+    },
+  });
+
+  const updatePin = api.pin.update.useMutation({
+    onSuccess: () => {
+      void utils.pin.getAll.invalidate();
+      setEditingPin(null);
+      setCreateSheetOpen(false);
+      setSelectedPin(null);
+    },
+  });
+
+  const upvotePin = api.pin.upvote.useMutation({
+    onSuccess: () => void utils.pin.getAll.invalidate(),
+  });
+
+  const undoUpvote = api.pin.undoUpvote.useMutation({
+    onSuccess: () => void utils.pin.getAll.invalidate(),
+  });
+
+  // ── Pin handlers ───────────────────────────────────────────────────────────
+  const handleDropPin = useCallback(() => {
+    if (!position && !lastKnownPosition) return;
+    setEditingPin(null);
+    setCreateSheetOpen(true);
+  }, [position, lastKnownPosition]);
+
+  const handleCreateSubmit = useCallback(
+    (data: { title: string; description: string }) => {
+      const loc = position ?? lastKnownPosition;
+      if (!loc) return;
+      if (editingPin) {
+        updatePin.mutate({ id: editingPin.id, ...data });
+      } else {
+        createPin.mutate({ ...data, lat: loc.lat, lng: loc.lng });
+      }
+    },
+    [position, lastKnownPosition, editingPin, createPin, updatePin],
+  );
+
+  const handleEditPin = useCallback((pin: PinData) => {
+    setEditingPin(pin);
+    setSelectedPin(null);
+    setCreateSheetOpen(true);
+  }, []);
+
+  // ── Exploration state ──────────────────────────────────────────────────────
   const [localPoints, setLocalPoints] = useState<ExploredPoint[]>([]);
   const lastSampledRef = useRef<ExploredPoint | null>(null);
   const pendingQueueRef = useRef<ExploredPoint[]>([]);
@@ -106,7 +159,6 @@ export function MapClient({
   }, [exploredQuery.data]);
 
   const displayPosition = position ?? lastKnownPosition ?? fallbackFromSavedPoints;
-
   const revealRadiusM = 25;
   const sampleMinDistanceM = 10;
 
@@ -119,7 +171,6 @@ export function MapClient({
     });
   }, []);
 
-  // Restore last known location immediately on refresh (so marker doesn't disappear while GPS reacquires)
   useEffect(() => {
     try {
       const raw = localStorage.getItem("strides.map.lastPosition");
@@ -164,9 +215,6 @@ export function MapClient({
     let cancelled = false;
     const permissionsApi = navigator.permissions;
     if (!permissionsApi?.query) return;
-
-    // Permissions API support varies (esp. Safari).
-    // If it fails, keep "unknown".
     void permissionsApi
       .query({ name: "geolocation" as PermissionName })
       .then((status) => {
@@ -175,10 +223,8 @@ export function MapClient({
         status.onchange = () => setGeoPermission(status.state);
       })
       .catch((err) => {
-        // Safari and some embedded browsers can throw here.
         console.debug("Geolocation permissions query failed", err);
       });
-
     return () => {
       cancelled = true;
     };
@@ -189,54 +235,37 @@ export function MapClient({
     const map = mapRef.current?.getMap();
     const canvas = fogCanvasRef.current;
     if (!map || !canvas) return;
-
     const rect = canvas.getBoundingClientRect();
     if (rect.width <= 0 || rect.height <= 0) return;
-
     const dpr = window.devicePixelRatio || 1;
     const width = Math.round(rect.width * dpr);
     const height = Math.round(rect.height * dpr);
     if (canvas.width !== width) canvas.width = width;
     if (canvas.height !== height) canvas.height = height;
-
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
-    // draw in CSS pixels
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, rect.width, rect.height);
-
-    // Fog fill
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = "rgba(10, 12, 20, 0.88)";
     ctx.fillRect(0, 0, rect.width, rect.height);
-
-    // Punch holes where explored
     ctx.globalCompositeOperation = "destination-out";
-
     const zoom = map.getZoom();
     const pointsToReveal = displayPosition
       ? [...exploredPoints, displayPosition]
       : exploredPoints;
-
     for (const p of pointsToReveal) {
       if (!Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
       const projected = map.project([p.lng, p.lat]);
       const mPerPx = metersPerPixelAtLat(zoom, p.lat);
       const radiusPx = revealRadiusM / Math.max(mPerPx, 0.000001);
-
       const g = ctx.createRadialGradient(
-        projected.x,
-        projected.y,
-        radiusPx * 0.2,
-        projected.x,
-        projected.y,
-        radiusPx,
+        projected.x, projected.y, radiusPx * 0.2,
+        projected.x, projected.y, radiusPx,
       );
       g.addColorStop(0, "rgba(0,0,0,1)");
       g.addColorStop(0.65, "rgba(0,0,0,1)");
       g.addColorStop(1, "rgba(0,0,0,0)");
-
       ctx.fillStyle = g;
       ctx.beginPath();
       ctx.arc(projected.x, projected.y, radiusPx, 0, Math.PI * 2);
@@ -244,25 +273,18 @@ export function MapClient({
     }
   }, [displayPosition, exploredPoints, fogEnabled]);
 
-  // Keep fog in sync with map interactions
   useEffect(() => {
     if (!fogEnabled) return;
     if (!mapReady) return;
     const map = mapRef.current?.getMap();
     if (!map) return;
-
-    const handler = () => {
-      // render can fire frequently; batch draws
-      requestAnimationFrame(drawFog);
-    };
-
+    const handler = () => { requestAnimationFrame(drawFog); };
     handler();
     map.on("move", handler);
     map.on("zoom", handler);
     map.on("resize", handler);
     map.on("rotate", handler);
     map.on("pitch", handler);
-
     return () => {
       map.off("move", handler);
       map.off("zoom", handler);
@@ -272,29 +294,21 @@ export function MapClient({
     };
   }, [drawFog, fogEnabled, mapReady]);
 
-  // Redraw when points/position change
   useEffect(() => {
     if (!fogEnabled) return;
     if (!mapReady) return;
     drawFog();
   }, [drawFog, fogEnabled, mapReady]);
 
-  // Flush queued points periodically
   const flush = useCallback(() => {
     if (addPoints.isPending) return;
     if (pendingQueueRef.current.length === 0) return;
-
     const batch = pendingQueueRef.current.splice(0, 200);
     addPoints.mutate(
       { points: batch },
       {
-        onSuccess: () => {
-          void utils.map.getExplorationStats.invalidate();
-        },
-        onError: () => {
-          // best-effort: put back in front
-          pendingQueueRef.current.unshift(...batch);
-        },
+        onSuccess: () => { void utils.map.getExplorationStats.invalidate(); },
+        onError: () => { pendingQueueRef.current.unshift(...batch); },
       },
     );
   }, [addPoints, utils]);
@@ -304,7 +318,6 @@ export function MapClient({
     return () => window.clearInterval(id);
   }, [flush]);
 
-  // If GPS isn't available, at least center to the latest saved point.
   useEffect(() => {
     if (!mapReady) return;
     if (hasCentered) return;
@@ -323,15 +336,12 @@ export function MapClient({
         setGeoError("Geolocation API not available in this browser.");
         return;
       }
-
       if (watchIdRef.current != null) {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
       }
-
       setGeoStatus("requesting");
       setGeoError(null);
-
       watchIdRef.current = navigator.geolocation.watchPosition(
         (pos) => {
           setGeoStatus("available");
@@ -344,7 +354,6 @@ export function MapClient({
               : undefined,
             createdAt: new Date(pos.timestamp),
           };
-
           setPosition(pt);
           setLastKnownPosition(pt);
           try {
@@ -360,21 +369,15 @@ export function MapClient({
           } catch {
             // ignore
           }
-
-          // sample the trail (avoid spam)
           const last = lastSampledRef.current;
           const shouldSample =
             !last ||
-            haversineMeters({ lat: last.lat, lng: last.lng }, pt) >=
-              sampleMinDistanceM;
-
+            haversineMeters({ lat: last.lat, lng: last.lng }, pt) >= sampleMinDistanceM;
           if (shouldSample) {
             lastSampledRef.current = pt;
             setLocalPoints((prev) => [...prev, pt]);
             pendingQueueRef.current.push(pt);
           }
-
-          // center once when we first get a fix
           if (!hasCentered) {
             const map = mapRef.current?.getMap();
             map?.flyTo({ center: [pt.lng, pt.lat], zoom: 17, essential: true });
@@ -386,20 +389,13 @@ export function MapClient({
           if (err.code === err.PERMISSION_DENIED) setGeoStatus("denied");
           else if (err.code === err.TIMEOUT) setGeoStatus("timeout");
           else setGeoStatus("unavailable");
-
-          // Fallback: some devices fail with high accuracy but can succeed with
-          // coarse network-based location.
           if (
             !didFallbackRef.current &&
             options.enableHighAccuracy === true &&
             (err.code === err.POSITION_UNAVAILABLE || err.code === err.TIMEOUT)
           ) {
             didFallbackRef.current = true;
-            startWatch({
-              enableHighAccuracy: false,
-              maximumAge: 30_000,
-              timeout: 60_000,
-            });
+            startWatch({ enableHighAccuracy: false, maximumAge: 30_000, timeout: 60_000 });
           }
         },
         options,
@@ -468,20 +464,12 @@ export function MapClient({
       setHasCentered(true);
       return;
     }
-
-    // No current fix yet — try a one-shot locate (this will also center if it succeeds)
     requestOnce();
   }, [displayPosition, requestOnce]);
 
-  // Geolocation watch
   useEffect(() => {
     didFallbackRef.current = false;
-    startWatch({
-      enableHighAccuracy: true,
-      maximumAge: 2_000,
-      timeout: 60_000,
-    });
-
+    startWatch({ enableHighAccuracy: true, maximumAge: 2_000, timeout: 60_000 });
     return () => {
       if (watchIdRef.current != null) {
         navigator.geolocation.clearWatch(watchIdRef.current);
@@ -501,6 +489,7 @@ export function MapClient({
   }
 
   const showChrome = mode === "full";
+  const hasLocation = !!(position ?? lastKnownPosition);
 
   return (
     <div className={showChrome ? "flex flex-col gap-3 px-4 py-5 pb-28 sm:py-6" : "p-0"}>
@@ -509,7 +498,7 @@ export function MapClient({
       !clientInfo.isSecureContext &&
       !["localhost", "127.0.0.1"].includes(clientInfo.hostname) ? (
         <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-100">
-          Geolocation requires a secure context (HTTPS) on most devices. You’re
+          Geolocation requires a secure context (HTTPS) on most devices. You're
           currently on{" "}
           <code className="text-amber-50">{clientInfo.origin}</code>. For local
           dev, use <code className="text-amber-50">http://localhost:3000</code>
@@ -517,7 +506,6 @@ export function MapClient({
           <code className="text-amber-50">BETTER_AUTH_URL</code> accordingly.
         </div>
       ) : null}
-
       {showChrome ? (
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">
           <div>
@@ -531,9 +519,9 @@ export function MapClient({
                     ? "denied"
                     : geoStatus === "timeout"
                       ? "timed out"
-                    : geoStatus === "unavailable"
-                      ? "unavailable"
-                      : "idle"}
+                      : geoStatus === "unavailable"
+                        ? "unavailable"
+                        : "idle"}
             </span>
           </div>
           <div>
@@ -586,7 +574,6 @@ export function MapClient({
           {addPoints.isPending ? <div>Saving…</div> : null}
         </div>
       ) : null}
-
       {showChrome && debugOpen ? (
         <div id="map-debug" className="flex flex-col gap-3">
           {geoError ? (
@@ -596,7 +583,7 @@ export function MapClient({
                 <code className="text-white/80">{geoError}</code>
               </div>
               <div className="mt-2 text-white/60">
-                If you’re on a phone and visiting this dev server via a LAN URL
+                If you're on a phone and visiting this dev server via a LAN URL
                 (like <code className="text-white/70">http://192.168…</code>),
                 GPS will usually fail unless the site is HTTPS.
               </div>
@@ -607,7 +594,6 @@ export function MapClient({
               </div>
             </div>
           ) : null}
-
           {clientInfo ? (
             <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white/70">
               <div className="font-semibold text-white">Debug</div>
@@ -628,12 +614,12 @@ export function MapClient({
         </div>
       ) : null}
 
+      {/* ── Map ── */}
       <div
         className={
           showChrome
             ? "relative h-[72dvh] w-full overflow-hidden border border-white/10 sm:h-[70vh] sm:rounded-2xl"
-            : // Fullscreen-ish map on mobile with a small gap above the fixed bottom nav.
-              "relative h-[calc(100dvh-112px)] w-full overflow-hidden border border-white/10 sm:h-[calc(100dvh-128px)] sm:rounded-2xl"
+            : "relative h-[calc(100dvh-112px)] w-full overflow-hidden border border-white/10 sm:h-[calc(100dvh-128px)] sm:rounded-2xl"
         }
       >
         <Map
@@ -647,6 +633,7 @@ export function MapClient({
         >
           <NavigationControl position="top-right" />
 
+          {/* User location marker */}
           {displayPosition ? (
             <Marker
               longitude={displayPosition.lng}
@@ -657,7 +644,6 @@ export function MapClient({
                 <div className="absolute inset-0 rounded-full bg-sky-400/25 blur-md" />
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/70 ring-2 ring-sky-300/70 shadow-[0_0_0_10px_rgba(56,189,248,0.18)]">
                   {user.imageUrl ? (
-                    // Using <img> to avoid Next/Image remote config.
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={user.imageUrl}
@@ -673,9 +659,16 @@ export function MapClient({
               </div>
             </Marker>
           ) : null}
+
+          {/* ── Pin markers ── */}
+          {(pinsQuery.data ?? []).map((pin) => (
+            <Marker key={pin.id} longitude={pin.lng} latitude={pin.lat} anchor="bottom">
+              <PinMarker pin={pin} onClick={setSelectedPin} />
+            </Marker>
+          ))}
         </Map>
 
-        {/* Center-on-me control (always visible) */}
+        {/* Center-on-me button */}
         <button
           type="button"
           onClick={centerOnUser}
@@ -690,25 +683,34 @@ export function MapClient({
           aria-label="Center on your location"
           title="Center on your location"
         >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"
-              stroke="currentColor"
-              strokeWidth="1.8"
-            />
-            <path
-              d="M12 2v3M12 19v3M2 12h3M19 12h3"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-            />
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" stroke="currentColor" strokeWidth="1.8" />
+            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
           </svg>
+        </button>
+
+        {/* ── Drop Pin button ── */}
+        <button
+          type="button"
+          onClick={handleDropPin}
+          disabled={!hasLocation}
+          className={[
+            "absolute bottom-4 right-3 z-30",
+            "flex items-center gap-2 rounded-2xl px-4 py-3",
+            "border border-white/10 bg-[#0b1020]/80 text-white backdrop-blur",
+            "shadow-[0_12px_40px_rgba(0,0,0,0.55)] transition",
+            "font-semibold text-sm",
+            "hover:bg-[#0b1020]/95 active:scale-[0.98]",
+            "disabled:opacity-40 disabled:cursor-not-allowed",
+          ].join(" ")}
+          aria-label="Drop a pin at your location"
+          title={hasLocation ? "Drop a pin here" : "Waiting for GPS…"}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+            <circle cx="12" cy="10" r="3" />
+          </svg>
+          Drop Pin
         </button>
 
         {fogEnabled ? (
@@ -718,7 +720,25 @@ export function MapClient({
           />
         ) : null}
       </div>
+
+      {/* ── Pin sheets ── */}
+      <PinSheet
+        pin={selectedPin}
+        currentUserId={user.id}
+        onClose={() => setSelectedPin(null)}
+        onUpvote={(pinId) => upvotePin.mutate({ pinId })}
+        onUndoUpvote={(pinId) => undoUpvote.mutate({ pinId })}
+        onEdit={handleEditPin}
+        isUpvoting={upvotePin.isPending || undoUpvote.isPending}
+      />
+
+      <CreatePinSheet
+        open={createSheetOpen}
+        editingPin={editingPin}
+        onClose={() => { setCreateSheetOpen(false); setEditingPin(null); }}
+        onSubmit={handleCreateSubmit}
+        isSubmitting={createPin.isPending || updatePin.isPending}
+      />
     </div>
   );
 }
-
