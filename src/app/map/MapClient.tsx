@@ -115,6 +115,13 @@ export function MapClient({
     onSuccess: () => void utils.pin.getAll.invalidate(),
   });
 
+  const deletePin = api.pin.delete.useMutation({
+    onSuccess: () => {
+      void utils.pin.getAll.invalidate();
+      setSelectedPin(null);
+    },
+  });
+
   // ── Pin handlers ───────────────────────────────────────────────────────────
   const handleDropPin = useCallback(() => {
     if (!position && !lastKnownPosition) return;
@@ -729,7 +736,9 @@ export function MapClient({
         onUpvote={(pinId) => upvotePin.mutate({ pinId })}
         onUndoUpvote={(pinId) => undoUpvote.mutate({ pinId })}
         onEdit={handleEditPin}
+        onDelete={(pinId) => deletePin.mutate({ id: pinId })}
         isUpvoting={upvotePin.isPending || undoUpvote.isPending}
+        isDeleting={deletePin.isPending}
       />
 
       <CreatePinSheet

@@ -27,7 +27,7 @@ export const pinRouter = createTRPCRouter({
       lat: pin.lat,
       lng: pin.lng,
       upvotes: pin._count.upvotes,
-      myUpvotes: pin.upvotes.length, // 0, 1, or 2
+      myUpvotes: pin.upvotes.length,
       createdById: pin.createdById,
       creatorName: pin.createdBy.name,
     }));
@@ -75,6 +75,18 @@ export const pinRouter = createTRPCRouter({
       });
     }),
 
+  // ── Delete a pin (owner only) ──────────────────────────────────────────────
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const pin = await ctx.db.pin.findUnique({ where: { id: input.id } });
+      if (!pin || pin.createdById !== ctx.session.user.id) {
+        throw new Error("Not authorized");
+      }
+      await ctx.db.pin.delete({ where: { id: input.id } });
+      return { success: true };
+    }),
+
   // ── Upvote a pin ───────────────────────────────────────────────────────────
   upvote: protectedProcedure
     .input(z.object({ pinId: z.string() }))
@@ -102,7 +114,6 @@ export const pinRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
 
-      // Delete the most recent upvote for this user+pin
       const latest = await ctx.db.pinUpvote.findFirst({
         where: { pinId: input.pinId, userId },
         orderBy: { createdAt: "desc" },
