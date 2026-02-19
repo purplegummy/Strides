@@ -110,7 +110,6 @@ export function BottomNav() {
       className={[
         "fixed inset-x-0 bottom-0 z-50",
         "border-t border-white/10 bg-[#0b1020]/80 backdrop-blur",
-        // iOS safe-area
         "pb-[max(0.75rem,env(safe-area-inset-bottom))]",
       ].join(" ")}
       aria-label="Bottom navigation"
@@ -141,4 +140,3 @@ export function BottomNav() {
     </nav>
   );
 }
-

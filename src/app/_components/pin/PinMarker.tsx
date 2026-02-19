@@ -1,6 +1,6 @@
 "use client";
 
-import { getRarity, RARITY_CONFIG } from "~/app/_components/pin-rarity";
+import { getRarity, RARITY_CONFIG } from "./pin-rarity";
 
 export type PinData = {
   id: string;

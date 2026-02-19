@@ -6,7 +6,7 @@ import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
 import { AppTabNav, type AppTab } from "./tab-nav";
-import ExplorationBar from "~/app/_components/ExplorationBar";
+import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
 
 type MapUser = {
   id: string;
@@ -90,7 +90,7 @@ export function AppShell({ user }: { user: MapUser }) {
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
       {/* Map stays mounted regardless of tab */}
-      <MapClient mode="minimal" user={user} />
+      <MapClient user={user} />
 
       <div className="absolute top-0 left-0 right-0 z-10">
         <ExplorationBar

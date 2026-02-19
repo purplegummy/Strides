@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { GithubSignInButton } from "~/app/_components/GithubSignInButton";
+import { GithubSignInButton } from "~/app/_components/auth/GithubSignInButton";
 import { getSession } from "~/server/better-auth/server";
 
 export default async function Home() {

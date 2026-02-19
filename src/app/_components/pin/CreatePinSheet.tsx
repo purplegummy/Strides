@@ -25,7 +25,6 @@ export function CreatePinSheet({
 
   const isEditing = !!editingPin;
 
-  // Sync form when editing pin changes
   useEffect(() => {
     if (editingPin) {
       setTitle(editingPin.title);
@@ -59,14 +58,12 @@ export function CreatePinSheet({
     <>
       <style>{css}</style>
 
-      {/* Backdrop */}
       <div
         className={`cps-backdrop ${visible ? "cps-backdrop--visible" : ""}`}
         onClick={onClose}
         aria-hidden
       />
 
-      {/* Sheet */}
       <div
         className={`cps-sheet ${visible ? "cps-sheet--visible" : ""}`}
         role="dialog"
