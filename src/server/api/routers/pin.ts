@@ -66,7 +66,7 @@ export const pinRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const pin = await ctx.db.pin.findUnique({ where: { id: input.id } });
-      if (!pin || pin.createdById !== ctx.session.user.id) {
+      if (pin?.createdById !== ctx.session.user.id) {
         throw new Error("Not authorized");
       }
       return ctx.db.pin.update({
@@ -80,7 +80,7 @@ export const pinRouter = createTRPCRouter({
     .input(z.object({ id: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const pin = await ctx.db.pin.findUnique({ where: { id: input.id } });
-      if (!pin || pin.createdById !== ctx.session.user.id) {
+      if (pin?.createdById !== ctx.session.user.id) {
         throw new Error("Not authorized");
       }
       await ctx.db.pin.delete({ where: { id: input.id } });

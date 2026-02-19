@@ -12,14 +12,11 @@ export function GithubSignInButton() {
           callbackURL: "/app",
         });
 
-        // better-fetch response shape: either { data, error: null } or { data: null, error }
         if (res.error) {
           console.error(res.error);
           return;
         }
 
-        // If redirect plugin runs, it will navigate automatically when {redirect:true,url:string}.
-        // This is just a safety net.
         if (res.data?.url && typeof window !== "undefined") {
           window.location.href = res.data.url;
         }

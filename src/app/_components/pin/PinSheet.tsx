@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { getRarity, RARITY_CONFIG } from "~/app/_components/pin-rarity";
-import type { PinData } from "~/app/_components/PinMarker";
+import { getRarity, RARITY_CONFIG } from "./pin-rarity";
+import type { PinData } from "./PinMarker";
 
 interface PinSheetProps {
   pin: PinData | null;
@@ -31,17 +31,15 @@ export function PinSheet({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
 
-  // Optimistic local state so upvote feels instant
   const [optimisticMyUpvotes, setOptimisticMyUpvotes] = useState(0);
   const [optimisticTotal, setOptimisticTotal] = useState(0);
 
-  // Sync optimistic state whenever the server pin data changes
   useEffect(() => {
     if (pin) {
       setOptimisticMyUpvotes(pin.myUpvotes);
       setOptimisticTotal(pin.upvotes);
     }
-  }, [pin?.id, pin?.myUpvotes, pin?.upvotes]);
+  }, [pin, pin?.id, pin?.myUpvotes, pin?.upvotes]);
 
   useEffect(() => {
     if (pin) {
@@ -77,7 +75,6 @@ export function PinSheet({
   const handleDeleteClick = () => {
     if (!confirmDelete) {
       setConfirmDelete(true);
-      // Auto-cancel confirm after 3s
       setTimeout(() => setConfirmDelete(false), 3000);
     } else {
       onDelete?.(pin.id);
@@ -88,7 +85,6 @@ export function PinSheet({
     <>
       <style>{sheetCss}</style>
 
-      {/* Backdrop */}
       <div
         ref={overlayRef}
         className={`pin-sheet-backdrop ${visible ? "pin-sheet-backdrop--visible" : ""}`}
@@ -96,7 +92,6 @@ export function PinSheet({
         aria-hidden
       />
 
-      {/* Sheet */}
       <div
         className={`pin-sheet ${visible ? "pin-sheet--visible" : ""}`}
         role="dialog"
@@ -105,7 +100,6 @@ export function PinSheet({
       >
         <div className="pin-sheet-handle" />
 
-        {/* Rarity banner */}
         <div className="pin-sheet-rarity-bar" style={{ background: cfg.color + "22", borderColor: cfg.color + "44" }}>
           <span className="pin-sheet-rarity-dot" style={{ background: cfg.color, boxShadow: `0 0 8px ${cfg.glow}` }} />
           <span className="pin-sheet-rarity-label" style={{ color: cfg.color }}>{cfg.label}</span>
@@ -114,7 +108,6 @@ export function PinSheet({
           </span>
         </div>
 
-        {/* Content */}
         <div className="pin-sheet-content">
           <h2 className="pin-sheet-title">{pin.title}</h2>
           {pin.description && (
@@ -125,9 +118,7 @@ export function PinSheet({
           )}
         </div>
 
-        {/* Actions */}
         <div className="pin-sheet-actions">
-          {/* Upvote */}
           <div className="pin-sheet-upvote-wrap">
             <button
               type="button"
@@ -142,7 +133,6 @@ export function PinSheet({
               {canUpvote ? "Upvote" : "Max votes"}
             </button>
 
-            {/* 2-pip indicator */}
             <div className="pin-sheet-pips">
               {[0, 1].map((i) => (
                 <span
@@ -157,7 +147,6 @@ export function PinSheet({
             </div>
           </div>
 
-          {/* Undo */}
           {hasUpvoted && (
             <button
               type="button"
@@ -169,7 +158,6 @@ export function PinSheet({
             </button>
           )}
 
-          {/* Edit — owner only */}
           {isOwner && onEdit && (
             <button
               type="button"
@@ -184,7 +172,6 @@ export function PinSheet({
             </button>
           )}
 
-          {/* Delete — owner only */}
           {isOwner && onDelete && (
             <button
               type="button"
