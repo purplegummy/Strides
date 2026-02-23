@@ -94,7 +94,7 @@ export function AppTabNav({
     <nav
       className={[
         "fixed inset-x-0 bottom-0 z-50",
-        "border-t border-white/10 bg-[#0b1020]/80 backdrop-blur",
+        "border-t border-[rgba(120,200,255,0.12)] bg-[rgba(6,8,18,0.88)] backdrop-blur-[18px] saturate-[1.4]",
         "pb-[max(0.75rem,env(safe-area-inset-bottom))]",
       ].join(" ")}
       aria-label="App tabs"
