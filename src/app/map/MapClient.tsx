@@ -135,7 +135,7 @@ export function MapClient({
 
   return (
     <div className="p-0">
-      <div className="relative h-[calc(100dvh-112px)] w-full overflow-hidden border border-white/10 sm:h-[calc(100dvh-128px)] sm:rounded-2xl">
+      <div className="relative h-[calc(100dvh-72px)] w-full overflow-hidden rounded-xl border border-white/10 sm:h-[calc(100dvh-80px)] sm:rounded-2xl">
 
         <Map
           ref={mapRef}
