@@ -1,7 +1,7 @@
 "use client";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import Map, { Marker, NavigationControl, type MapRef } from "react-map-gl/mapbox";
+import Map, { Marker, type MapRef } from "react-map-gl/mapbox";
 import { env } from "~/env";
 import { PinMarker, type PinData } from "~/app/_components/pin/PinMarker";
 import { PinSheet } from "~/app/_components/pin/PinSheet";
@@ -33,6 +33,7 @@ export function MapClient({
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hasCentered, setHasCentered] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [bearing, setBearing] = useState(0);
 
   // ── Hooks ──────────────────────────────────────────────────────────────────
   const geo = useGeolocation();
@@ -79,13 +80,34 @@ export function MapClient({
     setHasCentered(true);
   }, [explored.displayPosition, hasCentered, mapReady, geo.position]);
 
-  /** Fly to the user's position, or trigger a one-shot GPS request if unknown. */
-  const centerOnUser = useCallback(() => {
+  // Track map bearing changes
+  useEffect(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
+    const handleMove = () => {
+      setBearing(map.getBearing());
+    };
+
+    map.on("move", handleMove);
+    return () => {
+      map.off("move", handleMove);
+    };
+  }, []);
+
+  /** Center on user and reset bearing to north. */
+  const centerAndOrient = useCallback(() => {
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+
     if (explored.displayPosition) {
-      const map = mapRef.current?.getMap();
-      map?.flyTo({
+      // Reset bearing to north
+      map.easeTo({
         center: [explored.displayPosition.lng, explored.displayPosition.lat],
         zoom: 17,
+        bearing: 0,
+        pitch: 0,
+        duration: 300,
         essential: true,
       });
       setHasCentered(true);
@@ -93,8 +115,7 @@ export function MapClient({
     }
     geo.requestOnce({
       onPosition: (pt) => {
-        const map = mapRef.current?.getMap();
-        map?.flyTo({ center: [pt.lng, pt.lat], zoom: 17, essential: true });
+        map.flyTo({ center: [pt.lng, pt.lat], zoom: 17, essential: true });
         setHasCentered(true);
       },
     });
@@ -125,8 +146,6 @@ export function MapClient({
           attributionControl={false}
           reuseMaps
         >
-          <NavigationControl position="top-right" />
-
           {explored.displayPosition ? (
             <Marker
               longitude={explored.displayPosition.lng}
@@ -162,7 +181,7 @@ export function MapClient({
 
         <button
           type="button"
-          onClick={centerOnUser}
+          onClick={centerAndOrient}
           className={[
             "absolute right-3 top-1/2 z-30 -translate-y-1/2",
             "grid h-11 w-11 place-items-center rounded-2xl",
@@ -170,14 +189,36 @@ export function MapClient({
             "shadow-[0_12px_40px_rgba(0,0,0,0.55)] transition",
             "hover:bg-[#0b1020]/90",
             "active:scale-[0.98]",
-          ].join(" ")}
-          aria-label="Center on your location"
-          title="Center on your location"
+            bearing !== 0 && "ring-1 ring-sky-400",
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          aria-label="Center on your location and orient north"
+          title={`Center & orient north (bearing: ${Math.round(bearing)}°)`}
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" stroke="currentColor" strokeWidth="1.8" />
-            <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-          </svg>
+          <div
+            className="relative h-full w-full grid place-items-center"
+            style={{
+              transform: `rotate(${bearing}deg)`,
+              transition: bearing === 0 ? "transform 0.3s ease-out" : "none",
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              {/* Compass arrow pointing up (north) */}
+              <path d="M12 2L14 8H10L12 2Z" fill="currentColor" />
+              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" fill="none" />
+              {/* Cardinal point N */}
+              <text
+                x="12"
+                y="6"
+                textAnchor="middle"
+                className="text-[8px] fill-current font-bold"
+                dominantBaseline="middle"
+              >
+                N
+              </text>
+            </svg>
+          </div>
         </button>
 
         <button
