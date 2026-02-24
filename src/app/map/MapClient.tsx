@@ -58,10 +58,12 @@ export function MapClient({
       {
         onPosition: (pt) => {
           explored.samplePoint(pt);
+          const map = mapRef.current?.getMap();
           if (!hasCentered) {
-            const map = mapRef.current?.getMap();
             map?.flyTo({ center: [pt.lng, pt.lat], zoom: 17, essential: true });
             setHasCentered(true);
+          } else {
+            map?.easeTo({ center: [pt.lng, pt.lat], duration: 500 });
           }
         },
       },
