@@ -2,10 +2,11 @@
 
 import { useCallback, useMemo, useState } from "react";
 
+import { ProfileBar } from "~/app/_components/profile/ProfileBar";
 import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
-import { AppTabNav, type AppTab } from "./tab-nav";
+import type { AppTab } from "./tab-nav";
 import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
 
 type MapUser = {
@@ -45,6 +46,16 @@ export function AppShell({ user }: { user: MapUser }) {
       <div className="absolute inset-0 z-20 flex flex-col">
         <div className="flex-1 bg-black/25 backdrop-blur-sm" />
         <div className="rounded-t-3xl border-t border-white/10 bg-[#0b1020]/95 p-5 pb-28 text-white shadow-[0_-20px_60px_rgba(0,0,0,0.55)]">
+          <div className="mb-4 flex justify-end">
+            <button
+              type="button"
+              onClick={() => setTab("map")}
+              className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/10"
+            >
+              Back to map
+            </button>
+          </div>
+
           <div className="flex items-center gap-4">
             {user.imageUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -101,11 +112,19 @@ export function AppShell({ user }: { user: MapUser }) {
         />
       </div>
 
+      <div className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-20">
+        <ProfileBar
+          user={user}
+          level={1}
+          xpProgress={{ current: 42, next: 100 }}
+          onPress={() => setTab("profile")}
+        />
+      </div>
+
       {/* Overlays/panels */}
       {overlays}
 
-      {/* Bottom tabs (client-state, no route changes) */}
-      <AppTabNav tab={tab} onChange={setTab} />
+      {/* Bottom tabs intentionally hidden for now to let the map fill to bottom. */}
     </main>
   );
 }

@@ -7,6 +7,7 @@ import { PinMarker, type PinData } from "~/app/_components/pin/PinMarker";
 import { PinSheet } from "~/app/_components/pin/PinSheet";
 import { CreatePinSheet } from "~/app/_components/pin/CreatePinSheet";
 import { CompassButton } from "./CompassButton";
+import { UserPositionMarker } from "./UserPositionMarker";
 import { useGeolocation } from "./useGeolocation";
 import { useExploredPoints } from "./useExploredPoints";
 import { useMapPins } from "./useMapPins";
@@ -14,8 +15,6 @@ import { useFogLayer } from "./useFogLayer";
 
 type MapUser = {
   id: string;
-  name?: string;
-  imageUrl?: string;
 };
 
 /**
@@ -94,7 +93,7 @@ export function MapClient({
 
   return (
     <div className="p-0">
-      <div className="relative h-[calc(100dvh-72px)] w-full overflow-hidden rounded-xl border border-white/10 sm:h-[calc(100dvh-80px)] sm:rounded-2xl">
+      <div className="relative h-[100dvh] w-full overflow-hidden [&_.mapboxgl-ctrl-logo]:!hidden [&_.mapboxgl-ctrl-attrib]:!hidden">
 
         <Map
           ref={mapRef}
@@ -111,23 +110,7 @@ export function MapClient({
               latitude={explored.displayPosition.lat}
               anchor="center"
             >
-              <div className="relative">
-                <div className="absolute inset-0 rounded-full bg-sky-400/25 blur-md" />
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-900/70 ring-2 ring-sky-300/70 shadow-[0_0_0_10px_rgba(56,189,248,0.18)]">
-                  {user.imageUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={user.imageUrl}
-                      alt={user.name ? `${user.name}'s avatar` : "Your avatar"}
-                      referrerPolicy="no-referrer"
-                      className="h-10 w-10 rounded-full object-cover"
-                      draggable={false}
-                    />
-                  ) : (
-                    <div className="h-3 w-3 rounded-full bg-sky-300" />
-                  )}
-                </div>
-              </div>
+              <UserPositionMarker />
             </Marker>
           ) : null}
 
