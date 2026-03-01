@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
-import { GithubSignInButton } from "~/app/_components/auth/GithubSignInButton";
-import { GoogleSignInButton } from "~/app/_components/auth/GoogleSignInButton";
 import { getSession } from "~/server/better-auth/server";
+import { SignInForm } from "~/app/_components/auth/SignInForm";
 
 export default async function Home() {
   const session = await getSession();
@@ -9,16 +8,17 @@ export default async function Home() {
   if (session?.user) redirect("/app");
 
   return (
-    <main className="flex min-h-[100dvh] items-center justify-center bg-[#0b1020] px-4 text-white">
-      <div className="w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h1 className="text-xl font-bold">Sign in</h1>
-        <p className="mt-1 text-sm text-white/70">
-          Continue with GitHub or Google to start exploring the map.
-        </p>
+    <main className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-slate-200 py-8">
+      {/* Blurred background image */}
+      <div
+        className="absolute inset-0 scale-110 bg-cover bg-center opacity-40 blur-sm"
+        style={{ backgroundImage: "url('/sign-in-bg.png')" }}
+      />
 
-        <div className="mt-6 flex flex-col gap-3">
-          <GithubSignInButton />
-          <GoogleSignInButton />
+      {/* Card */}
+      <div className="relative z-10 w-full max-w-md px-6">
+        <div className="rounded-xl bg-[#D0EAF5] p-8 shadow-lg">
+          <SignInForm />
         </div>
       </div>
     </main>
