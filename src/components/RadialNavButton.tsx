@@ -18,9 +18,13 @@ const NAV_NODES: NavNode[] = [
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
-// Fan arc: spread 4 items from -150° to -30° (upward semicircle)
-const ARC_ANGLES = [-150, -110, -70, -30];
-const RADIUS = 90;
+// Box corners: top-left, top-right, bottom-left, bottom-right
+const BOX_POSITIONS = [
+  { x: -75, y: -75 }, // top-left
+  { x: 75, y: -75 },  // top-right
+  { x: -75, y: 75 },  // bottom-left
+  { x: 75, y: 75 },   // bottom-right
+];
 
 interface RadialNavButtonProps {
   activeTab: NavTab;
@@ -64,11 +68,7 @@ export function RadialNavButton({
   };
 
   const getNodePosition = (index: number) => {
-    const angleDeg = ARC_ANGLES[index] ?? 0;
-    const radian = (angleDeg * Math.PI) / 180;
-    const x = RADIUS * Math.cos(radian);
-    const y = RADIUS * Math.sin(radian);
-    return { x, y };
+    return BOX_POSITIONS[index] ?? { x: 0, y: 0 };
   };
 
   return (
@@ -125,9 +125,12 @@ export function RadialNavButton({
               />
             </button>
 
-            {/* Label */}
+            {/* Label — above for bottom nodes, below for top nodes */}
             <div
-              className="pointer-events-none absolute top-14 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-[10px] font-semibold tracking-wider"
+              className={[
+                "pointer-events-none absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-[10px] font-semibold tracking-wider",
+                pos.y > 0 ? "bottom-14" : "top-14",
+              ].join(" ")}
               style={{
                 color: isActive ? "white" : "rgba(255,255,255,0.55)",
                 textShadow: "0 1px 4px rgba(0,0,0,0.8)",
