@@ -68,9 +68,8 @@ export function ProfileBar({
         >
           <defs>
             <linearGradient id="xpArc" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#7dd3fc" />
-              <stop offset="50%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#0ea5e9" />
+              <stop offset="0%" stopColor="#092ACD" />
+              <stop offset="100%" stopColor="#092ACD" />
             </linearGradient>
             <filter id="arcGlow" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blur" />
@@ -116,7 +115,7 @@ export function ProfileBar({
         </svg>
 
         <div
-          className="absolute inset-0 m-auto grid place-items-center overflow-hidden rounded-full bg-[#0b1020]"
+          className="absolute inset-0 m-auto grid place-items-center overflow-hidden rounded-full bg-[#0F172A]"
           style={{
             width: AVATAR_SIZE,
             height: AVATAR_SIZE,
@@ -134,7 +133,7 @@ export function ProfileBar({
               draggable={false}
             />
           ) : (
-            <span className="text-xl font-bold text-white/80">{initials}</span>
+            <span className="text-xl font-bold text-[#E6EDF7]/80">{initials}</span>
           )}
         </div>
 

@@ -106,8 +106,8 @@ export function AppShell({ user }: { user: MapUser }) {
     <div
       style={{
         position: "fixed",
-        top: 16,
-        right: 16,
+        top: 8,
+        right: 8,
         zIndex: 9999,
         pointerEvents: "none",
       }}

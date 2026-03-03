@@ -51,10 +51,10 @@ export default function LevelBadge({
       const a = ((-90 + i * 45) * Math.PI) / 180;
       pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
     }
-    const [x0, y0] = pts[0];
+    const [x0, y0] = pts[0]!;
     let d = `M ${x0.toFixed(2)} ${y0.toFixed(2)} `;
     for (let i = 1; i < pts.length; i++) {
-      const [x, y] = pts[i];
+      const [x, y] = pts[i]!;
       d += `L ${x.toFixed(2)} ${y.toFixed(2)} `;
     }
     d += "Z";

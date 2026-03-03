@@ -136,21 +136,19 @@ export function MapClient({
           disabled={!hasLocation}
           className={[
             "absolute bottom-4 right-3 z-30",
-            "flex items-center gap-2 rounded-2xl px-4 py-3",
-            "border border-white/10 bg-[#0b1020]/80 text-white backdrop-blur",
+            "grid h-14 w-14 place-items-center rounded-2xl",
+            "border border-[#656A73]/40 bg-[#0F172A]/60 text-[#E6EDF7] backdrop-blur",
             "shadow-[0_12px_40px_rgba(0,0,0,0.55)] transition",
-            "font-semibold text-sm",
-            "hover:bg-[#0b1020]/95 active:scale-[0.98]",
+            "hover:bg-[#0F172A]/75 active:scale-[0.98]",
             "disabled:opacity-40 disabled:cursor-not-allowed",
           ].join(" ")}
           aria-label="Drop a pin at your location"
           title={hasLocation ? "Drop a pin here" : "Waiting for GPS…"}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#BFC8D9" strokeWidth="2">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
+            <circle cx="12" cy="10" r="3" fill="#22D3EE" fillOpacity="0.3" />
           </svg>
-          Drop Pin
         </button>
 
         {fogEnabled ? (
