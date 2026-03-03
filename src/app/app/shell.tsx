@@ -129,15 +129,17 @@ export function AppShell({ user }: { user: MapUser }) {
       {/* Overlays/panels */}
       {overlays}
 
-      {/* Radial navigation button */}
-      <RadialNavButton
-        activeTab={navTab}
-        onTabChange={(t) => {
-          setNavTab(t);
-          if (t === "map") setTab("map");
-          else if (t === "settings") setTab("profile");
-        }}
-      />
+      {/* Radial navigation button — hidden while any interface is open */}
+      {tab === "map" && (
+        <RadialNavButton
+          activeTab={navTab}
+          onTabChange={(t) => {
+            setNavTab(t);
+            if (t === "map") setTab("map");
+            else if (t === "settings") setTab("profile");
+          }}
+        />
+      )}
     </main>
   );
 }
