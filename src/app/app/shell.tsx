@@ -7,7 +7,7 @@ import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
 import type { AppTab } from "./tab-nav";
-import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
+import LevelBadge from "~/components/LevelBadge";
 
 type MapUser = {
   id: string;
@@ -103,14 +103,17 @@ export function AppShell({ user }: { user: MapUser }) {
       {/* Map stays mounted regardless of tab */}
       <MapClient user={user} />
 
-      <div className="absolute top-0 left-0 right-0 z-10">
-        <ExplorationBar
-          percentage={stats?.percentage ?? 0}
-          tilesDiscovered={stats?.tilesDiscovered ?? 0}
-          totalTiles={stats?.totalTiles ?? 4096}
-          streakDays={stats?.streakDays ?? 0}
-        />
-      </div>
+    <div
+      style={{
+        position: "fixed",
+        top: 16,
+        right: 16,
+        zIndex: 9999,
+        pointerEvents: "none",
+      }}
+    >
+      <LevelBadge exploredPct={stats?.percentage ?? 0} />
+    </div>
 
       <div className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-20">
         <ProfileBar
