@@ -72,9 +72,24 @@ export function RadialNavButton({
   };
 
   return (
+    <>
+      {/* Blur backdrop — sits below the nav nodes but above the map */}
+      <div
+        className="pointer-events-auto fixed inset-0 z-40 transition-all duration-300"
+        style={{
+          backdropFilter: expanded ? "blur(6px)" : "blur(0px)",
+          WebkitBackdropFilter: expanded ? "blur(6px)" : "blur(0px)",
+          background: expanded ? "rgba(0,0,0,0.35)" : "rgba(0,0,0,0)",
+          opacity: expanded ? 1 : 0,
+          pointerEvents: expanded ? "auto" : "none",
+          transitionProperty: "opacity, backdrop-filter, -webkit-backdrop-filter",
+        }}
+        onClick={() => setExpanded(false)}
+      />
+
     <div
       ref={containerRef}
-      className="pointer-events-none fixed bottom-2 left-1/2 z-50 -translate-x-1/2"
+      className="pointer-events-none fixed bottom-0 left-1/2 z-50 -translate-x-1/2 sm:bottom-2"
       style={{ width: 260, height: 260, display: "flex", alignItems: "center", justifyContent: "center" }}
     >
       {/* Nav nodes */}
@@ -146,7 +161,7 @@ export function RadialNavButton({
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
-        className="pointer-events-auto relative z-20 flex h-14 w-14 items-center justify-center rounded-full transition-all duration-300"
+        className="pointer-events-auto relative z-20 flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300"
         style={{
           background:
             "linear-gradient(135deg, rgba(139,92,246,0.9) 0%, rgba(59,130,246,0.9) 50%, rgba(20,184,166,0.9) 100%)",
@@ -169,14 +184,15 @@ export function RadialNavButton({
         )}
 
         {/* Inner white dot */}
-        <div className="relative z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300">
+        <div className="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300">
           {expanded ? (
-            <X size={16} className="text-white" />
+            <X size={13} className="text-white" />
           ) : (
-            <Menu size={16} className="text-white" />
+            <Menu size={13} className="text-white" />
           )}
         </div>
       </button>
     </div>
+    </>
   );
 }
