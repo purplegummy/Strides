@@ -9,30 +9,18 @@ interface NavNode {
   id: NavTab;
   label: string;
   icon: React.ElementType;
-  color: string;
 }
 
 const NAV_NODES: NavNode[] = [
-  { id: "map", label: "Map", icon: Map, color: "from-blue-500 to-cyan-400" },
-  {
-    id: "quests",
-    label: "Quests",
-    icon: ScrollText,
-    color: "from-amber-500 to-orange-400",
-  },
-  {
-    id: "stats",
-    label: "Stats",
-    icon: BarChart2,
-    color: "from-emerald-500 to-teal-400",
-  },
-  {
-    id: "settings",
-    label: "Settings",
-    icon: Settings,
-    color: "from-purple-500 to-violet-400",
-  },
+  { id: "map", label: "Map", icon: Map },
+  { id: "quests", label: "Quests", icon: ScrollText },
+  { id: "stats", label: "Stats", icon: BarChart2 },
+  { id: "settings", label: "Settings", icon: Settings },
 ];
+
+// Fan arc: spread 4 items from -150° to -30° (upward semicircle)
+const ARC_ANGLES = [-150, -110, -70, -30];
+const RADIUS = 90;
 
 interface RadialNavButtonProps {
   activeTab: NavTab;
@@ -44,46 +32,14 @@ export function RadialNavButton({
   onTabChange,
 }: RadialNavButtonProps) {
   const [expanded, setExpanded] = useState(false);
-  const [rotationAngle, setRotationAngle] = useState(0);
   const [mounted, setMounted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animFrameRef = useRef<number | null>(null);
-  const lastTimeRef = useRef<number | null>(null);
 
-  // Mount animation
   useEffect(() => {
     const t = setTimeout(() => setMounted(true), 50);
     return () => clearTimeout(t);
   }, []);
 
-  // Slow auto-rotation when expanded
-  useEffect(() => {
-    if (!expanded) {
-      if (animFrameRef.current !== null) {
-        cancelAnimationFrame(animFrameRef.current);
-      }
-      return;
-    }
-
-    const tick = (time: number) => {
-      if (lastTimeRef.current !== null) {
-        const delta = time - lastTimeRef.current;
-        setRotationAngle((prev) => (prev + delta * 0.02) % 360);
-      }
-      lastTimeRef.current = time;
-      animFrameRef.current = requestAnimationFrame(tick);
-    };
-
-    animFrameRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (animFrameRef.current !== null) {
-        cancelAnimationFrame(animFrameRef.current);
-      }
-      lastTimeRef.current = null;
-    };
-  }, [expanded]);
-
-  // Close on outside click
   const handleOutsideClick = useCallback(
     (e: MouseEvent) => {
       if (
@@ -107,39 +63,20 @@ export function RadialNavButton({
     setExpanded(false);
   };
 
-  // Calculate node positions around the center
   const getNodePosition = (index: number) => {
-    const total = NAV_NODES.length;
-    const baseAngle = (index / total) * 360;
-    const angle = (baseAngle + rotationAngle) % 360;
-    const radius = 80;
-    const radian = (angle * Math.PI) / 180;
-    const x = radius * Math.cos(radian);
-    const y = radius * Math.sin(radian);
-    // Depth effect
-    const depth = Math.sin(radian);
-    const scale = 0.85 + 0.15 * ((1 + depth) / 2);
-    const opacity = 0.6 + 0.4 * ((1 + depth) / 2);
-
-    return { x, y, scale, opacity, zIndex: Math.round(10 + 10 * depth) };
+    const angleDeg = ARC_ANGLES[index] ?? 0;
+    const radian = (angleDeg * Math.PI) / 180;
+    const x = RADIUS * Math.cos(radian);
+    const y = RADIUS * Math.sin(radian);
+    return { x, y };
   };
 
   return (
     <div
       ref={containerRef}
-      className="pointer-events-none fixed bottom-8 left-1/2 z-50 -translate-x-1/2"
-      style={{ width: 240, height: 240, display: "flex", alignItems: "center", justifyContent: "center" }}
+      className="pointer-events-none fixed bottom-2 left-1/2 z-50 -translate-x-1/2"
+      style={{ width: 260, height: 260, display: "flex", alignItems: "center", justifyContent: "center" }}
     >
-      {/* Orbit ring - visible when expanded */}
-      <div
-        className="absolute rounded-full border border-white/10 transition-all duration-500"
-        style={{
-          width: expanded ? 180 : 0,
-          height: expanded ? 180 : 0,
-          opacity: expanded ? 1 : 0,
-        }}
-      />
-
       {/* Nav nodes */}
       {NAV_NODES.map((node, index) => {
         const pos = getNodePosition(index);
@@ -152,13 +89,13 @@ export function RadialNavButton({
             className="pointer-events-auto absolute transition-all"
             style={{
               transform: expanded
-                ? `translate(${pos.x}px, ${pos.y}px) scale(${pos.scale})`
+                ? `translate(${pos.x}px, ${pos.y}px) scale(1)`
                 : "translate(0px, 0px) scale(0)",
-              opacity: expanded ? pos.opacity : 0,
-              zIndex: pos.zIndex,
-              transitionDuration: expanded ? "400ms" : "250ms",
+              opacity: expanded ? 1 : 0,
+              zIndex: 10,
+              transitionDuration: expanded ? "350ms" : "200ms",
               transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
-              transitionDelay: expanded ? `${index * 40}ms` : "0ms",
+              transitionDelay: expanded ? `${index * 50}ms` : "0ms",
             }}
           >
             {/* Glow ring for active */}
@@ -169,7 +106,7 @@ export function RadialNavButton({
             <button
               type="button"
               onClick={() => handleNodeClick(node.id)}
-              className="group relative flex h-12 w-12 flex-col items-center justify-center rounded-full border-2 transition-all duration-200"
+              className="relative flex h-12 w-12 flex-col items-center justify-center rounded-full border-2 transition-all duration-200"
               style={{
                 background: isActive
                   ? "rgba(255,255,255,0.9)"
@@ -179,7 +116,7 @@ export function RadialNavButton({
                   : "rgba(255,255,255,0.25)",
                 boxShadow: isActive
                   ? "0 0 16px rgba(255,255,255,0.3)"
-                  : "none",
+                  : "0 2px 8px rgba(0,0,0,0.4)",
               }}
             >
               <Icon
@@ -190,7 +127,7 @@ export function RadialNavButton({
 
             {/* Label */}
             <div
-              className="pointer-events-none absolute top-14 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-[10px] font-semibold tracking-wider transition-all duration-200"
+              className="pointer-events-none absolute top-14 left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-[10px] font-semibold tracking-wider"
               style={{
                 color: isActive ? "white" : "rgba(255,255,255,0.55)",
                 textShadow: "0 1px 4px rgba(0,0,0,0.8)",
