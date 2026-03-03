@@ -8,6 +8,7 @@ import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
 import type { AppTab } from "./tab-nav";
 import LevelBadge from "~/components/LevelBadge";
+import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
 
 type MapUser = {
   id: string;
@@ -17,6 +18,7 @@ type MapUser = {
 
 export function AppShell({ user }: { user: MapUser }) {
   const [tab, setTab] = useState<AppTab>("map");
+  const [navTab, setNavTab] = useState<NavTab>("map");
   const [signingOut, setSigningOut] = useState(false);
 
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
@@ -127,7 +129,15 @@ export function AppShell({ user }: { user: MapUser }) {
       {/* Overlays/panels */}
       {overlays}
 
-      {/* Bottom tabs intentionally hidden for now to let the map fill to bottom. */}
+      {/* Radial navigation button */}
+      <RadialNavButton
+        activeTab={navTab}
+        onTabChange={(t) => {
+          setNavTab(t);
+          if (t === "map") setTab("map");
+          else if (t === "settings") setTab("profile");
+        }}
+      />
     </main>
   );
 }
