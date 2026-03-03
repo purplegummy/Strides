@@ -1,247 +1,224 @@
+"use client";
+
 import React, { useMemo } from "react";
 
 type LevelBadgeProps = {
+  /** 0–100 (map explored %) */
   exploredPct: number;
+  /** px size of badge */
   size?: number;
   className?: string;
 };
 
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
+const clamp01to100 = (n: number) => Math.max(0, Math.min(100, n));
+
+function octagonPoints(cx: number, cy: number, r: number, rotateDeg = -90) {
+  const pts: string[] = [];
+  const rot = (rotateDeg * Math.PI) / 180;
+  for (let i = 0; i < 8; i++) {
+    const a = rot + i * (Math.PI / 4);
+    const x = cx + r * Math.cos(a);
+    const y = cy + r * Math.sin(a);
+    pts.push(`${x.toFixed(2)},${y.toFixed(2)}`);
+  }
+  return pts.join(" ");
 }
 
-/**
- * Minimal octagon badge:
- * - Outer steel plate (gradient stroke)
- * - Outer progress ring (cyan)
- * - Inner XP ring (deep blue)
- * - Inner plate with gradient fill
- * - Big % text + "EXPLORED" + small LV text
- */
 export default function LevelBadge({
   exploredPct,
-  size = 124,
+  size = 110,
   className,
-}: LevelBadgeProps)
-{
-  const pct = clamp(exploredPct, 0, 100);
+}: LevelBadgeProps) {
+  const pct = clamp01to100(exploredPct);
+  const pctText = useMemo(() => pct.toFixed(pct < 10 ? 1 : 0), [pct]);
 
-  // ViewBox is 500x500 to match your Figma scale, then scaled down with width/height.
-  const vb = 500;
+  // SVG layout
+  const vb = 300;
   const cx = vb / 2;
   const cy = vb / 2;
 
-  // Octagon helper
-  const octagonPoints = (r: number) => {
-    const pts: Array<[number, number]> = [];
-    // Start at top (-90deg), 8 sides => 45deg step
-    for (let i = 0; i < 8; i++) {
-      const a = ((-90 + i * 45) * Math.PI) / 180;
-      const x = cx + r * Math.cos(a);
-      const y = cy + r * Math.sin(a);
-      pts.push([x, y]);
-    }
-    return pts.map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`).join(" ");
-  };
+  // Geometry
+  const rOuter = 138; // outer octagon
+  const rOuterInset = 128; // inner border octagon (depth lip)
+  const circleFillR = 96; // blue inner circle radius
+  const ringR = 106; // progress ring radius
+  const ringW = 14; // ring width
 
-  // Path for a regular octagon (for stroke-dasharray progress)
-  const octagonPathD = (r: number) => {
-    const pts: Array<[number, number]> = [];
-    for (let i = 0; i < 8; i++) {
-      const a = ((-90 + i * 45) * Math.PI) / 180;
-      pts.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
-    }
-    const [x0, y0] = pts[0]!;
-    let d = `M ${x0.toFixed(2)} ${y0.toFixed(2)} `;
-    for (let i = 1; i < pts.length; i++) {
-      const [x, y] = pts[i]!;
-      d += `L ${x.toFixed(2)} ${y.toFixed(2)} `;
-    }
-    d += "Z";
-    return d;
-  };
+  const outerPts = useMemo(() => octagonPoints(cx, cy, rOuter), []);
+  const outerInsetPts = useMemo(() => octagonPoints(cx, cy, rOuterInset), []);
 
-  // Radii tuned to look like your Figma layers
-  const rOuterSteel = 220; // outer plate outline
-  const rOuterRing = 205; // cyan progress ring
-  const rInnerRing = 188; // XP ring (deep blue)
-  const rPlate = 168; // inner filled octagon
-
-  const outerSteelPts = useMemo(() => octagonPoints(rOuterSteel), []);
-  const platePts = useMemo(() => octagonPoints(rPlate), []);
-  const outerRingPath = useMemo(() => octagonPathD(rOuterRing), []);
-  const innerRingPts = useMemo(() => octagonPoints(rInnerRing), []);
-
-  // Dash math for the progress ring:
-  // We approximate path length by using SVG getTotalLength via a ref is possible,
-  // but we can hardcode a pretty good approximation using geometry:
-  // Perimeter ≈ 8 * sideLength; sideLength of regular octagon = r * sqrt(2 - sqrt(2)) * 2
-  const approxOctagonPerimeter = (r: number) => {
-    const side = 2 * r * Math.sin(Math.PI / 8);
-    return 8 * side;
-  };
-  const pathLen = approxOctagonPerimeter(rOuterRing);
-  const dashOffset = ((100 - pct) / 100) * pathLen;
-
-  const fontStack =
-    'ui-sans-serif, -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, Arial, sans-serif';
+  // Circle progress math
+  const C = 2 * Math.PI * ringR;
+  const dash = (pct / 100) * C;
+  const gap = Math.max(0, C - dash);
 
   return (
-    <svg
-      className={className}
-      width={size}
-      height={size}
-      viewBox={`0 0 ${vb} ${vb}`}
-      role="img"
-      aria-label={`${pct.toFixed(1)}% explored`}    >
-      <defs>
-        {/* Inner plate gradient (your spec) */}
-        <linearGradient id="plateGrad" x1="0" y1="0" x2="0.9" y2="1">
-          <stop offset="25%" stopColor="#0F172A" />
-          <stop offset="75%" stopColor="#004CFF" />
-        </linearGradient>
-
-        {/* Steel gradient (your spec) */}
-        <linearGradient id="steelGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#BFC8D9" />
-          <stop offset="100%" stopColor="#656A73" />
-        </linearGradient>
-
-        {/* Glow for progress ring */}
-        <filter id="progressGlow" x="-30%" y="-30%" width="160%" height="160%">
-          <feGaussianBlur stdDeviation="2.4" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-
-        {/* Shadow like your "duplicate text" trick */}
-        <filter id="textShadow" x="-50%" y="-50%" width="200%" height="200%">
-          <feDropShadow
-            dx="0"
-            dy="2"
-            stdDeviation="1.2"
-            floodColor="#000"
-            floodOpacity="0.55"
-          />
-          <feDropShadow
-            dx="0"
-            dy="4"
-            stdDeviation="2.2"
-            floodColor="#000"
-            floodOpacity="0.45"
-          />
-        </filter>
-
-        {/* Very soft badge shadow (optional, helps it pop) */}
-        <filter id="badgeShadow" x="-30%" y="-30%" width="160%" height="160%">
-          <feDropShadow
-            dx="0"
-            dy="6"
-            stdDeviation="6"
-            floodColor="#000"
-            floodOpacity="0.18"
-          />
-        </filter>
-      </defs>
-
-      <g filter="url(#badgeShadow)">
-        {/* Outer steel plate (stroke + slight inner stroke) */}
-        <polygon
-          points={outerSteelPts}
-          fill="transparent"
-          stroke="url(#steelGrad)"
-          strokeWidth="18"
-          strokeLinejoin="round"
-        />
-        <polygon
-          points={outerSteelPts}
-          fill="transparent"
-          stroke="url(#steelGrad)"
-          strokeWidth="6"
-          strokeLinejoin="round"
-          opacity="0.9"
-        />
-
-        {/* XP ring (deep blue) */}
-        <polygon
-          points={innerRingPts}
-          fill="none"
-          stroke="#092ACD"
-          strokeWidth="12"
-          strokeLinejoin="round"
-          opacity="0.95"
-        />
-
-        {/* Progress ring background track (subtle steel) */}
-        <path
-          d={outerRingPath}
-          fill="none"
-          stroke="url(#steelGrad)"
-          strokeWidth="10"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          opacity="0.35"
-        />
-
-        {/* Progress ring foreground (cyan) */}
-        <path
-          d={outerRingPath}
-          fill="none"
-          stroke="#22D3EE"
-          strokeWidth="10"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-          strokeDasharray={pathLen}
-          strokeDashoffset={dashOffset}
-          filter="url(#progressGlow)"
-          style={{
-            transition: "stroke-dashoffset 500ms ease",
-          }}
-        />
-
-        {/* Inner plate */}
-        <polygon
-          points={platePts}
-          fill="url(#plateGrad)"
-          stroke="url(#steelGrad)"
-          strokeWidth="6"
-          strokeLinejoin="round"
-        />
-      </g>
-
-      {/* TEXT */}
-      <g
-        style={{ fontFamily: fontStack }}
-        textAnchor="middle"
-        dominantBaseline="middle"
-        filter="url(#textShadow)"
+    <div className={className} style={{ width: size, height: size }}>
+      <svg
+        viewBox={`0 0 ${vb} ${vb}`}
+        width="100%"
+        height="100%"
+        role="img"
+        aria-label={`${pctText}% explored`}
+        shapeRendering="geometricPrecision"
+        textRendering="geometricPrecision"
       >
-        {/* Big percent */}
-        <text
-          x={cx}
-          y={cy - 22}
-          fill="#E6EDF7"
-          fontSize="85"
-          fontWeight={800}
-          letterSpacing="-1"
-        >
-          {pct.toFixed(1)}%
-        </text>
+        <defs>
+          {/* OUTER STEEL: light top → dark bottom (your spec) */}
+          <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#D7E3F4" />
+            <stop offset="100%" stopColor="#7D848E" />
+          </linearGradient>
 
-        {/* EXPLORED */}
-        <text
-          x={cx}
-          y={cy + 55}
+          {/* INNER BLUE CIRCLE (your spec) */}
+          <linearGradient id="innerBlue" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#0F172A" />
+            <stop offset="100%" stopColor="#004CFF" />
+          </linearGradient>
+
+          {/* Dark “lip” between steel and circle (your spec) */}
+          <linearGradient id="lip" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="65%" stopColor="#748CAC" />
+            <stop offset="100%" stopColor="#2F3946" />
+          </linearGradient>
+
+          {/* Soft vignette/shine over the blue circle */}
+          <radialGradient id="circleShine" cx="40%" cy="28%" r="80%">
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.10" />
+            <stop offset="60%" stopColor="#FFFFFF" stopOpacity="0.02" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0.18" />
+          </radialGradient>
+
+          {/* Soft badge shadow */}
+          <filter id="badgeShadow" x="-40%" y="-40%" width="180%" height="180%">
+            <feDropShadow
+              dx="0"
+              dy="8"
+              stdDeviation="9"
+              floodColor="#000000"
+              floodOpacity="0.18"
+            />
+          </filter>
+
+          {/* Text shadow (subtle) */}
+          <filter id="textShadow" x="-50%" y="-50%" width="200%" height="200%">
+            <feDropShadow
+              dx="0"
+              dy="2"
+              stdDeviation="2"
+              floodColor="#000000"
+              floodOpacity="0.25"
+            />
+          </filter>
+        </defs>
+
+        <g filter="url(#badgeShadow)">
+          {/* Outer steel shield */}
+          <polygon points={outerPts} fill="url(#steel)" />
+
+          {/* Outer highlight + low shadow for crisp steel */}
+          <polygon
+            points={outerPts}
+            fill="none"
+            stroke="#FFFFFF"
+            strokeOpacity="0.35"
+            strokeWidth={6}
+          />
+          <polygon
+            points={outerPts}
+            fill="none"
+            stroke="#000000"
+            strokeOpacity="0.10"
+            strokeWidth={6}
+            transform={`translate(0,1)`}
+          />
+
+          {/* Inner lip (depth layer) */}
+          <polygon points={outerInsetPts} fill="url(#lip)" opacity={0.95} />
+
+          {/* INNER BLUE CIRCLE (this is the main fix) */}
+          <circle cx={cx} cy={cy} r={circleFillR} fill="url(#innerBlue)" />
+          <circle cx={cx} cy={cy} r={circleFillR} fill="url(#circleShine)" />
+
+          {/* Ring base */}
+          <circle
+            cx={cx}
+            cy={cy}
+            r={ringR}
+            fill="none"
+            stroke="#0B1633"
+            strokeOpacity="0.28"
+            strokeWidth={ringW}
+          />
+
+          {/* Ring progress */}
+          <circle
+            cx={cx}
+            cy={cy}
+            r={ringR}
+            fill="none"
+            stroke="#1CE9FD"
+            strokeWidth={ringW}
+            strokeLinecap="round"
+            strokeDasharray={`${dash} ${gap}`}
+            strokeDashoffset={C * 0.25} // start at top
+            opacity={0.95}
+          />
+
+          {/* Subtle inner rim (polish) */}
+          <circle
+            cx={cx}
+            cy={cy}
+            r={ringR - ringW / 2 - 8}
+            fill="none"
+            stroke="#FFFFFF"
+            strokeOpacity="0.08"
+            strokeWidth={2}
+          />
+        </g>
+
+        {/* TEXT + DIVIDER LINE */}
+        <g
+          fontFamily={`"SF Pro Display","SF Compact Display","SF Compact","Inter","system-ui",sans-serif`}
+          textAnchor="middle"
           fill="#E6EDF7"
-          fontSize="45"
-          fontWeight={900}
-          letterSpacing="2"
         >
-          EXPLORED
-        </text>
-      </g>
-    </svg>
+          {/* % NUMBER (smaller so it fits like your reference) */}
+          <text
+            x={cx}
+            y={cy - 8}
+            fontSize="44"
+            fontWeight={800}
+            filter="url(#textShadow)"
+          >
+            {pctText}%
+          </text>
+
+          {/* Divider line between % and EXPLORED */}
+          <line
+            x1={cx - 84}
+            x2={cx + 84}
+            y1={cy + 18}
+            y2={cy + 18}
+            stroke="#E6EDF7"
+            strokeOpacity="0.35"
+            strokeWidth={8}
+            strokeLinecap="round"
+          />
+
+          {/* EXPLORED */}
+          <text
+            x={cx}
+            y={cy + 58}
+            fontSize="22"
+            fontWeight={800}
+            letterSpacing="1.5"
+            filter="url(#textShadow)"
+          >
+            EXPLORED
+          </text>
+        </g>
+      </svg>
+    </div>
   );
 }
