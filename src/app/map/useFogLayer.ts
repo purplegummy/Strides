@@ -42,7 +42,7 @@ export function useFogLayer(
     ctx.clearRect(0, 0, rect.width, rect.height);
     // Fill the entire canvas with dark fog, then punch holes for explored areas
     ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "rgba(10, 12, 20, 0.88)";
+    ctx.fillStyle = "rgba(10, 12, 20, 0.78)";
     ctx.fillRect(0, 0, rect.width, rect.height);
     ctx.globalCompositeOperation = "destination-out";
     const zoom = map.getZoom();
@@ -59,7 +59,8 @@ export function useFogLayer(
         projected.x, projected.y, radiusPx,
       );
       g.addColorStop(0, "rgba(0,0,0,1)");
-      g.addColorStop(0.65, "rgba(0,0,0,1)");
+      g.addColorStop(0.45, "rgba(0,0,0,0.95)");
+      g.addColorStop(0.75, "rgba(0,0,0,0.45)");
       g.addColorStop(1, "rgba(0,0,0,0)");
       ctx.fillStyle = g;
       ctx.beginPath();

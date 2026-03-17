@@ -28,7 +28,7 @@ export function MapClient({
 }: {
   user: MapUser;
 }) {
-  const fogEnabled = false;
+  const fogEnabled = true;
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hasCentered, setHasCentered] = useState(false);
