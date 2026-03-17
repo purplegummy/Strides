@@ -85,9 +85,8 @@ export function CompassButton({
         "grid h-14 w-14 place-items-center rounded-2xl",
         "border border-[#656A73]/40 bg-[#0F172A]/60 text-[#E6EDF7] backdrop-blur",
         "shadow-[0_12px_40px_rgba(0,0,0,0.55)] transition",
-        "hover:bg-[#0F172A]/75",
-        "active:scale-[0.98]",
-        !isOrientedNorth && "ring-1 ring-[#22D3EE]/60",
+        "hover:bg-[#0F172A]/75 active:scale-[0.98]",
+        !isOrientedNorth && "ring-1 ring-[#38bdf8]/40",
       ]
         .filter(Boolean)
         .join(" ")}
@@ -113,7 +112,7 @@ export function CompassButton({
             d="M256,43.5C138.64,43.5,43.5,138.64,43.5,256c0,117.36,95.14,212.5,212.5,212.5S468.5,373.36,468.5,256 C468.5,138.64,373.36,43.5,256,43.5z M357.13,167.18l-58.16,127.2c-0.93,2.03-2.56,3.66-4.59,4.59l-127.2,58.16 c-7.83,3.58-15.89-4.49-12.32-12.32l58.16-127.2c0.93-2.03,2.56-3.66,4.59-4.59l127.2-58.16 C352.64,151.29,360.71,159.36,357.13,167.18z"
             fill="#BFC8D9"
           />
-          <circle cx="256" cy="256" r="22" fill="#092ACD" />
+          <circle cx="256" cy="256" r="22" fill="#38bdf8" />
         </svg>
       </div>
     </button>

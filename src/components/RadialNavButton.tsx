@@ -18,12 +18,12 @@ const NAV_NODES: NavNode[] = [
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
-// Box corners: top-left, top-right, bottom-left, bottom-right
+// All nodes expand upward from the center button
 const BOX_POSITIONS = [
-  { x: -75, y: -75 }, // top-left
-  { x: 75, y: -75 },  // top-right
-  { x: -75, y: 75 },  // bottom-left
-  { x: 75, y: 75 },   // bottom-right
+  { x: -75, y: -150 }, // upper-left
+  { x: 75, y: -150 },  // upper-right
+  { x: -75, y: -75 },  // lower-left
+  { x: 75, y: -75 },   // lower-right
 ];
 
 interface RadialNavButtonProps {
@@ -89,8 +89,8 @@ export function RadialNavButton({
 
     <div
       ref={containerRef}
-      className="pointer-events-none fixed bottom-0 left-1/2 z-50 -translate-x-1/2 sm:bottom-2"
-      style={{ width: 260, height: 260, display: "flex", alignItems: "center", justifyContent: "center" }}
+      className="pointer-events-none fixed bottom-6 left-1/2 z-50 -translate-x-1/2"
+      style={{ width: 260, height: 260, display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: 0 }}
     >
       {/* Nav nodes */}
       {NAV_NODES.map((node, index) => {
@@ -113,39 +113,26 @@ export function RadialNavButton({
               transitionDelay: expanded ? `${index * 50}ms` : "0ms",
             }}
           >
-            {/* Glow ring for active */}
-            {isActive && (
-              <div className="absolute -inset-1 animate-pulse rounded-full bg-white/20" />
-            )}
-
             <button
               type="button"
               onClick={() => handleNodeClick(node.id)}
-              className="relative flex h-12 w-12 flex-col items-center justify-center rounded-full border-2 transition-all duration-200"
-              style={{
-                background: isActive
-                  ? "rgba(255,255,255,0.9)"
-                  : "rgba(11,16,32,0.85)",
-                borderColor: isActive
-                  ? "rgba(255,255,255,1)"
-                  : "rgba(255,255,255,0.25)",
-                boxShadow: isActive
-                  ? "0 0 16px rgba(255,255,255,0.3)"
-                  : "0 2px 8px rgba(0,0,0,0.4)",
-              }}
+              className={[
+                "relative grid h-14 w-14 place-items-center rounded-2xl backdrop-blur transition-all duration-200",
+                "shadow-[0_12px_40px_rgba(0,0,0,0.55)] active:scale-[0.98]",
+                isActive
+                  ? "border border-[#38bdf8]/50 bg-[#1d6fb0]/80"
+                  : "border border-[#656A73]/40 bg-[#0F172A]/60 hover:bg-[#0F172A]/75",
+              ].join(" ")}
             >
               <Icon
-                size={18}
-                className={isActive ? "text-black" : "text-white/80"}
+                size={20}
+                className={isActive ? "text-[#E6EDF7]" : "text-[#BFC8D9]"}
               />
             </button>
 
             {/* Label — above for bottom nodes, below for top nodes */}
             <div
-              className={[
-                "pointer-events-none absolute left-1/2 -translate-x-1/2 whitespace-nowrap text-center text-[10px] font-semibold tracking-wider",
-                pos.y > 0 ? "bottom-14" : "top-14",
-              ].join(" ")}
+              className="pointer-events-none absolute left-1/2 top-14 -translate-x-1/2 whitespace-nowrap text-center text-[10px] font-semibold tracking-wider"
               style={{
                 color: isActive ? "white" : "rgba(255,255,255,0.55)",
                 textShadow: "0 1px 4px rgba(0,0,0,0.8)",
@@ -163,34 +150,19 @@ export function RadialNavButton({
         onClick={() => setExpanded((v) => !v)}
         className="pointer-events-auto relative z-20 flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300"
         style={{
-          background:
-            "linear-gradient(135deg, rgba(139,92,246,0.9) 0%, rgba(59,130,246,0.9) 50%, rgba(20,184,166,0.9) 100%)",
+          background: "#0F172A",
           boxShadow: expanded
-            ? "0 0 0 2px rgba(255,255,255,0.2), 0 0 32px rgba(139,92,246,0.5)"
-            : "0 0 0 1px rgba(255,255,255,0.15), 0 4px 20px rgba(0,0,0,0.4)",
+            ? "0 0 0 2px rgba(255,255,255,0.1), 0 4px 20px rgba(0,0,0,0.5)"
+            : "inset 0 3px 10px rgba(0,0,0,0.5), inset 0 -1px 0 rgba(255,255,255,0.04), 0 4px 12px rgba(0,0,0,0.4)",
           transform: `scale(${mounted ? 1 : 0}) rotate(${expanded ? 45 : 0}deg)`,
         }}
         aria-label={expanded ? "Close navigation" : "Open navigation"}
       >
-        {/* Ping rings */}
-        {!expanded && (
-          <>
-            <span className="absolute h-full w-full animate-ping rounded-full bg-white/10" />
-            <span
-              className="absolute h-full w-full animate-ping rounded-full bg-white/5"
-              style={{ animationDelay: "0.4s" }}
-            />
-          </>
+        {expanded ? (
+          <X size={14} className="text-[#E6EDF7]/80" />
+        ) : (
+          <Menu size={14} className="text-[#E6EDF7]/80" />
         )}
-
-        {/* Inner white dot */}
-        <div className="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300">
-          {expanded ? (
-            <X size={13} className="text-white" />
-          ) : (
-            <Menu size={13} className="text-white" />
-          )}
-        </div>
       </button>
     </div>
     </>
