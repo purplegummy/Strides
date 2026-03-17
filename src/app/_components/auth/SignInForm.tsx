@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "~/server/better-auth/client";
 
@@ -102,12 +103,53 @@ const baseInput =
   "w-full pl-11 py-3 rounded-xl border border-black/10 bg-white/60 text-slate-800 placeholder:text-slate-400 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#A9D6E5]";
 
 export function SignInForm() {
+  const router = useRouter();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const toggleMode = () => {
     setIsSignUp((prev) => !prev);
     setShowPassword(false);
+    setError(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    if (isSignUp) {
+      const { error: err } = await authClient.signUp.email({
+        name,
+        email,
+        password,
+        callbackURL: "/app",
+      });
+      if (err) {
+        setError(err.message ?? "Sign up failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+    } else {
+      const { error: err } = await authClient.signIn.email({
+        email,
+        password,
+        callbackURL: "/app",
+      });
+      if (err) {
+        setError(err.message ?? "Invalid email or password.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    router.push("/app");
+    router.refresh();
   };
 
   return (
@@ -122,7 +164,7 @@ export function SignInForm() {
         </p>
       </div>
 
-      <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Name field — sign up only */}
         {isSignUp && (
           <div className="space-y-2">
@@ -136,7 +178,10 @@ export function SignInForm() {
               <input
                 type="text"
                 id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Enter your name"
+                required
                 className={`${baseInput} pr-4`}
               />
             </div>
@@ -155,7 +200,10 @@ export function SignInForm() {
             <input
               type="email"
               id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email"
+              required
               className={`${baseInput} pr-4`}
             />
           </div>
@@ -173,7 +221,10 @@ export function SignInForm() {
             <input
               type={showPassword ? "text" : "password"}
               id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
+              required
               className={`${baseInput} pr-12`}
             />
             <button
@@ -207,6 +258,7 @@ export function SignInForm() {
           <label className="flex cursor-pointer items-start gap-2">
             <input
               type="checkbox"
+              required
               className="mt-0.5 h-4 w-4 rounded border-black/10 accent-[#A9D6E5]"
             />
             <span className="text-sm text-slate-500">
@@ -222,12 +274,18 @@ export function SignInForm() {
           </label>
         )}
 
+        {/* Error message */}
+        {error && (
+          <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">{error}</p>
+        )}
+
         {/* Submit */}
         <button
           type="submit"
-          className="w-full rounded-xl bg-[#2D5A8E] py-3 font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
+          disabled={loading}
+          className="w-full rounded-xl bg-[#2D5A8E] py-3 font-medium text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {isSignUp ? "Sign Up" : "Sign In"}
+          {loading ? (isSignUp ? "Creating account…" : "Signing in…") : isSignUp ? "Sign Up" : "Sign In"}
         </button>
       </form>
 
