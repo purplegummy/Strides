@@ -25,8 +25,10 @@ type MapUser = {
  */
 export function MapClient({
   user,
+  hideUI = false,
 }: {
   user: MapUser;
+  hideUI?: boolean;
 }) {
   const fogEnabled = true;
   const mapRef = useRef<MapRef | null>(null);
@@ -123,14 +125,14 @@ export function MapClient({
           ))}
         </Map>
 
-        <CompassButton
+        {!hideUI && <CompassButton
           mapRef={mapRef}
           displayPosition={explored.displayPosition}
           requestOnce={geo.requestOnce}
           onCentered={() => setHasCentered(true)}
-        />
+        />}
 
-        <button
+        {!hideUI && <button
           type="button"
           onClick={pins.handleDropPin}
           disabled={!hasLocation}
@@ -149,7 +151,7 @@ export function MapClient({
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" fill="#38bdf8" fillOpacity="0.3" />
           </svg>
-        </button>
+        </button>}
 
         {fogEnabled ? (
           <canvas

@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-export type AppTab = "map" | "profile";
+export type AppTab = "map" | "profile" | "stats";
 
 type TabItem = {
   id: AppTab;

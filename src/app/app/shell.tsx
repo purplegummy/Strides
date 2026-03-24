@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react";
 
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
+import { StatsPanel } from "~/app/_components/stats/StatsPanel";
 import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
@@ -103,19 +104,21 @@ export function AppShell({ user }: { user: MapUser }) {
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
       {/* Map stays mounted regardless of tab */}
-      <MapClient user={user} />
+      <MapClient user={user} hideUI={tab === "stats"} />
 
-    <div
-      style={{
-        position: "fixed",
-        top: 8,
-        right: 8,
-        zIndex: 9999,
-        pointerEvents: "none",
-      }}
-    >
-      <LevelBadge exploredPct={stats?.percentage ?? 0} />
-    </div>
+    {tab !== "stats" && (
+      <div
+        style={{
+          position: "fixed",
+          top: 8,
+          right: 8,
+          zIndex: 9999,
+          pointerEvents: "none",
+        }}
+      >
+        <LevelBadge exploredPct={stats?.percentage ?? 0} />
+      </div>
+    )}
 
       <div className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-20">
         <ProfileBar
@@ -129,6 +132,11 @@ export function AppShell({ user }: { user: MapUser }) {
       {/* Overlays/panels */}
       {overlays}
 
+      {/* Stats panel */}
+      {tab === "stats" && (
+        <StatsPanel onClose={() => { setTab("map"); setNavTab("map"); }} />
+      )}
+
       {/* Radial navigation button — hidden while any interface is open */}
       {tab === "map" && (
         <RadialNavButton
@@ -136,6 +144,7 @@ export function AppShell({ user }: { user: MapUser }) {
           onTabChange={(t) => {
             setNavTab(t);
             if (t === "map") setTab("map");
+            else if (t === "stats") setTab("stats");
             else if (t === "settings") setTab("profile");
           }}
         />

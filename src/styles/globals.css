@@ -4,3 +4,23 @@
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
+
+@layer utilities {
+  .stats-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56, 189, 248, 0.15) transparent;
+  }
+  .stats-scrollbar::-webkit-scrollbar {
+    width: 3px;
+  }
+  .stats-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .stats-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.15);
+    border-radius: 9999px;
+  }
+  .stats-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(56, 189, 248, 0.35);
+  }
+}
