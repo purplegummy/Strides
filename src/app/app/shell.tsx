@@ -156,10 +156,18 @@ export function AppShell({ user }: { user: MapUser }) {
       {/* Stats overlay */}
       {(tab === "stats" || statsClosing) && (
         <div
-          className={`stats-overlay fixed inset-0 z-30 overflow-y-auto ${statsClosing ? "stats-exit" : "stats-enter"}`}
-          style={{ scrollbarWidth: "thin", scrollbarColor: "rgba(28,233,253,0.18) transparent" }}
+          className="stats-overlay fixed inset-0 z-30 overflow-y-auto"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(28,233,253,0.18) transparent",
+            animation: statsClosing
+              ? "stats-slide-down 0.3s cubic-bezier(0.32,0.72,0,1) forwards"
+              : "stats-slide-up 0.35s cubic-bezier(0.32,0.72,0,1) forwards",
+          }}
         >
           <style>{`
+            @keyframes stats-slide-up   { from { transform: translateY(100%); } to { transform: translateY(0); } }
+            @keyframes stats-slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
             .stats-overlay::-webkit-scrollbar { width: 4px; }
             .stats-overlay::-webkit-scrollbar-track { background: transparent; }
             .stats-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
