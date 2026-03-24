@@ -7,7 +7,7 @@ import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
 import type { AppTab } from "./tab-nav";
-import LevelBadge from "~/components/LevelBadge";
+import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
 import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
 
 type MapUser = {
@@ -23,6 +23,7 @@ export function AppShell({ user }: { user: MapUser }) {
 
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
   const stats = statsQuery.data;
+  const [hudOpen, setHudOpen] = useState(true);
 
   const signOut = useCallback(async () => {
     if (signingOut) return;
@@ -105,17 +106,24 @@ export function AppShell({ user }: { user: MapUser }) {
       {/* Map stays mounted regardless of tab */}
       <MapClient user={user} />
 
-    <div
-      style={{
-        position: "fixed",
-        top: 8,
-        right: 8,
-        zIndex: 9999,
-        pointerEvents: "none",
-      }}
-    >
-      <LevelBadge exploredPct={stats?.percentage ?? 0} />
-    </div>
+   <div
+     style={{
+       position: "fixed",
+       top: 8,
+       left: 8,
+       zIndex: 9999,
+       pointerEvents: "auto",
+     }}
+   >
+     <ExplorationBar
+       percentage={stats?.percentage ?? 0}
+       tilesDiscovered={stats?.tilesExplored ?? 0}
+       totalTiles={stats?.totalTiles ?? 0}
+       streakDays={stats?.streakDays ?? 0}
+       level={stats?.level ?? 1}
+       onPress={() => setHudOpen(v => !v)}
+     />
+   </div>
 
       <div className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-20">
         <ProfileBar
