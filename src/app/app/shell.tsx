@@ -58,8 +58,8 @@ export function AppShell({ user }: { user: MapUser }) {
     if (tab !== "profile") return null;
 
     return (
-      <div className="absolute inset-0 z-20 flex flex-col">
-        <div className="flex-1 bg-black/25 backdrop-blur-sm" />
+      <div className="fixed inset-0 z-40 flex flex-col">
+        <div className="flex-1 bg-black/25 backdrop-blur-sm" onClick={() => setTab("map")} />
         <div className="rounded-t-3xl border-t border-white/10 bg-[#0b1020]/95 p-5 pb-28 text-white shadow-[0_-20px_60px_rgba(0,0,0,0.55)]">
           <div className="mb-4 flex justify-end">
             <button
