@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-
+import LevelBadge from "~/components/LevelBadge";
 import "./exploration-bar.css";
 
 interface ExplorationBarProps {
@@ -117,7 +117,7 @@ export default function ExplorationBar({
 )}
       {/* Badge sits on top */}
 <div
-  style={{ ...styles.badgeWrap, cursor: "pointer", zIndex: 50 }}
+  style={{ ...styles.badgeWrap, cursor: "pointer" }}
   onClick={() => {
     if (showBar && !isClosing) {
       setIsClosing(true);
@@ -127,6 +127,8 @@ export default function ExplorationBar({
     }
   }}
 >
+  <LevelBadge exploredPct={clamped} size={160} />
+</div>
 
         <svg
           viewBox="0 0 300 300"
@@ -189,7 +191,6 @@ export default function ExplorationBar({
           </g>
         </svg>
       </div>
-    </div>
   );
 }
 
