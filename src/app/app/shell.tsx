@@ -130,10 +130,9 @@ export function AppShell({ user }: { user: MapUser }) {
         >
           <ExplorationBar
             percentage={stats?.percentage ?? 0}
-            tilesDiscovered={stats?.tilesExplored ?? 0}
+            tilesDiscovered={stats?.tilesDiscovered ?? 0}
             totalTiles={stats?.totalTiles ?? 0}
             streakDays={stats?.streakDays ?? 0}
-            level={stats?.level ?? 1}
             onPress={() => setHudOpen(v => !v)}
           />
         </div>
