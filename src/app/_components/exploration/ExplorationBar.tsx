@@ -36,6 +36,17 @@ export default function ExplorationBar({
   const [showBar, setShowBar] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
   const [expanded, setExpanded] = useState(true);
+  const [windowWidth, setWindowWidth] = useState(500);
+
+  useEffect(() => {
+    setWindowWidth(window.innerWidth);
+    const onResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const scale = Math.min(1, (windowWidth - 16) / 500);
+  const badgeSize = Math.round(160 * scale);
 
   const clamped = Math.max(0, Math.min(100, percentage));
   const ringR = 106;
@@ -57,12 +68,14 @@ export default function ExplorationBar({
   }, [dash, C]);
 
   return (
-  <div style={styles.scene}>
+  <div style={{ ...styles.scene, height: badgeSize }}>
     {/* Glass pill — slides out from behind badge */}
     {showBar && (
       <div
         style={{
           ...styles.glassPill,
+          left: Math.round(76 * scale),
+          height: Math.round(130 * scale),
           animation: isClosing
             ? "hudPullIn 0.35s ease forwards"
             : "hudPullOut 0.38s cubic-bezier(0.34,1.15,0.64,1) both",
@@ -77,6 +90,8 @@ export default function ExplorationBar({
         <div
           style={{
             ...styles.pillContent,
+            left: Math.round(80 * scale),
+            zoom: scale,
             animation: isClosing
               ? "hudFadeDown 0.18s ease forwards"
               : "hudFadeUp 0.22s ease 0.18s both",
@@ -127,13 +142,13 @@ export default function ExplorationBar({
     }
   }}
 >
-  <LevelBadge exploredPct={clamped} size={160} />
+  <LevelBadge exploredPct={clamped} size={badgeSize} />
 </div>
 
         <svg
           viewBox="0 0 300 300"
-          width={160}
-          height={160}
+          width={badgeSize}
+          height={badgeSize}
           shapeRendering="geometricPrecision"
         >
           <defs>
@@ -197,7 +212,7 @@ export default function ExplorationBar({
 const styles: Record<string, React.CSSProperties> = {
   scene: {
     position: "relative",
-    width: 500,
+    width: "min(500px, calc(100vw - 16px))",
     height: 160,
     display: "flex",
     alignItems: "center",
