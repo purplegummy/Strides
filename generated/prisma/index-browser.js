@@ -136,7 +136,8 @@ exports.Prisma.UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   image: 'image',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  xp: 'xp'
 };
 
 exports.Prisma.ExploredPointScalarFieldEnum = {
@@ -195,6 +196,14 @@ exports.Prisma.PinScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.QuestCompletionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  questId: 'questId',
+  xpAwarded: 'xpAwarded',
+  collectedAt: 'collectedAt'
+};
+
 exports.Prisma.PinUpvoteScalarFieldEnum = {
   id: 'id',
   pinId: 'pinId',
@@ -226,6 +235,7 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Verification: 'Verification',
   Pin: 'Pin',
+  QuestCompletion: 'QuestCompletion',
   PinUpvote: 'PinUpvote'
 };
 

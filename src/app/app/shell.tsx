@@ -9,6 +9,8 @@ import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
 import type { AppTab } from "./tab-nav";
 import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
+import QuestsPage from "~/app/_components/quests/QuestsPage";
+import { xpToLevel, xpProgress } from "~/lib/xp";
 import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
 
 type MapUser = {
@@ -23,10 +25,13 @@ export function AppShell({ user }: { user: MapUser }) {
   const [signingOut, setSigningOut] = useState(false);
 
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
+  const xpQuery = api.quest.getXp.useQuery();
   const stats = statsQuery.data;
-  const [hudOpen, setHudOpen] = useState(true);
+  const [, setHudOpen] = useState(true);
   const [statsClosing, setStatsClosing] = useState(false);
   const statsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [questsClosing, setQuestsClosing] = useState(false);
+  const questsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const closeStats = useCallback(() => {
     setStatsClosing(true);
@@ -34,6 +39,15 @@ export function AppShell({ user }: { user: MapUser }) {
       setTab("map");
       setNavTab("map");
       setStatsClosing(false);
+    }, 300);
+  }, []);
+
+  const closeQuests = useCallback(() => {
+    setQuestsClosing(true);
+    questsCloseTimer.current = setTimeout(() => {
+      setTab("map");
+      setNavTab("map");
+      setQuestsClosing(false);
     }, 300);
   }, []);
 
@@ -118,7 +132,7 @@ export function AppShell({ user }: { user: MapUser }) {
       {/* Map stays mounted regardless of tab */}
       <MapClient user={user} />
 
-      {tab !== "stats" && (
+      {tab !== "stats" && tab !== "quests" && (
         <div
           style={{
             position: "fixed",
@@ -138,12 +152,12 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {tab !== "stats" && (
+      {tab !== "stats" && tab !== "quests" && (
         <div className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-20">
           <ProfileBar
             user={user}
-            level={1}
-            xpProgress={{ current: 42, next: 100 }}
+            level={xpToLevel(xpQuery.data?.xp ?? 0)}
+            xpProgress={xpProgress(xpQuery.data?.xp ?? 0)}
             onPress={() => setTab("profile")}
           />
         </div>
@@ -190,6 +204,44 @@ export function AppShell({ user }: { user: MapUser }) {
         </button>
       )}
 
+      {/* Quests overlay */}
+      {(tab === "quests" || questsClosing) && (
+        <div
+          className="quests-overlay fixed inset-0 z-30 overflow-y-auto"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(28,233,253,0.18) transparent",
+            animation: questsClosing
+              ? "quests-slide-down 0.3s cubic-bezier(0.32,0.72,0,1) forwards"
+              : "quests-slide-up 0.35s cubic-bezier(0.32,0.72,0,1) forwards",
+          }}
+        >
+          <style>{`
+            @keyframes quests-slide-up   { from { transform: translateY(100%); } to { transform: translateY(0); } }
+            @keyframes quests-slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
+            .quests-overlay::-webkit-scrollbar { width: 4px; }
+            .quests-overlay::-webkit-scrollbar-track { background: transparent; }
+            .quests-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
+            .quests-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
+          `}</style>
+          <QuestsPage />
+        </div>
+      )}
+
+      {/* X button for quests */}
+      {tab === "quests" && !questsClosing && (
+        <button
+          type="button"
+          onClick={closeQuests}
+          className="fixed top-4 right-4 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-[#0F172A]/80 text-white/70 backdrop-blur-sm transition hover:bg-[#1a2540] hover:text-white"
+          aria-label="Close quests"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M1 1l12 12M13 1L1 13" />
+          </svg>
+        </button>
+      )}
+
       {/* Radial navigation button — hidden while any interface is open */}
       {tab === "map" && (
         <RadialNavButton
@@ -197,6 +249,7 @@ export function AppShell({ user }: { user: MapUser }) {
           onTabChange={(t) => {
             setNavTab(t);
             if (t === "map") setTab("map");
+            else if (t === "quests") setTab("quests");
             else if (t === "stats") setTab("stats");
             else if (t === "settings") setTab("profile");
           }}

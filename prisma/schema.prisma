@@ -39,9 +39,11 @@ model User {
   sessions      Session[]
   accounts      Account[]
   posts         Post[]
-  exploredPoints ExploredPoint[]
-  pins        Pin[]
-  pinUpvotes  PinUpvote[]
+  xp              Int              @default(0)
+  exploredPoints  ExploredPoint[]
+  pins            Pin[]
+  pinUpvotes      PinUpvote[]
+  questCompletions QuestCompletion[]
 
   @@unique([email])
   @@map("user")
@@ -119,6 +121,18 @@ model Pin {
 
   @@index([createdById])
   @@index([lat, lng])
+}
+
+model QuestCompletion {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questId     String
+  xpAwarded   Int
+  collectedAt DateTime @default(now())
+
+  @@unique([userId, questId])
+  @@index([userId])
 }
 
 model PinUpvote {

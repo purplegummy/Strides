@@ -49,6 +49,11 @@ export type Verification = $Result.DefaultSelection<Prisma.$VerificationPayload>
  */
 export type Pin = $Result.DefaultSelection<Prisma.$PinPayload>
 /**
+ * Model QuestCompletion
+ * 
+ */
+export type QuestCompletion = $Result.DefaultSelection<Prisma.$QuestCompletionPayload>
+/**
  * Model PinUpvote
  * 
  */
@@ -241,6 +246,16 @@ export class PrismaClient<
     * ```
     */
   get pin(): Prisma.PinDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.questCompletion`: Exposes CRUD operations for the **QuestCompletion** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more QuestCompletions
+    * const questCompletions = await prisma.questCompletion.findMany()
+    * ```
+    */
+  get questCompletion(): Prisma.QuestCompletionDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.pinUpvote`: Exposes CRUD operations for the **PinUpvote** model.
@@ -699,6 +714,7 @@ export namespace Prisma {
     Account: 'Account',
     Verification: 'Verification',
     Pin: 'Pin',
+    QuestCompletion: 'QuestCompletion',
     PinUpvote: 'PinUpvote'
   };
 
@@ -718,7 +734,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "post" | "user" | "exploredPoint" | "session" | "account" | "verification" | "pin" | "pinUpvote"
+      modelProps: "post" | "user" | "exploredPoint" | "session" | "account" | "verification" | "pin" | "questCompletion" | "pinUpvote"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1240,6 +1256,80 @@ export namespace Prisma {
           }
         }
       }
+      QuestCompletion: {
+        payload: Prisma.$QuestCompletionPayload<ExtArgs>
+        fields: Prisma.QuestCompletionFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.QuestCompletionFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.QuestCompletionFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload>
+          }
+          findFirst: {
+            args: Prisma.QuestCompletionFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.QuestCompletionFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload>
+          }
+          findMany: {
+            args: Prisma.QuestCompletionFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload>[]
+          }
+          create: {
+            args: Prisma.QuestCompletionCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload>
+          }
+          createMany: {
+            args: Prisma.QuestCompletionCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.QuestCompletionCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload>[]
+          }
+          delete: {
+            args: Prisma.QuestCompletionDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload>
+          }
+          update: {
+            args: Prisma.QuestCompletionUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload>
+          }
+          deleteMany: {
+            args: Prisma.QuestCompletionDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.QuestCompletionUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.QuestCompletionUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload>[]
+          }
+          upsert: {
+            args: Prisma.QuestCompletionUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$QuestCompletionPayload>
+          }
+          aggregate: {
+            args: Prisma.QuestCompletionAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateQuestCompletion>
+          }
+          groupBy: {
+            args: Prisma.QuestCompletionGroupByArgs<ExtArgs>
+            result: $Utils.Optional<QuestCompletionGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.QuestCompletionCountArgs<ExtArgs>
+            result: $Utils.Optional<QuestCompletionCountAggregateOutputType> | number
+          }
+        }
+      }
       PinUpvote: {
         payload: Prisma.$PinUpvotePayload<ExtArgs>
         fields: Prisma.PinUpvoteFieldRefs
@@ -1417,6 +1507,7 @@ export namespace Prisma {
     account?: AccountOmit
     verification?: VerificationOmit
     pin?: PinOmit
+    questCompletion?: QuestCompletionOmit
     pinUpvote?: PinUpvoteOmit
   }
 
@@ -1504,6 +1595,7 @@ export namespace Prisma {
     exploredPoints: number
     pins: number
     pinUpvotes: number
+    questCompletions: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -1513,6 +1605,7 @@ export namespace Prisma {
     exploredPoints?: boolean | UserCountOutputTypeCountExploredPointsArgs
     pins?: boolean | UserCountOutputTypeCountPinsArgs
     pinUpvotes?: boolean | UserCountOutputTypeCountPinUpvotesArgs
+    questCompletions?: boolean | UserCountOutputTypeCountQuestCompletionsArgs
   }
 
   // Custom InputTypes
@@ -1566,6 +1659,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountPinUpvotesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: PinUpvoteWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountQuestCompletionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuestCompletionWhereInput
   }
 
 
@@ -2668,8 +2768,18 @@ export namespace Prisma {
 
   export type AggregateUser = {
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
+  }
+
+  export type UserAvgAggregateOutputType = {
+    xp: number | null
+  }
+
+  export type UserSumAggregateOutputType = {
+    xp: number | null
   }
 
   export type UserMinAggregateOutputType = {
@@ -2680,6 +2790,7 @@ export namespace Prisma {
     image: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    xp: number | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -2690,6 +2801,7 @@ export namespace Prisma {
     image: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    xp: number | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -2700,9 +2812,18 @@ export namespace Prisma {
     image: number
     createdAt: number
     updatedAt: number
+    xp: number
     _all: number
   }
 
+
+  export type UserAvgAggregateInputType = {
+    xp?: true
+  }
+
+  export type UserSumAggregateInputType = {
+    xp?: true
+  }
 
   export type UserMinAggregateInputType = {
     id?: true
@@ -2712,6 +2833,7 @@ export namespace Prisma {
     image?: true
     createdAt?: true
     updatedAt?: true
+    xp?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -2722,6 +2844,7 @@ export namespace Prisma {
     image?: true
     createdAt?: true
     updatedAt?: true
+    xp?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -2732,6 +2855,7 @@ export namespace Prisma {
     image?: true
     createdAt?: true
     updatedAt?: true
+    xp?: true
     _all?: true
   }
 
@@ -2773,6 +2897,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: UserAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: UserSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
@@ -2803,6 +2939,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: UserCountAggregateInputType | true
+    _avg?: UserAvgAggregateInputType
+    _sum?: UserSumAggregateInputType
     _min?: UserMinAggregateInputType
     _max?: UserMaxAggregateInputType
   }
@@ -2815,7 +2953,10 @@ export namespace Prisma {
     image: string | null
     createdAt: Date
     updatedAt: Date
+    xp: number
     _count: UserCountAggregateOutputType | null
+    _avg: UserAvgAggregateOutputType | null
+    _sum: UserSumAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
   }
@@ -2842,12 +2983,14 @@ export namespace Prisma {
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    xp?: boolean
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     posts?: boolean | User$postsArgs<ExtArgs>
     exploredPoints?: boolean | User$exploredPointsArgs<ExtArgs>
     pins?: boolean | User$pinsArgs<ExtArgs>
     pinUpvotes?: boolean | User$pinUpvotesArgs<ExtArgs>
+    questCompletions?: boolean | User$questCompletionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2859,6 +3002,7 @@ export namespace Prisma {
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    xp?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -2869,6 +3013,7 @@ export namespace Prisma {
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    xp?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -2879,9 +3024,10 @@ export namespace Prisma {
     image?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    xp?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "createdAt" | "updatedAt" | "xp", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
@@ -2889,6 +3035,7 @@ export namespace Prisma {
     exploredPoints?: boolean | User$exploredPointsArgs<ExtArgs>
     pins?: boolean | User$pinsArgs<ExtArgs>
     pinUpvotes?: boolean | User$pinUpvotesArgs<ExtArgs>
+    questCompletions?: boolean | User$questCompletionsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2903,6 +3050,7 @@ export namespace Prisma {
       exploredPoints: Prisma.$ExploredPointPayload<ExtArgs>[]
       pins: Prisma.$PinPayload<ExtArgs>[]
       pinUpvotes: Prisma.$PinUpvotePayload<ExtArgs>[]
+      questCompletions: Prisma.$QuestCompletionPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2912,6 +3060,7 @@ export namespace Prisma {
       image: string | null
       createdAt: Date
       updatedAt: Date
+      xp: number
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3312,6 +3461,7 @@ export namespace Prisma {
     exploredPoints<T extends User$exploredPointsArgs<ExtArgs> = {}>(args?: Subset<T, User$exploredPointsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExploredPointPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pins<T extends User$pinsArgs<ExtArgs> = {}>(args?: Subset<T, User$pinsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     pinUpvotes<T extends User$pinUpvotesArgs<ExtArgs> = {}>(args?: Subset<T, User$pinUpvotesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PinUpvotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    questCompletions<T extends User$questCompletionsArgs<ExtArgs> = {}>(args?: Subset<T, User$questCompletionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3348,6 +3498,7 @@ export namespace Prisma {
     readonly image: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly xp: FieldRef<"User", 'Int'>
   }
     
 
@@ -3877,6 +4028,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PinUpvoteScalarFieldEnum | PinUpvoteScalarFieldEnum[]
+  }
+
+  /**
+   * User.questCompletions
+   */
+  export type User$questCompletionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    where?: QuestCompletionWhereInput
+    orderBy?: QuestCompletionOrderByWithRelationInput | QuestCompletionOrderByWithRelationInput[]
+    cursor?: QuestCompletionWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: QuestCompletionScalarFieldEnum | QuestCompletionScalarFieldEnum[]
   }
 
   /**
@@ -9444,6 +9619,1098 @@ export namespace Prisma {
 
 
   /**
+   * Model QuestCompletion
+   */
+
+  export type AggregateQuestCompletion = {
+    _count: QuestCompletionCountAggregateOutputType | null
+    _avg: QuestCompletionAvgAggregateOutputType | null
+    _sum: QuestCompletionSumAggregateOutputType | null
+    _min: QuestCompletionMinAggregateOutputType | null
+    _max: QuestCompletionMaxAggregateOutputType | null
+  }
+
+  export type QuestCompletionAvgAggregateOutputType = {
+    xpAwarded: number | null
+  }
+
+  export type QuestCompletionSumAggregateOutputType = {
+    xpAwarded: number | null
+  }
+
+  export type QuestCompletionMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    questId: string | null
+    xpAwarded: number | null
+    collectedAt: Date | null
+  }
+
+  export type QuestCompletionMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    questId: string | null
+    xpAwarded: number | null
+    collectedAt: Date | null
+  }
+
+  export type QuestCompletionCountAggregateOutputType = {
+    id: number
+    userId: number
+    questId: number
+    xpAwarded: number
+    collectedAt: number
+    _all: number
+  }
+
+
+  export type QuestCompletionAvgAggregateInputType = {
+    xpAwarded?: true
+  }
+
+  export type QuestCompletionSumAggregateInputType = {
+    xpAwarded?: true
+  }
+
+  export type QuestCompletionMinAggregateInputType = {
+    id?: true
+    userId?: true
+    questId?: true
+    xpAwarded?: true
+    collectedAt?: true
+  }
+
+  export type QuestCompletionMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    questId?: true
+    xpAwarded?: true
+    collectedAt?: true
+  }
+
+  export type QuestCompletionCountAggregateInputType = {
+    id?: true
+    userId?: true
+    questId?: true
+    xpAwarded?: true
+    collectedAt?: true
+    _all?: true
+  }
+
+  export type QuestCompletionAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QuestCompletion to aggregate.
+     */
+    where?: QuestCompletionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuestCompletions to fetch.
+     */
+    orderBy?: QuestCompletionOrderByWithRelationInput | QuestCompletionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: QuestCompletionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuestCompletions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuestCompletions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned QuestCompletions
+    **/
+    _count?: true | QuestCompletionCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: QuestCompletionAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: QuestCompletionSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: QuestCompletionMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: QuestCompletionMaxAggregateInputType
+  }
+
+  export type GetQuestCompletionAggregateType<T extends QuestCompletionAggregateArgs> = {
+        [P in keyof T & keyof AggregateQuestCompletion]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateQuestCompletion[P]>
+      : GetScalarType<T[P], AggregateQuestCompletion[P]>
+  }
+
+
+
+
+  export type QuestCompletionGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: QuestCompletionWhereInput
+    orderBy?: QuestCompletionOrderByWithAggregationInput | QuestCompletionOrderByWithAggregationInput[]
+    by: QuestCompletionScalarFieldEnum[] | QuestCompletionScalarFieldEnum
+    having?: QuestCompletionScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: QuestCompletionCountAggregateInputType | true
+    _avg?: QuestCompletionAvgAggregateInputType
+    _sum?: QuestCompletionSumAggregateInputType
+    _min?: QuestCompletionMinAggregateInputType
+    _max?: QuestCompletionMaxAggregateInputType
+  }
+
+  export type QuestCompletionGroupByOutputType = {
+    id: string
+    userId: string
+    questId: string
+    xpAwarded: number
+    collectedAt: Date
+    _count: QuestCompletionCountAggregateOutputType | null
+    _avg: QuestCompletionAvgAggregateOutputType | null
+    _sum: QuestCompletionSumAggregateOutputType | null
+    _min: QuestCompletionMinAggregateOutputType | null
+    _max: QuestCompletionMaxAggregateOutputType | null
+  }
+
+  type GetQuestCompletionGroupByPayload<T extends QuestCompletionGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<QuestCompletionGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof QuestCompletionGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], QuestCompletionGroupByOutputType[P]>
+            : GetScalarType<T[P], QuestCompletionGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type QuestCompletionSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    questId?: boolean
+    xpAwarded?: boolean
+    collectedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["questCompletion"]>
+
+  export type QuestCompletionSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    questId?: boolean
+    xpAwarded?: boolean
+    collectedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["questCompletion"]>
+
+  export type QuestCompletionSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    questId?: boolean
+    xpAwarded?: boolean
+    collectedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["questCompletion"]>
+
+  export type QuestCompletionSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    questId?: boolean
+    xpAwarded?: boolean
+    collectedAt?: boolean
+  }
+
+  export type QuestCompletionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "questId" | "xpAwarded" | "collectedAt", ExtArgs["result"]["questCompletion"]>
+  export type QuestCompletionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type QuestCompletionIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type QuestCompletionIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $QuestCompletionPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "QuestCompletion"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      questId: string
+      xpAwarded: number
+      collectedAt: Date
+    }, ExtArgs["result"]["questCompletion"]>
+    composites: {}
+  }
+
+  type QuestCompletionGetPayload<S extends boolean | null | undefined | QuestCompletionDefaultArgs> = $Result.GetResult<Prisma.$QuestCompletionPayload, S>
+
+  type QuestCompletionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<QuestCompletionFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: QuestCompletionCountAggregateInputType | true
+    }
+
+  export interface QuestCompletionDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['QuestCompletion'], meta: { name: 'QuestCompletion' } }
+    /**
+     * Find zero or one QuestCompletion that matches the filter.
+     * @param {QuestCompletionFindUniqueArgs} args - Arguments to find a QuestCompletion
+     * @example
+     * // Get one QuestCompletion
+     * const questCompletion = await prisma.questCompletion.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends QuestCompletionFindUniqueArgs>(args: SelectSubset<T, QuestCompletionFindUniqueArgs<ExtArgs>>): Prisma__QuestCompletionClient<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one QuestCompletion that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {QuestCompletionFindUniqueOrThrowArgs} args - Arguments to find a QuestCompletion
+     * @example
+     * // Get one QuestCompletion
+     * const questCompletion = await prisma.questCompletion.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends QuestCompletionFindUniqueOrThrowArgs>(args: SelectSubset<T, QuestCompletionFindUniqueOrThrowArgs<ExtArgs>>): Prisma__QuestCompletionClient<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QuestCompletion that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestCompletionFindFirstArgs} args - Arguments to find a QuestCompletion
+     * @example
+     * // Get one QuestCompletion
+     * const questCompletion = await prisma.questCompletion.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends QuestCompletionFindFirstArgs>(args?: SelectSubset<T, QuestCompletionFindFirstArgs<ExtArgs>>): Prisma__QuestCompletionClient<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first QuestCompletion that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestCompletionFindFirstOrThrowArgs} args - Arguments to find a QuestCompletion
+     * @example
+     * // Get one QuestCompletion
+     * const questCompletion = await prisma.questCompletion.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends QuestCompletionFindFirstOrThrowArgs>(args?: SelectSubset<T, QuestCompletionFindFirstOrThrowArgs<ExtArgs>>): Prisma__QuestCompletionClient<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more QuestCompletions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestCompletionFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all QuestCompletions
+     * const questCompletions = await prisma.questCompletion.findMany()
+     * 
+     * // Get first 10 QuestCompletions
+     * const questCompletions = await prisma.questCompletion.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const questCompletionWithIdOnly = await prisma.questCompletion.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends QuestCompletionFindManyArgs>(args?: SelectSubset<T, QuestCompletionFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a QuestCompletion.
+     * @param {QuestCompletionCreateArgs} args - Arguments to create a QuestCompletion.
+     * @example
+     * // Create one QuestCompletion
+     * const QuestCompletion = await prisma.questCompletion.create({
+     *   data: {
+     *     // ... data to create a QuestCompletion
+     *   }
+     * })
+     * 
+     */
+    create<T extends QuestCompletionCreateArgs>(args: SelectSubset<T, QuestCompletionCreateArgs<ExtArgs>>): Prisma__QuestCompletionClient<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many QuestCompletions.
+     * @param {QuestCompletionCreateManyArgs} args - Arguments to create many QuestCompletions.
+     * @example
+     * // Create many QuestCompletions
+     * const questCompletion = await prisma.questCompletion.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends QuestCompletionCreateManyArgs>(args?: SelectSubset<T, QuestCompletionCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many QuestCompletions and returns the data saved in the database.
+     * @param {QuestCompletionCreateManyAndReturnArgs} args - Arguments to create many QuestCompletions.
+     * @example
+     * // Create many QuestCompletions
+     * const questCompletion = await prisma.questCompletion.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many QuestCompletions and only return the `id`
+     * const questCompletionWithIdOnly = await prisma.questCompletion.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends QuestCompletionCreateManyAndReturnArgs>(args?: SelectSubset<T, QuestCompletionCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a QuestCompletion.
+     * @param {QuestCompletionDeleteArgs} args - Arguments to delete one QuestCompletion.
+     * @example
+     * // Delete one QuestCompletion
+     * const QuestCompletion = await prisma.questCompletion.delete({
+     *   where: {
+     *     // ... filter to delete one QuestCompletion
+     *   }
+     * })
+     * 
+     */
+    delete<T extends QuestCompletionDeleteArgs>(args: SelectSubset<T, QuestCompletionDeleteArgs<ExtArgs>>): Prisma__QuestCompletionClient<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one QuestCompletion.
+     * @param {QuestCompletionUpdateArgs} args - Arguments to update one QuestCompletion.
+     * @example
+     * // Update one QuestCompletion
+     * const questCompletion = await prisma.questCompletion.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends QuestCompletionUpdateArgs>(args: SelectSubset<T, QuestCompletionUpdateArgs<ExtArgs>>): Prisma__QuestCompletionClient<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more QuestCompletions.
+     * @param {QuestCompletionDeleteManyArgs} args - Arguments to filter QuestCompletions to delete.
+     * @example
+     * // Delete a few QuestCompletions
+     * const { count } = await prisma.questCompletion.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends QuestCompletionDeleteManyArgs>(args?: SelectSubset<T, QuestCompletionDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QuestCompletions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestCompletionUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many QuestCompletions
+     * const questCompletion = await prisma.questCompletion.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends QuestCompletionUpdateManyArgs>(args: SelectSubset<T, QuestCompletionUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more QuestCompletions and returns the data updated in the database.
+     * @param {QuestCompletionUpdateManyAndReturnArgs} args - Arguments to update many QuestCompletions.
+     * @example
+     * // Update many QuestCompletions
+     * const questCompletion = await prisma.questCompletion.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more QuestCompletions and only return the `id`
+     * const questCompletionWithIdOnly = await prisma.questCompletion.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends QuestCompletionUpdateManyAndReturnArgs>(args: SelectSubset<T, QuestCompletionUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one QuestCompletion.
+     * @param {QuestCompletionUpsertArgs} args - Arguments to update or create a QuestCompletion.
+     * @example
+     * // Update or create a QuestCompletion
+     * const questCompletion = await prisma.questCompletion.upsert({
+     *   create: {
+     *     // ... data to create a QuestCompletion
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the QuestCompletion we want to update
+     *   }
+     * })
+     */
+    upsert<T extends QuestCompletionUpsertArgs>(args: SelectSubset<T, QuestCompletionUpsertArgs<ExtArgs>>): Prisma__QuestCompletionClient<$Result.GetResult<Prisma.$QuestCompletionPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of QuestCompletions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestCompletionCountArgs} args - Arguments to filter QuestCompletions to count.
+     * @example
+     * // Count the number of QuestCompletions
+     * const count = await prisma.questCompletion.count({
+     *   where: {
+     *     // ... the filter for the QuestCompletions we want to count
+     *   }
+     * })
+    **/
+    count<T extends QuestCompletionCountArgs>(
+      args?: Subset<T, QuestCompletionCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], QuestCompletionCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a QuestCompletion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestCompletionAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends QuestCompletionAggregateArgs>(args: Subset<T, QuestCompletionAggregateArgs>): Prisma.PrismaPromise<GetQuestCompletionAggregateType<T>>
+
+    /**
+     * Group by QuestCompletion.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {QuestCompletionGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends QuestCompletionGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: QuestCompletionGroupByArgs['orderBy'] }
+        : { orderBy?: QuestCompletionGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, QuestCompletionGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetQuestCompletionGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the QuestCompletion model
+   */
+  readonly fields: QuestCompletionFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for QuestCompletion.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__QuestCompletionClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the QuestCompletion model
+   */
+  interface QuestCompletionFieldRefs {
+    readonly id: FieldRef<"QuestCompletion", 'String'>
+    readonly userId: FieldRef<"QuestCompletion", 'String'>
+    readonly questId: FieldRef<"QuestCompletion", 'String'>
+    readonly xpAwarded: FieldRef<"QuestCompletion", 'Int'>
+    readonly collectedAt: FieldRef<"QuestCompletion", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * QuestCompletion findUnique
+   */
+  export type QuestCompletionFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestCompletion to fetch.
+     */
+    where: QuestCompletionWhereUniqueInput
+  }
+
+  /**
+   * QuestCompletion findUniqueOrThrow
+   */
+  export type QuestCompletionFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestCompletion to fetch.
+     */
+    where: QuestCompletionWhereUniqueInput
+  }
+
+  /**
+   * QuestCompletion findFirst
+   */
+  export type QuestCompletionFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestCompletion to fetch.
+     */
+    where?: QuestCompletionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuestCompletions to fetch.
+     */
+    orderBy?: QuestCompletionOrderByWithRelationInput | QuestCompletionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QuestCompletions.
+     */
+    cursor?: QuestCompletionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuestCompletions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuestCompletions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QuestCompletions.
+     */
+    distinct?: QuestCompletionScalarFieldEnum | QuestCompletionScalarFieldEnum[]
+  }
+
+  /**
+   * QuestCompletion findFirstOrThrow
+   */
+  export type QuestCompletionFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestCompletion to fetch.
+     */
+    where?: QuestCompletionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuestCompletions to fetch.
+     */
+    orderBy?: QuestCompletionOrderByWithRelationInput | QuestCompletionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for QuestCompletions.
+     */
+    cursor?: QuestCompletionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuestCompletions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuestCompletions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of QuestCompletions.
+     */
+    distinct?: QuestCompletionScalarFieldEnum | QuestCompletionScalarFieldEnum[]
+  }
+
+  /**
+   * QuestCompletion findMany
+   */
+  export type QuestCompletionFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    /**
+     * Filter, which QuestCompletions to fetch.
+     */
+    where?: QuestCompletionWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of QuestCompletions to fetch.
+     */
+    orderBy?: QuestCompletionOrderByWithRelationInput | QuestCompletionOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing QuestCompletions.
+     */
+    cursor?: QuestCompletionWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` QuestCompletions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` QuestCompletions.
+     */
+    skip?: number
+    distinct?: QuestCompletionScalarFieldEnum | QuestCompletionScalarFieldEnum[]
+  }
+
+  /**
+   * QuestCompletion create
+   */
+  export type QuestCompletionCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    /**
+     * The data needed to create a QuestCompletion.
+     */
+    data: XOR<QuestCompletionCreateInput, QuestCompletionUncheckedCreateInput>
+  }
+
+  /**
+   * QuestCompletion createMany
+   */
+  export type QuestCompletionCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many QuestCompletions.
+     */
+    data: QuestCompletionCreateManyInput | QuestCompletionCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * QuestCompletion createManyAndReturn
+   */
+  export type QuestCompletionCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * The data used to create many QuestCompletions.
+     */
+    data: QuestCompletionCreateManyInput | QuestCompletionCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * QuestCompletion update
+   */
+  export type QuestCompletionUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    /**
+     * The data needed to update a QuestCompletion.
+     */
+    data: XOR<QuestCompletionUpdateInput, QuestCompletionUncheckedUpdateInput>
+    /**
+     * Choose, which QuestCompletion to update.
+     */
+    where: QuestCompletionWhereUniqueInput
+  }
+
+  /**
+   * QuestCompletion updateMany
+   */
+  export type QuestCompletionUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update QuestCompletions.
+     */
+    data: XOR<QuestCompletionUpdateManyMutationInput, QuestCompletionUncheckedUpdateManyInput>
+    /**
+     * Filter which QuestCompletions to update
+     */
+    where?: QuestCompletionWhereInput
+    /**
+     * Limit how many QuestCompletions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * QuestCompletion updateManyAndReturn
+   */
+  export type QuestCompletionUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * The data used to update QuestCompletions.
+     */
+    data: XOR<QuestCompletionUpdateManyMutationInput, QuestCompletionUncheckedUpdateManyInput>
+    /**
+     * Filter which QuestCompletions to update
+     */
+    where?: QuestCompletionWhereInput
+    /**
+     * Limit how many QuestCompletions to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * QuestCompletion upsert
+   */
+  export type QuestCompletionUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    /**
+     * The filter to search for the QuestCompletion to update in case it exists.
+     */
+    where: QuestCompletionWhereUniqueInput
+    /**
+     * In case the QuestCompletion found by the `where` argument doesn't exist, create a new QuestCompletion with this data.
+     */
+    create: XOR<QuestCompletionCreateInput, QuestCompletionUncheckedCreateInput>
+    /**
+     * In case the QuestCompletion was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<QuestCompletionUpdateInput, QuestCompletionUncheckedUpdateInput>
+  }
+
+  /**
+   * QuestCompletion delete
+   */
+  export type QuestCompletionDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+    /**
+     * Filter which QuestCompletion to delete.
+     */
+    where: QuestCompletionWhereUniqueInput
+  }
+
+  /**
+   * QuestCompletion deleteMany
+   */
+  export type QuestCompletionDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which QuestCompletions to delete
+     */
+    where?: QuestCompletionWhereInput
+    /**
+     * Limit how many QuestCompletions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * QuestCompletion without action
+   */
+  export type QuestCompletionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the QuestCompletion
+     */
+    select?: QuestCompletionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the QuestCompletion
+     */
+    omit?: QuestCompletionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: QuestCompletionInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model PinUpvote
    */
 
@@ -10528,7 +11795,8 @@ export namespace Prisma {
     emailVerified: 'emailVerified',
     image: 'image',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    xp: 'xp'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -10603,6 +11871,17 @@ export namespace Prisma {
   };
 
   export type PinScalarFieldEnum = (typeof PinScalarFieldEnum)[keyof typeof PinScalarFieldEnum]
+
+
+  export const QuestCompletionScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    questId: 'questId',
+    xpAwarded: 'xpAwarded',
+    collectedAt: 'collectedAt'
+  };
+
+  export type QuestCompletionScalarFieldEnum = (typeof QuestCompletionScalarFieldEnum)[keyof typeof QuestCompletionScalarFieldEnum]
 
 
   export const PinUpvoteScalarFieldEnum: {
@@ -10680,20 +11959,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -10704,6 +11969,20 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -10776,12 +12055,14 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    xp?: IntFilter<"User"> | number
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     posts?: PostListRelationFilter
     exploredPoints?: ExploredPointListRelationFilter
     pins?: PinListRelationFilter
     pinUpvotes?: PinUpvoteListRelationFilter
+    questCompletions?: QuestCompletionListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -10792,12 +12073,14 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    xp?: SortOrder
     sessions?: SessionOrderByRelationAggregateInput
     accounts?: AccountOrderByRelationAggregateInput
     posts?: PostOrderByRelationAggregateInput
     exploredPoints?: ExploredPointOrderByRelationAggregateInput
     pins?: PinOrderByRelationAggregateInput
     pinUpvotes?: PinUpvoteOrderByRelationAggregateInput
+    questCompletions?: QuestCompletionOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -10811,12 +12094,14 @@ export namespace Prisma {
     image?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    xp?: IntFilter<"User"> | number
     sessions?: SessionListRelationFilter
     accounts?: AccountListRelationFilter
     posts?: PostListRelationFilter
     exploredPoints?: ExploredPointListRelationFilter
     pins?: PinListRelationFilter
     pinUpvotes?: PinUpvoteListRelationFilter
+    questCompletions?: QuestCompletionListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -10827,9 +12112,12 @@ export namespace Prisma {
     image?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    xp?: SortOrder
     _count?: UserCountOrderByAggregateInput
+    _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
+    _sum?: UserSumOrderByAggregateInput
   }
 
   export type UserScalarWhereWithAggregatesInput = {
@@ -10843,6 +12131,7 @@ export namespace Prisma {
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    xp?: IntWithAggregatesFilter<"User"> | number
   }
 
   export type ExploredPointWhereInput = {
@@ -11204,6 +12493,64 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Pin"> | Date | string
   }
 
+  export type QuestCompletionWhereInput = {
+    AND?: QuestCompletionWhereInput | QuestCompletionWhereInput[]
+    OR?: QuestCompletionWhereInput[]
+    NOT?: QuestCompletionWhereInput | QuestCompletionWhereInput[]
+    id?: StringFilter<"QuestCompletion"> | string
+    userId?: StringFilter<"QuestCompletion"> | string
+    questId?: StringFilter<"QuestCompletion"> | string
+    xpAwarded?: IntFilter<"QuestCompletion"> | number
+    collectedAt?: DateTimeFilter<"QuestCompletion"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type QuestCompletionOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    questId?: SortOrder
+    xpAwarded?: SortOrder
+    collectedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type QuestCompletionWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_questId?: QuestCompletionUserIdQuestIdCompoundUniqueInput
+    AND?: QuestCompletionWhereInput | QuestCompletionWhereInput[]
+    OR?: QuestCompletionWhereInput[]
+    NOT?: QuestCompletionWhereInput | QuestCompletionWhereInput[]
+    userId?: StringFilter<"QuestCompletion"> | string
+    questId?: StringFilter<"QuestCompletion"> | string
+    xpAwarded?: IntFilter<"QuestCompletion"> | number
+    collectedAt?: DateTimeFilter<"QuestCompletion"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "userId_questId">
+
+  export type QuestCompletionOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    questId?: SortOrder
+    xpAwarded?: SortOrder
+    collectedAt?: SortOrder
+    _count?: QuestCompletionCountOrderByAggregateInput
+    _avg?: QuestCompletionAvgOrderByAggregateInput
+    _max?: QuestCompletionMaxOrderByAggregateInput
+    _min?: QuestCompletionMinOrderByAggregateInput
+    _sum?: QuestCompletionSumOrderByAggregateInput
+  }
+
+  export type QuestCompletionScalarWhereWithAggregatesInput = {
+    AND?: QuestCompletionScalarWhereWithAggregatesInput | QuestCompletionScalarWhereWithAggregatesInput[]
+    OR?: QuestCompletionScalarWhereWithAggregatesInput[]
+    NOT?: QuestCompletionScalarWhereWithAggregatesInput | QuestCompletionScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"QuestCompletion"> | string
+    userId?: StringWithAggregatesFilter<"QuestCompletion"> | string
+    questId?: StringWithAggregatesFilter<"QuestCompletion"> | string
+    xpAwarded?: IntWithAggregatesFilter<"QuestCompletion"> | number
+    collectedAt?: DateTimeWithAggregatesFilter<"QuestCompletion"> | Date | string
+  }
+
   export type PinUpvoteWhereInput = {
     AND?: PinUpvoteWhereInput | PinUpvoteWhereInput[]
     OR?: PinUpvoteWhereInput[]
@@ -11320,12 +12667,14 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
     pins?: PinCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -11336,12 +12685,14 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
     pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -11352,12 +12703,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
     pins?: PinUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -11368,12 +12721,14 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
     pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -11384,6 +12739,7 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
   }
 
   export type UserUpdateManyMutationInput = {
@@ -11394,6 +12750,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -11404,6 +12761,7 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
   }
 
   export type ExploredPointCreateInput = {
@@ -11798,6 +13156,61 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type QuestCompletionCreateInput = {
+    id?: string
+    questId: string
+    xpAwarded: number
+    collectedAt?: Date | string
+    user: UserCreateNestedOneWithoutQuestCompletionsInput
+  }
+
+  export type QuestCompletionUncheckedCreateInput = {
+    id?: string
+    userId: string
+    questId: string
+    xpAwarded: number
+    collectedAt?: Date | string
+  }
+
+  export type QuestCompletionUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questId?: StringFieldUpdateOperationsInput | string
+    xpAwarded?: IntFieldUpdateOperationsInput | number
+    collectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutQuestCompletionsNestedInput
+  }
+
+  export type QuestCompletionUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    questId?: StringFieldUpdateOperationsInput | string
+    xpAwarded?: IntFieldUpdateOperationsInput | number
+    collectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestCompletionCreateManyInput = {
+    id?: string
+    userId: string
+    questId: string
+    xpAwarded: number
+    collectedAt?: Date | string
+  }
+
+  export type QuestCompletionUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questId?: StringFieldUpdateOperationsInput | string
+    xpAwarded?: IntFieldUpdateOperationsInput | number
+    collectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestCompletionUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    questId?: StringFieldUpdateOperationsInput | string
+    xpAwarded?: IntFieldUpdateOperationsInput | number
+    collectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PinUpvoteCreateInput = {
     id?: string
     createdAt?: Date | string
@@ -11952,6 +13365,17 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type SessionListRelationFilter = {
     every?: SessionWhereInput
     some?: SessionWhereInput
@@ -11988,6 +13412,12 @@ export namespace Prisma {
     none?: PinUpvoteWhereInput
   }
 
+  export type QuestCompletionListRelationFilter = {
+    every?: QuestCompletionWhereInput
+    some?: QuestCompletionWhereInput
+    none?: QuestCompletionWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -12017,6 +13447,10 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type QuestCompletionOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
@@ -12025,6 +13459,11 @@ export namespace Prisma {
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    xp?: SortOrder
+  }
+
+  export type UserAvgOrderByAggregateInput = {
+    xp?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -12035,6 +13474,7 @@ export namespace Prisma {
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    xp?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -12045,6 +13485,11 @@ export namespace Prisma {
     image?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    xp?: SortOrder
+  }
+
+  export type UserSumOrderByAggregateInput = {
+    xp?: SortOrder
   }
 
   export type BoolWithAggregatesFilter<$PrismaModel = never> = {
@@ -12071,6 +13516,22 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
     _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type FloatFilter<$PrismaModel = never> = {
@@ -12342,6 +13803,43 @@ export namespace Prisma {
     lng?: SortOrder
   }
 
+  export type QuestCompletionUserIdQuestIdCompoundUniqueInput = {
+    userId: string
+    questId: string
+  }
+
+  export type QuestCompletionCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    questId?: SortOrder
+    xpAwarded?: SortOrder
+    collectedAt?: SortOrder
+  }
+
+  export type QuestCompletionAvgOrderByAggregateInput = {
+    xpAwarded?: SortOrder
+  }
+
+  export type QuestCompletionMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    questId?: SortOrder
+    xpAwarded?: SortOrder
+    collectedAt?: SortOrder
+  }
+
+  export type QuestCompletionMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    questId?: SortOrder
+    xpAwarded?: SortOrder
+    collectedAt?: SortOrder
+  }
+
+  export type QuestCompletionSumOrderByAggregateInput = {
+    xpAwarded?: SortOrder
+  }
+
   export type PinScalarRelationFilter = {
     is?: PinWhereInput
     isNot?: PinWhereInput
@@ -12432,6 +13930,13 @@ export namespace Prisma {
     connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
   }
 
+  export type QuestCompletionCreateNestedManyWithoutUserInput = {
+    create?: XOR<QuestCompletionCreateWithoutUserInput, QuestCompletionUncheckedCreateWithoutUserInput> | QuestCompletionCreateWithoutUserInput[] | QuestCompletionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: QuestCompletionCreateOrConnectWithoutUserInput | QuestCompletionCreateOrConnectWithoutUserInput[]
+    createMany?: QuestCompletionCreateManyUserInputEnvelope
+    connect?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+  }
+
   export type SessionUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -12474,12 +13979,27 @@ export namespace Prisma {
     connect?: PinUpvoteWhereUniqueInput | PinUpvoteWhereUniqueInput[]
   }
 
+  export type QuestCompletionUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<QuestCompletionCreateWithoutUserInput, QuestCompletionUncheckedCreateWithoutUserInput> | QuestCompletionCreateWithoutUserInput[] | QuestCompletionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: QuestCompletionCreateOrConnectWithoutUserInput | QuestCompletionCreateOrConnectWithoutUserInput[]
+    createMany?: QuestCompletionCreateManyUserInputEnvelope
+    connect?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+  }
+
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
   }
 
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type SessionUpdateManyWithoutUserNestedInput = {
@@ -12566,6 +14086,20 @@ export namespace Prisma {
     deleteMany?: PinUpvoteScalarWhereInput | PinUpvoteScalarWhereInput[]
   }
 
+  export type QuestCompletionUpdateManyWithoutUserNestedInput = {
+    create?: XOR<QuestCompletionCreateWithoutUserInput, QuestCompletionUncheckedCreateWithoutUserInput> | QuestCompletionCreateWithoutUserInput[] | QuestCompletionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: QuestCompletionCreateOrConnectWithoutUserInput | QuestCompletionCreateOrConnectWithoutUserInput[]
+    upsert?: QuestCompletionUpsertWithWhereUniqueWithoutUserInput | QuestCompletionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: QuestCompletionCreateManyUserInputEnvelope
+    set?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+    disconnect?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+    delete?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+    connect?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+    update?: QuestCompletionUpdateWithWhereUniqueWithoutUserInput | QuestCompletionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: QuestCompletionUpdateManyWithWhereWithoutUserInput | QuestCompletionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: QuestCompletionScalarWhereInput | QuestCompletionScalarWhereInput[]
+  }
+
   export type SessionUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<SessionCreateWithoutUserInput, SessionUncheckedCreateWithoutUserInput> | SessionCreateWithoutUserInput[] | SessionUncheckedCreateWithoutUserInput[]
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
@@ -12648,6 +14182,20 @@ export namespace Prisma {
     update?: PinUpvoteUpdateWithWhereUniqueWithoutUserInput | PinUpvoteUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: PinUpvoteUpdateManyWithWhereWithoutUserInput | PinUpvoteUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: PinUpvoteScalarWhereInput | PinUpvoteScalarWhereInput[]
+  }
+
+  export type QuestCompletionUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<QuestCompletionCreateWithoutUserInput, QuestCompletionUncheckedCreateWithoutUserInput> | QuestCompletionCreateWithoutUserInput[] | QuestCompletionUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: QuestCompletionCreateOrConnectWithoutUserInput | QuestCompletionCreateOrConnectWithoutUserInput[]
+    upsert?: QuestCompletionUpsertWithWhereUniqueWithoutUserInput | QuestCompletionUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: QuestCompletionCreateManyUserInputEnvelope
+    set?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+    disconnect?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+    delete?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+    connect?: QuestCompletionWhereUniqueInput | QuestCompletionWhereUniqueInput[]
+    update?: QuestCompletionUpdateWithWhereUniqueWithoutUserInput | QuestCompletionUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: QuestCompletionUpdateManyWithWhereWithoutUserInput | QuestCompletionUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: QuestCompletionScalarWhereInput | QuestCompletionScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutExploredPointsInput = {
@@ -12766,6 +14314,20 @@ export namespace Prisma {
     update?: PinUpvoteUpdateWithWhereUniqueWithoutPinInput | PinUpvoteUpdateWithWhereUniqueWithoutPinInput[]
     updateMany?: PinUpvoteUpdateManyWithWhereWithoutPinInput | PinUpvoteUpdateManyWithWhereWithoutPinInput[]
     deleteMany?: PinUpvoteScalarWhereInput | PinUpvoteScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutQuestCompletionsInput = {
+    create?: XOR<UserCreateWithoutQuestCompletionsInput, UserUncheckedCreateWithoutQuestCompletionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutQuestCompletionsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutQuestCompletionsNestedInput = {
+    create?: XOR<UserCreateWithoutQuestCompletionsInput, UserUncheckedCreateWithoutQuestCompletionsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutQuestCompletionsInput
+    upsert?: UserUpsertWithoutQuestCompletionsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutQuestCompletionsInput, UserUpdateWithoutQuestCompletionsInput>, UserUncheckedUpdateWithoutQuestCompletionsInput>
   }
 
   export type PinCreateNestedOneWithoutUpvotesInput = {
@@ -12918,6 +14480,22 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -13005,11 +14583,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
     pins?: PinCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPostsInput = {
@@ -13020,11 +14600,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
     pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPostsInput = {
@@ -13051,11 +14633,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
     pins?: PinUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPostsInput = {
@@ -13066,11 +14650,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
     pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SessionCreateWithoutUserInput = {
@@ -13244,6 +14830,30 @@ export namespace Prisma {
 
   export type PinUpvoteCreateManyUserInputEnvelope = {
     data: PinUpvoteCreateManyUserInput | PinUpvoteCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type QuestCompletionCreateWithoutUserInput = {
+    id?: string
+    questId: string
+    xpAwarded: number
+    collectedAt?: Date | string
+  }
+
+  export type QuestCompletionUncheckedCreateWithoutUserInput = {
+    id?: string
+    questId: string
+    xpAwarded: number
+    collectedAt?: Date | string
+  }
+
+  export type QuestCompletionCreateOrConnectWithoutUserInput = {
+    where: QuestCompletionWhereUniqueInput
+    create: XOR<QuestCompletionCreateWithoutUserInput, QuestCompletionUncheckedCreateWithoutUserInput>
+  }
+
+  export type QuestCompletionCreateManyUserInputEnvelope = {
+    data: QuestCompletionCreateManyUserInput | QuestCompletionCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -13423,6 +15033,33 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"PinUpvote"> | Date | string
   }
 
+  export type QuestCompletionUpsertWithWhereUniqueWithoutUserInput = {
+    where: QuestCompletionWhereUniqueInput
+    update: XOR<QuestCompletionUpdateWithoutUserInput, QuestCompletionUncheckedUpdateWithoutUserInput>
+    create: XOR<QuestCompletionCreateWithoutUserInput, QuestCompletionUncheckedCreateWithoutUserInput>
+  }
+
+  export type QuestCompletionUpdateWithWhereUniqueWithoutUserInput = {
+    where: QuestCompletionWhereUniqueInput
+    data: XOR<QuestCompletionUpdateWithoutUserInput, QuestCompletionUncheckedUpdateWithoutUserInput>
+  }
+
+  export type QuestCompletionUpdateManyWithWhereWithoutUserInput = {
+    where: QuestCompletionScalarWhereInput
+    data: XOR<QuestCompletionUpdateManyMutationInput, QuestCompletionUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type QuestCompletionScalarWhereInput = {
+    AND?: QuestCompletionScalarWhereInput | QuestCompletionScalarWhereInput[]
+    OR?: QuestCompletionScalarWhereInput[]
+    NOT?: QuestCompletionScalarWhereInput | QuestCompletionScalarWhereInput[]
+    id?: StringFilter<"QuestCompletion"> | string
+    userId?: StringFilter<"QuestCompletion"> | string
+    questId?: StringFilter<"QuestCompletion"> | string
+    xpAwarded?: IntFilter<"QuestCompletion"> | number
+    collectedAt?: DateTimeFilter<"QuestCompletion"> | Date | string
+  }
+
   export type UserCreateWithoutExploredPointsInput = {
     id: string
     name: string
@@ -13431,11 +15068,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     pins?: PinCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutExploredPointsInput = {
@@ -13446,11 +15085,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutExploredPointsInput = {
@@ -13477,11 +15118,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     pins?: PinUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutExploredPointsInput = {
@@ -13492,11 +15135,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -13507,11 +15152,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
     pins?: PinCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutSessionsInput = {
@@ -13522,11 +15169,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
     pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutSessionsInput = {
@@ -13553,11 +15202,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
     pins?: PinUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -13568,11 +15219,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
     pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -13583,11 +15236,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
     pins?: PinCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -13598,11 +15253,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
     pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
     pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -13629,11 +15286,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
     pins?: PinUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -13644,11 +15303,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
     pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
     pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutPinsInput = {
@@ -13659,11 +15320,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
     pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPinsInput = {
@@ -13674,11 +15337,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
     pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
+    questCompletions?: QuestCompletionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPinsInput = {
@@ -13727,11 +15392,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
     pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPinsInput = {
@@ -13742,11 +15409,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
     pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
+    questCompletions?: QuestCompletionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PinUpvoteUpsertWithWhereUniqueWithoutPinInput = {
@@ -13763,6 +15432,90 @@ export namespace Prisma {
   export type PinUpvoteUpdateManyWithWhereWithoutPinInput = {
     where: PinUpvoteScalarWhereInput
     data: XOR<PinUpvoteUpdateManyMutationInput, PinUpvoteUncheckedUpdateManyWithoutPinInput>
+  }
+
+  export type UserCreateWithoutQuestCompletionsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    xp?: number
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    posts?: PostCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
+    pins?: PinCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutQuestCompletionsInput = {
+    id: string
+    name: string
+    email: string
+    emailVerified?: boolean
+    image?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    xp?: number
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
+    exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
+    pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
+    pinUpvotes?: PinUpvoteUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutQuestCompletionsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutQuestCompletionsInput, UserUncheckedCreateWithoutQuestCompletionsInput>
+  }
+
+  export type UserUpsertWithoutQuestCompletionsInput = {
+    update: XOR<UserUpdateWithoutQuestCompletionsInput, UserUncheckedUpdateWithoutQuestCompletionsInput>
+    create: XOR<UserCreateWithoutQuestCompletionsInput, UserUncheckedCreateWithoutQuestCompletionsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutQuestCompletionsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutQuestCompletionsInput, UserUncheckedUpdateWithoutQuestCompletionsInput>
+  }
+
+  export type UserUpdateWithoutQuestCompletionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    posts?: PostUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
+    pins?: PinUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutQuestCompletionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    emailVerified?: BoolFieldUpdateOperationsInput | boolean
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
+    exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
+    pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
+    pinUpvotes?: PinUpvoteUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PinCreateWithoutUpvotesInput = {
@@ -13800,11 +15553,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionCreateNestedManyWithoutUserInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     posts?: PostCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointCreateNestedManyWithoutUserInput
     pins?: PinCreateNestedManyWithoutCreatedByInput
+    questCompletions?: QuestCompletionCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutPinUpvotesInput = {
@@ -13815,11 +15570,13 @@ export namespace Prisma {
     image?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    xp?: number
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     posts?: PostUncheckedCreateNestedManyWithoutCreatedByInput
     exploredPoints?: ExploredPointUncheckedCreateNestedManyWithoutUserInput
     pins?: PinUncheckedCreateNestedManyWithoutCreatedByInput
+    questCompletions?: QuestCompletionUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutPinUpvotesInput = {
@@ -13879,11 +15636,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUpdateManyWithoutUserNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     posts?: PostUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUpdateManyWithoutUserNestedInput
     pins?: PinUpdateManyWithoutCreatedByNestedInput
+    questCompletions?: QuestCompletionUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutPinUpvotesInput = {
@@ -13894,11 +15653,13 @@ export namespace Prisma {
     image?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    xp?: IntFieldUpdateOperationsInput | number
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     posts?: PostUncheckedUpdateManyWithoutCreatedByNestedInput
     exploredPoints?: ExploredPointUncheckedUpdateManyWithoutUserNestedInput
     pins?: PinUncheckedUpdateManyWithoutCreatedByNestedInput
+    questCompletions?: QuestCompletionUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type SessionCreateManyUserInput = {
@@ -13955,6 +15716,13 @@ export namespace Prisma {
     id?: string
     pinId: string
     createdAt?: Date | string
+  }
+
+  export type QuestCompletionCreateManyUserInput = {
+    id?: string
+    questId: string
+    xpAwarded: number
+    collectedAt?: Date | string
   }
 
   export type SessionUpdateWithoutUserInput = {
@@ -14125,6 +15893,27 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     pinId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestCompletionUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questId?: StringFieldUpdateOperationsInput | string
+    xpAwarded?: IntFieldUpdateOperationsInput | number
+    collectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestCompletionUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questId?: StringFieldUpdateOperationsInput | string
+    xpAwarded?: IntFieldUpdateOperationsInput | number
+    collectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type QuestCompletionUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    questId?: StringFieldUpdateOperationsInput | string
+    xpAwarded?: IntFieldUpdateOperationsInput | number
+    collectedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type PinUpvoteCreateManyPinInput = {
