@@ -122,6 +122,18 @@ export function AppShell({ user }: { user: MapUser }) {
           >
             {signingOut ? "Signing out…" : "Sign out"}
           </button>
+
+          <p className="mt-4 text-center text-[10px] text-white/25">
+            Icon by{" "}
+            <a
+              href="https://icons8.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-white/40"
+            >
+              Icons8
+            </a>
+          </p>
         </div>
       </div>
     );

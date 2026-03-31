@@ -131,6 +131,9 @@ export default function QuestsPage() {
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
   const completedQuery = api.quest.getCompletedQuests.useQuery();
   const tilesDiscovered = statsQuery.data?.tilesDiscovered ?? 0;
+
+  if (completedQuery.isPending) return null;
+
   const collectedIds = new Set(completedQuery.data?.map(c => c.questId) ?? []);
 
   const quests: Quest[] = QUEST_DEFINITIONS.map(def => ({
