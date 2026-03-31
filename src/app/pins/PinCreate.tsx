@@ -1,5 +1,6 @@
-import React, { CSSProperties, useState } from 'react';
-import { PinCreateProps } from './types';
+import React, { useState } from 'react';
+import type { CSSProperties } from 'react';
+import type { PinCreateProps } from './types';
 import { themes } from './theme';
 import { PinBubble } from './PinBubble';
  
@@ -70,17 +71,17 @@ export const PinCreate: React.FC<PinCreateProps & { isSubmitting?: boolean }> = 
     fontWeight: 700,
     fontStyle: 'italic',
     fontFamily: "'Nunito', sans-serif",
-    cursor: 'pointer',
+    cursor: isSubmitting ? 'not-allowed' : 'pointer',
     marginTop: 18,
-    background: uploadHovered ? t.uploadBtnHoverBg : t.uploadBtnBg,
+    background: uploadHovered && !isSubmitting ? t.uploadBtnHoverBg : t.uploadBtnBg,
     color: t.uploadBtnColor,
     border: 'none',
+    opacity: isSubmitting ? 0.6 : 1,
     transition: 'background 0.15s, transform 0.1s',
-    transform: uploadHovered ? 'scale(1.01)' : 'scale(1)',
+    transform: uploadHovered && !isSubmitting ? 'scale(1.01)' : 'scale(1)',
     letterSpacing: '0.01em',
   };
  
-  // Inject placeholder color via a style tag approach using a unique class
   const placeholderClass = `pin-input-${theme}`;
  
   return (
@@ -116,17 +117,13 @@ export const PinCreate: React.FC<PinCreateProps & { isSubmitting?: boolean }> = 
           />
         </div>
         <button
-          style={{
-            ...uploadBtnStyle,
-            opacity: isSubmitting ? 0.6 : 1,
-            cursor: isSubmitting ? 'not-allowed' : 'pointer',
-          }}
+          style={uploadBtnStyle}
           onClick={handleSubmit}
           disabled={isSubmitting}
-          onMouseEnter={() => !isSubmitting && setUploadHovered(true)}
+          onMouseEnter={() => setUploadHovered(true)}
           onMouseLeave={() => setUploadHovered(false)}
-          onMouseDown={e => !isSubmitting && (e.currentTarget.style.transform = 'scale(0.98)')}
-          onMouseUp={e => (e.currentTarget.style.transform = 'scale(1.01)')}
+          onMouseDown={e => { if (!isSubmitting) e.currentTarget.style.transform = 'scale(0.98)'; }}
+          onMouseUp={e => { e.currentTarget.style.transform = 'scale(1.01)'; }}
         >
           {isSubmitting ? 'Saving…' : 'Upload Pin'}
         </button>
