@@ -1,9 +1,12 @@
 "use client";
-
+ 
 import { useEffect, useRef, useState } from "react";
 import { getRarity, RARITY_CONFIG } from "./pin-rarity";
 import type { PinData } from "./PinMarker";
-
+import { PinView } from "~/app/pins/PinView";
+import type { PinData as PinViewData } from "~/app/pins/types";
+import { usePinTheme } from "~/app/map/usePinTheme";
+ 
 interface PinSheetProps {
   pin: PinData | null;
   currentUserId: string;
@@ -15,7 +18,7 @@ interface PinSheetProps {
   isUpvoting?: boolean;
   isDeleting?: boolean;
 }
-
+ 
 export function PinSheet({
   pin,
   currentUserId,
@@ -30,17 +33,19 @@ export function PinSheet({
   const [visible, setVisible] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
-
+ 
   const [optimisticMyUpvotes, setOptimisticMyUpvotes] = useState(0);
   const [optimisticTotal, setOptimisticTotal] = useState(0);
-
+ 
+  const theme = usePinTheme();
+ 
   useEffect(() => {
     if (pin) {
       setOptimisticMyUpvotes(pin.myUpvotes);
       setOptimisticTotal(pin.upvotes);
     }
   }, [pin, pin?.id, pin?.myUpvotes, pin?.upvotes]);
-
+ 
   useEffect(() => {
     if (pin) {
       requestAnimationFrame(() => setVisible(true));
@@ -49,29 +54,29 @@ export function PinSheet({
       setConfirmDelete(false);
     }
   }, [pin]);
-
+ 
   if (!pin) return null;
-
+ 
   const rarity = getRarity(optimisticTotal);
   const cfg = RARITY_CONFIG[rarity];
   const isOwner = pin.createdById === currentUserId;
   const canUpvote = optimisticMyUpvotes < 2;
   const hasUpvoted = optimisticMyUpvotes > 0;
-
+ 
   const handleUpvote = () => {
-    if (!canUpvote) return;
+    if (!canUpvote || isUpvoting) return;
     setOptimisticMyUpvotes((v) => v + 1);
     setOptimisticTotal((v) => v + 1);
     onUpvote(pin.id);
   };
-
-  const handleUndo = () => {
-    if (!hasUpvoted) return;
+ 
+  const handleDownvote = () => {
+    if (!hasUpvoted || isUpvoting) return;
     setOptimisticMyUpvotes((v) => Math.max(0, v - 1));
     setOptimisticTotal((v) => Math.max(0, v - 1));
     onUndoUpvote(pin.id);
   };
-
+ 
   const handleDeleteClick = () => {
     if (!confirmDelete) {
       setConfirmDelete(true);
@@ -80,258 +85,154 @@ export function PinSheet({
       onDelete?.(pin.id);
     }
   };
-
+ 
+  const viewData: PinViewData = {
+    id: pin.id,
+    locationName: pin.title,
+    uploadedBy: pin.creatorName ?? "Unknown",
+    uploadedAt: "",
+    description: pin.description ?? "",
+    score: optimisticTotal,
+  };
+ 
   return (
     <>
-      <style>{sheetCss}</style>
-
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700;1,800&display=swap');
+ 
+        .pin-sheet-overlay {
+          position: fixed; inset: 0; z-index: 40;
+          background: rgba(0,0,0,0);
+          transition: background 0.25s;
+          pointer-events: none;
+        }
+        .pin-sheet-overlay--visible {
+          background: rgba(0,0,0,0.4);
+          pointer-events: auto;
+        }
+        .pin-sheet-float {
+          position: fixed;
+          bottom: 120px;
+          left: 50%;
+          transform: translateX(-50%) translateY(30px);
+          z-index: 50;
+          opacity: 0;
+          transition: opacity 0.3s, transform 0.3s cubic-bezier(0.32,0.72,0,1);
+          pointer-events: none;
+          width: 360px;
+          max-width: calc(100vw - 32px);
+        }
+        .pin-sheet-float--visible {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+          pointer-events: auto;
+        }
+        .pin-sheet-owner-actions {
+          display: flex;
+          gap: 8px;
+          justify-content: flex-end;
+          margin-top: 8px;
+          padding: 0 4px;
+        }
+        .pin-sheet-action-btn {
+          font-family: 'Nunito', sans-serif;
+          font-size: 12px; font-weight: 700;
+          padding: 6px 14px; border-radius: 99px;
+          border: 1.5px solid rgba(255,255,255,0.2);
+          background: rgba(0,0,0,0.5);
+          color: rgba(255,255,255,0.7);
+          cursor: pointer; transition: all 0.15s;
+          backdrop-filter: blur(8px);
+        }
+        .pin-sheet-action-btn:hover { background: rgba(0,0,0,0.7); color: #fff; }
+        .pin-sheet-action-btn--delete {
+          border-color: rgba(255,80,80,0.3);
+          color: rgba(255,100,100,0.7);
+        }
+        .pin-sheet-action-btn--delete:hover {
+          background: rgba(255,60,60,0.15);
+          color: #ff7070;
+          border-color: rgba(255,80,80,0.6);
+        }
+        .pin-sheet-action-btn--confirm {
+          background: rgba(255,60,60,0.2);
+          border-color: rgba(255,80,80,0.7);
+          color: #ff7070;
+        }
+        .pin-sheet-action-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+ 
+        .pin-sheet-rarity-tag {
+          display: inline-flex; align-items: center; gap: 5px;
+          font-family: 'Nunito', sans-serif;
+          font-size: 11px; font-weight: 700;
+          padding: 3px 10px; border-radius: 99px;
+          margin-bottom: 6px;
+          letter-spacing: 0.04em;
+        }
+        .pin-sheet-rarity-dot-sm {
+          width: 7px; height: 7px; border-radius: 50%;
+        }
+      `}</style>
+ 
       <div
         ref={overlayRef}
-        className={`pin-sheet-backdrop ${visible ? "pin-sheet-backdrop--visible" : ""}`}
+        className={`pin-sheet-overlay ${visible ? "pin-sheet-overlay--visible" : ""}`}
         onClick={onClose}
         aria-hidden
       />
-
-      <div
-        className={`pin-sheet ${visible ? "pin-sheet--visible" : ""}`}
-        role="dialog"
-        aria-modal="true"
-        aria-label={pin.title}
-      >
-        <div className="pin-sheet-handle" />
-
-        <div className="pin-sheet-rarity-bar" style={{ background: cfg.color + "22", borderColor: cfg.color + "44" }}>
-          <span className="pin-sheet-rarity-dot" style={{ background: cfg.color, boxShadow: `0 0 8px ${cfg.glow}` }} />
-          <span className="pin-sheet-rarity-label" style={{ color: cfg.color }}>{cfg.label}</span>
-          <span className="pin-sheet-upvote-count">
-            {optimisticTotal} {optimisticTotal === 1 ? "upvote" : "upvotes"}
+ 
+      <div className={`pin-sheet-float ${visible ? "pin-sheet-float--visible" : ""}`}>
+        {/* Rarity tag above bubble */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 6 }}>
+          <span
+            className="pin-sheet-rarity-tag"
+            style={{
+              background: cfg.color + "22",
+              border: `1px solid ${cfg.color}44`,
+              color: cfg.color,
+            }}
+          >
+            <span
+              className="pin-sheet-rarity-dot-sm"
+              style={{ background: cfg.color, boxShadow: `0 0 6px ${cfg.glow}` }}
+            />
+            {cfg.label} · {optimisticTotal} {optimisticTotal === 1 ? "upvote" : "upvotes"}
           </span>
         </div>
-
-        <div className="pin-sheet-content">
-          <h2 className="pin-sheet-title">{pin.title}</h2>
-          {pin.description && (
-            <p className="pin-sheet-description">{pin.description}</p>
-          )}
-          {pin.creatorName && (
-            <p className="pin-sheet-creator">📍 Placed by {pin.creatorName}</p>
-          )}
-        </div>
-
-        <div className="pin-sheet-actions">
-          <div className="pin-sheet-upvote-wrap">
-            <button
-              type="button"
-              disabled={!canUpvote || isUpvoting}
-              onClick={handleUpvote}
-              className={`pin-sheet-upvote-btn ${hasUpvoted ? "pin-sheet-upvote-btn--active" : ""}`}
-              style={hasUpvoted ? { borderColor: cfg.color + "88", color: cfg.color } : {}}
-            >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill={hasUpvoted ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
-                <path d="M12 19V5M5 12l7-7 7 7" />
-              </svg>
-              {canUpvote ? "Upvote" : "Max votes"}
-            </button>
-
-            <div className="pin-sheet-pips">
-              {[0, 1].map((i) => (
-                <span
-                  key={i}
-                  className="pin-sheet-pip"
-                  style={{
-                    background: i < optimisticMyUpvotes ? cfg.color : "rgba(255,255,255,0.12)",
-                    boxShadow: i < optimisticMyUpvotes ? `0 0 6px ${cfg.glow}` : "none",
-                  }}
-                />
-              ))}
-            </div>
+ 
+        <PinView
+          data={viewData}
+          theme={theme}
+          onClose={onClose}
+          onUpvote={handleUpvote}
+          onDownvote={handleDownvote}
+        />
+ 
+        {/* Owner actions below bubble */}
+        {isOwner && (
+          <div className="pin-sheet-owner-actions">
+            {onEdit && (
+              <button
+                type="button"
+                className="pin-sheet-action-btn"
+                onClick={() => onEdit(pin)}
+              >
+                ✏️ Edit
+              </button>
+            )}
+            {onDelete && (
+              <button
+                type="button"
+                className={`pin-sheet-action-btn pin-sheet-action-btn--delete ${confirmDelete ? "pin-sheet-action-btn--confirm" : ""}`}
+                onClick={handleDeleteClick}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Deleting…" : confirmDelete ? "Confirm delete?" : "🗑 Delete"}
+              </button>
+            )}
           </div>
-
-          {hasUpvoted && (
-            <button
-              type="button"
-              onClick={handleUndo}
-              disabled={isUpvoting}
-              className="pin-sheet-undo-btn"
-            >
-              Undo
-            </button>
-          )}
-
-          {isOwner && onEdit && (
-            <button
-              type="button"
-              onClick={() => onEdit(pin)}
-              className="pin-sheet-edit-btn"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
-              Edit
-            </button>
-          )}
-
-          {isOwner && onDelete && (
-            <button
-              type="button"
-              onClick={handleDeleteClick}
-              disabled={isDeleting}
-              className={`pin-sheet-delete-btn ${confirmDelete ? "pin-sheet-delete-btn--confirm" : ""}`}
-            >
-              {isDeleting ? (
-                <span className="pin-sheet-spinner" />
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polyline points="3 6 5 6 21 6" />
-                  <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
-                  <path d="M10 11v6M14 11v6" />
-                  <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
-                </svg>
-              )}
-              {confirmDelete ? "Confirm?" : "Delete"}
-            </button>
-          )}
-
-          <button type="button" onClick={onClose} className="pin-sheet-close-btn">✕</button>
-        </div>
+        )}
       </div>
     </>
   );
 }
-
-const sheetCss = `
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&family=Space+Mono&display=swap');
-
-  .pin-sheet-backdrop {
-    position: fixed; inset: 0; z-index: 40;
-    background: rgba(0,0,0,0);
-    transition: background 0.25s;
-    pointer-events: none;
-  }
-  .pin-sheet-backdrop--visible {
-    background: rgba(0,0,0,0.4);
-    pointer-events: auto;
-  }
-
-  .pin-sheet {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 50;
-    background: rgba(8,11,22,0.97);
-    backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    border-radius: 24px 24px 0 0;
-    padding: 12px 20px 100px;
-    transform: translateY(100%);
-    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-    box-shadow: 0 -20px 60px rgba(0,0,0,0.6);
-    font-family: 'Syne', sans-serif;
-    color: #e8f0ff;
-  }
-  .pin-sheet--visible { transform: translateY(0); }
-
-  .pin-sheet-handle {
-    width: 40px; height: 4px;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.15);
-    margin: 0 auto 16px;
-  }
-
-  .pin-sheet-rarity-bar {
-    display: flex; align-items: center; gap: 8px;
-    border: 1px solid; border-radius: 12px;
-    padding: 8px 12px; margin-bottom: 16px;
-  }
-  .pin-sheet-rarity-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-  .pin-sheet-rarity-label {
-    font-family: 'Space Mono', monospace; font-size: 11px;
-    font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-  }
-  .pin-sheet-upvote-count {
-    font-family: 'Space Mono', monospace; font-size: 11px;
-    color: rgba(255,255,255,0.4); margin-left: auto;
-    transition: color 0.2s;
-  }
-
-  .pin-sheet-content { margin-bottom: 20px; }
-  .pin-sheet-title { font-size: 22px; font-weight: 800; line-height: 1.2; margin-bottom: 8px; color: #f0f6ff; }
-  .pin-sheet-description { font-size: 14px; line-height: 1.6; color: rgba(200,215,255,0.65); margin-bottom: 10px; }
-  .pin-sheet-creator { font-family: 'Space Mono', monospace; font-size: 11px; color: rgba(180,200,255,0.4); }
-
-  .pin-sheet-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-
-  .pin-sheet-upvote-wrap { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .pin-sheet-upvote-btn {
-    display: flex; align-items: center; gap: 7px;
-    padding: 10px 18px; border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.12);
-    background: rgba(255,255,255,0.06);
-    color: rgba(200,220,255,0.7);
-    font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600;
-    cursor: pointer; transition: all 0.15s; white-space: nowrap;
-  }
-  .pin-sheet-upvote-btn:hover:not(:disabled) { background: rgba(255,255,255,0.1); color: #fff; }
-  .pin-sheet-upvote-btn--active { background: rgba(255,255,255,0.08); }
-  .pin-sheet-upvote-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .pin-sheet-pips { display: flex; gap: 5px; }
-  .pin-sheet-pip { display: block; width: 18px; height: 4px; border-radius: 2px; transition: background 0.2s, box-shadow 0.2s; }
-
-  .pin-sheet-undo-btn {
-    padding: 10px 14px; border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: transparent; color: rgba(200,220,255,0.4);
-    font-family: 'Space Mono', monospace; font-size: 12px;
-    cursor: pointer; transition: all 0.15s;
-  }
-  .pin-sheet-undo-btn:hover { color: rgba(200,220,255,0.7); border-color: rgba(255,255,255,0.15); }
-
-  .pin-sheet-edit-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 10px 14px; border-radius: 14px;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: transparent; color: rgba(200,220,255,0.5);
-    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: all 0.15s;
-  }
-  .pin-sheet-edit-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
-
-  .pin-sheet-delete-btn {
-    display: flex; align-items: center; gap: 6px;
-    padding: 10px 14px; border-radius: 14px;
-    border: 1px solid rgba(255,80,80,0.2);
-    background: transparent; color: rgba(255,100,100,0.5);
-    font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: all 0.2s;
-  }
-  .pin-sheet-delete-btn:hover:not(:disabled) { color: #ff6060; border-color: rgba(255,80,80,0.45); background: rgba(255,60,60,0.08); }
-  .pin-sheet-delete-btn--confirm {
-    background: rgba(255,60,60,0.15);
-    border-color: rgba(255,80,80,0.6);
-    color: #ff7070;
-    animation: confirm-pulse 0.4s ease;
-  }
-  @keyframes confirm-pulse {
-    0%,100% { transform: scale(1); }
-    50%      { transform: scale(1.05); }
-  }
-  .pin-sheet-delete-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-  .pin-sheet-spinner {
-    display: inline-block; width: 14px; height: 14px;
-    border: 2px solid rgba(255,100,100,0.3);
-    border-top-color: #ff6060; border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .pin-sheet-close-btn {
-    margin-left: auto; width: 40px; height: 40px;
-    border-radius: 50%; border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.05); color: rgba(200,220,255,0.4);
-    font-size: 14px; cursor: pointer; display: grid; place-items: center;
-    transition: all 0.15s;
-  }
-  .pin-sheet-close-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
-`;
