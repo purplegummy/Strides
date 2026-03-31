@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
+import SettingsPage from "~/app/_components/settings/SettingsPage";
 import StatsPage from "~/app/_components/stats/StatsPage";
 import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
@@ -23,6 +24,7 @@ export function AppShell({ user }: { user: MapUser }) {
   const [tab, setTab] = useState<AppTab>("map");
   const [navTab, setNavTab] = useState<NavTab>("map");
   const [signingOut, setSigningOut] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
   const xpQuery = api.quest.getXp.useQuery();
@@ -32,6 +34,8 @@ export function AppShell({ user }: { user: MapUser }) {
   const statsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [questsClosing, setQuestsClosing] = useState(false);
   const questsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [settingsClosing, setSettingsClosing] = useState(false);
+  const settingsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const closeStats = useCallback(() => {
     setStatsClosing(true);
@@ -48,6 +52,15 @@ export function AppShell({ user }: { user: MapUser }) {
       setTab("map");
       setNavTab("map");
       setQuestsClosing(false);
+    }, 300);
+  }, []);
+
+  const closeSettings = useCallback(() => {
+    setSettingsClosing(true);
+    settingsCloseTimer.current = setTimeout(() => {
+      setTab("map");
+      setNavTab("map");
+      setSettingsClosing(false);
     }, 300);
   }, []);
 
@@ -144,7 +157,7 @@ export function AppShell({ user }: { user: MapUser }) {
       {/* Map stays mounted regardless of tab */}
       <MapClient user={user} />
 
-      {tab !== "stats" && tab !== "quests" && (
+      {tab !== "stats" && tab !== "quests" && tab !== "settings" && (
         <div
           style={{
             position: "fixed",
@@ -198,7 +211,7 @@ export function AppShell({ user }: { user: MapUser }) {
             .stats-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
             .stats-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
           `}</style>
-          <StatsPage />
+          <StatsPage darkMode={darkMode} />
         </div>
       )}
 
@@ -236,7 +249,7 @@ export function AppShell({ user }: { user: MapUser }) {
             .quests-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
             .quests-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
           `}</style>
-          <QuestsPage />
+          <QuestsPage darkMode={darkMode} />
         </div>
       )}
 
@@ -254,6 +267,44 @@ export function AppShell({ user }: { user: MapUser }) {
         </button>
       )}
 
+      {/* Settings overlay */}
+      {(tab === "settings" || settingsClosing) && (
+        <div
+          className="settings-overlay fixed inset-0 z-30 overflow-y-auto"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(28,233,253,0.18) transparent",
+            animation: settingsClosing
+              ? "settings-slide-down 0.3s cubic-bezier(0.32,0.72,0,1) forwards"
+              : "settings-slide-up 0.35s cubic-bezier(0.32,0.72,0,1) forwards",
+          }}
+        >
+          <style>{`
+            @keyframes settings-slide-up   { from { transform: translateY(100%); } to { transform: translateY(0); } }
+            @keyframes settings-slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
+            .settings-overlay::-webkit-scrollbar { width: 4px; }
+            .settings-overlay::-webkit-scrollbar-track { background: transparent; }
+            .settings-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
+            .settings-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
+          `}</style>
+          <SettingsPage onSignOut={signOut} darkMode={darkMode} onToggleDarkMode={() => setDarkMode(v => !v)} />
+        </div>
+      )}
+
+      {/* X button for settings */}
+      {tab === "settings" && !settingsClosing && (
+        <button
+          type="button"
+          onClick={closeSettings}
+          className="fixed top-4 right-4 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-[#0F172A]/80 text-white/70 backdrop-blur-sm transition hover:bg-[#1a2540] hover:text-white"
+          aria-label="Close settings"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M1 1l12 12M13 1L1 13" />
+          </svg>
+        </button>
+      )}
+
       {/* Radial navigation button — hidden while any interface is open */}
       {tab === "map" && (
         <RadialNavButton
@@ -263,7 +314,7 @@ export function AppShell({ user }: { user: MapUser }) {
             if (t === "map") setTab("map");
             else if (t === "quests") setTab("quests");
             else if (t === "stats") setTab("stats");
-            else if (t === "settings") setTab("profile");
+            else if (t === "settings") setTab("settings");
           }}
         />
       )}

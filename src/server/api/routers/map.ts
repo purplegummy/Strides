@@ -11,6 +11,16 @@ import {
 } from "~/server/utils/exploration";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
+function haversineKm(lat1: number, lng1: number, lat2: number, lng2: number): number {
+  const R = 6371;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLng = ((lng2 - lng1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
 export const mapRouter = createTRPCRouter({
   /**
    * Returns the most recent explored points for the current user.
@@ -114,5 +124,96 @@ export const mapRouter = createTRPCRouter({
         streakDays,
       };
     }),
+
+  /**
+   * Returns aggregated stats for the Stats page.
+   */
+  getStats: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id;
+
+    const [user, exploredPoints, userPins] = await Promise.all([
+      ctx.db.user.findUniqueOrThrow({
+        where: { id: userId },
+        select: { createdAt: true },
+      }),
+      ctx.db.exploredPoint.findMany({
+        where: { userId },
+        orderBy: { createdAt: "asc" },
+        select: { lat: true, lng: true, createdAt: true },
+      }),
+      ctx.db.pin.findMany({
+        where: { createdById: userId },
+        include: { _count: { select: { upvotes: true } } },
+      }),
+    ]);
+
+    // Total distance — sum haversine of consecutive points, skip jumps > 1 km
+    let totalDistanceKm = 0;
+    for (let i = 1; i < exploredPoints.length; i++) {
+      const prev = exploredPoints[i - 1]!;
+      const curr = exploredPoints[i]!;
+      const d = haversineKm(prev.lat, prev.lng, curr.lat, curr.lng);
+      if (d < 1) totalDistanceKm += d;
+    }
+
+    // Days active — distinct calendar days with at least one point
+    const distinctDays = new Set(
+      exploredPoints.map((p) => {
+        const d = new Date(p.createdAt);
+        d.setHours(0, 0, 0, 0);
+        return d.toISOString();
+      })
+    );
+
+    // Weekly progress — last 7 calendar days
+    const now = new Date();
+    const weeklyProgress = Array.from({ length: 7 }, (_, i) => {
+      const dayStart = new Date(now);
+      dayStart.setDate(dayStart.getDate() - (6 - i));
+      dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
+
+      const dayPoints = exploredPoints.filter(
+        (p) => p.createdAt >= dayStart && p.createdAt < dayEnd
+      );
+
+      let dayKm = 0;
+      for (let j = 1; j < dayPoints.length; j++) {
+        const prev = dayPoints[j - 1]!;
+        const curr = dayPoints[j]!;
+        const d = haversineKm(prev.lat, prev.lng, curr.lat, curr.lng);
+        if (d < 1) dayKm += d;
+      }
+
+      return {
+        day: dayStart.toLocaleDateString("en-US", { weekday: "short" }),
+        date: `${dayStart.getMonth() + 1}/${dayStart.getDate()}`,
+        km: Math.round(dayKm * 10) / 10,
+      };
+    });
+
+    // Top 3 pins by upvotes
+    const topPins = [...userPins]
+      .sort((a, b) => b._count.upvotes - a._count.upvotes)
+      .slice(0, 3)
+      .map((p) => ({
+        id: p.id,
+        title: p.title,
+        upvotes: p._count.upvotes,
+        location: `${p.lat.toFixed(3)}, ${p.lng.toFixed(3)}`,
+      }));
+
+    const totalUpvotes = userPins.reduce((sum, p) => sum + p._count.upvotes, 0);
+
+    return {
+      joinDate: user.createdAt,
+      totalDistanceKm: Math.round(totalDistanceKm * 10) / 10,
+      daysActive: distinctDays.size,
+      pinsPlaced: userPins.length,
+      totalUpvotes,
+      topPins,
+      weeklyProgress,
+    };
+  }),
 });
 
