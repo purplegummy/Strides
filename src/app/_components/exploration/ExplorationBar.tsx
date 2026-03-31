@@ -35,7 +35,6 @@ export default function ExplorationBar({
   const ringRef = useRef<SVGCircleElement>(null);
   const [showBar, setShowBar] = useState(true);
   const [isClosing, setIsClosing] = useState(false);
-  const [expanded, setExpanded] = useState(true);
   const [windowWidth, setWindowWidth] = useState(500);
 
   useEffect(() => {
@@ -75,7 +74,6 @@ export default function ExplorationBar({
         style={{
           ...styles.glassPill,
           left: Math.round(76 * scale),
-          height: Math.round(130 * scale),
           animation: isClosing
             ? "hudPullIn 0.35s ease forwards"
             : "hudPullOut 0.38s cubic-bezier(0.34,1.15,0.64,1) both",
@@ -90,41 +88,44 @@ export default function ExplorationBar({
         <div
           style={{
             ...styles.pillContent,
-            left: Math.round(80 * scale),
-            zoom: scale,
+            paddingLeft: Math.round(84 * scale) + 12,
+            paddingTop: Math.round(10 * scale),
+            paddingBottom: Math.round(10 * scale),
+            paddingRight: Math.round(14 * scale),
+            gap: Math.round(6 * scale),
             animation: isClosing
               ? "hudFadeDown 0.18s ease forwards"
               : "hudFadeUp 0.22s ease 0.18s both",
           }}
         >
           <div style={styles.cardTop}>
-            <span style={styles.expTitle}>Exploration Progress</span>
+            <span style={{ ...styles.expTitle, fontSize: Math.round(13 * scale) }}>Exploration Progress</span>
             <div style={styles.topRight}>
               {streakDays > 0 && (
-                <div style={styles.streakBadge}>🔥 {streakDays}</div>
+                <div style={{ ...styles.streakBadge, fontSize: Math.round(11 * scale) }}>🔥 {streakDays}</div>
               )}
             </div>
           </div>
 
           <div style={styles.progressSection}>
-            <div style={styles.progressTrack}>
+            <div style={{ ...styles.progressTrack, height: Math.round(34 * scale) }}>
               <div ref={fillRef} style={styles.progressFill}>
                 <div style={styles.glowEdge} />
               </div>
-              <div style={styles.pctLabel}>{clamped.toFixed(1)}%</div>
+              <div style={{ ...styles.pctLabel, fontSize: Math.round(16 * scale) }}>{clamped.toFixed(1)}%</div>
             </div>
           </div>
 
           <div style={styles.bottomRow}>
-            <span style={styles.tilesText}>
+            <span style={{ ...styles.tilesText, fontSize: Math.round(12 * scale) }}>
               <strong style={styles.tilesStrong}>
                 {tilesDiscovered.toLocaleString()}
               </strong>{" "}
               / {totalTiles.toLocaleString()} Tiles
             </span>
-            <button type="button" onClick={onPress} style={styles.lvlPill}>
-              <span style={styles.lvlTxt}>LVL {level}</span>
-              <span style={styles.lvlArrow}>›</span>
+            <button type="button" onClick={onPress} style={{ ...styles.lvlPill, padding: `${Math.round(5 * scale)}px ${Math.round(10 * scale)}px` }}>
+              <span style={{ ...styles.lvlTxt, fontSize: Math.round(12 * scale) }}>LVL {level}</span>
+              <span style={{ ...styles.lvlArrow, fontSize: Math.round(13 * scale) }}>›</span>
             </button>
           </div>
         </div>
@@ -234,7 +235,6 @@ const styles: Record<string, React.CSSProperties> = {
     top: "50%",
     transform: "translateY(-50%)",
     right: 0,
-    height: 130,
     background: "linear-gradient(160deg, rgba(12,24,68,0.88) 0%, rgba(5,12,40,0.95) 100%)",
     backdropFilter: "blur(28px)",
     WebkitBackdropFilter: "blur(28px)",
@@ -243,15 +243,10 @@ const styles: Record<string, React.CSSProperties> = {
     boxShadow: "0 8px 36px rgba(0,25,90,0.55), inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -1px 0 rgba(0,0,0,0.22)",
   },
   pillContent: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    left: 80,
-    right: 0,
     padding: "12px 16px",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "space-between",
+    gap: 8,
   },
   cardTop: {
     display: "flex",
