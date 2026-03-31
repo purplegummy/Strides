@@ -1,4 +1,4 @@
-import { PinTheme } from './types';
+import type { PinTheme } from './types';
  
 export interface ThemeTokens {
   bubbleBackground: string;
@@ -69,3 +69,4 @@ export const themes: Record<PinTheme, ThemeTokens> = {
     shadow: '0 8px 32px rgba(0,0,0,0.16)',
   },
 };
+ 

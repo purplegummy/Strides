@@ -1,5 +1,6 @@
-import React, { CSSProperties } from 'react';
-import { PinTheme } from './types';
+import React from 'react';
+import type { CSSProperties } from 'react';
+import type { PinTheme } from './types';
 import { themes } from './theme';
  
 interface PinBubbleProps {
@@ -83,4 +84,3 @@ export const PinBubble: React.FC<PinBubbleProps> = ({
     </div>
   );
 };
- 
