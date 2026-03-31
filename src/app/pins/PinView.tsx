@@ -1,5 +1,6 @@
-import React, { CSSProperties } from 'react';
-import { PinViewProps } from './types';
+import React from 'react';
+import type { CSSProperties } from 'react';
+import type { PinViewProps } from './types';
 import { themes } from './theme';
 import { PinBubble } from './PinBubble';
 import { UpvoteIcon, DownvoteIcon } from './icons';
@@ -99,4 +100,5 @@ export const PinView: React.FC<PinViewProps> = ({
     </PinBubble>
   );
 };
+ 
  
