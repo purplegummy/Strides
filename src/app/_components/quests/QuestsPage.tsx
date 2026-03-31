@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import { api } from "~/trpc/react";
 import type { Quest, QuestObjective } from "./types";
 import { QUEST_DEFINITIONS } from "./questData";
@@ -87,6 +89,44 @@ function QuestCard({ quest, collected }: { quest: Quest; collected: boolean }) {
   );
 }
 
+function CollapsibleSection({ label, count, defaultOpen = true, children }: {
+  label: string;
+  count: number;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+
+  return (
+    <section className="mb-4">
+      <button
+        type="button"
+        onClick={() => setOpen(v => !v)}
+        className="flex w-full items-center justify-between py-2"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.35)" }}>
+            {label}
+          </span>
+          <span
+            className="rounded-full px-1.5 py-0.5 text-[10px] font-bold tabular-nums"
+            style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.3)" }}
+          >
+            {count}
+          </span>
+        </div>
+        <ChevronDown
+          size={14}
+          className="transition-transform duration-200"
+          style={{ color: "rgba(255,255,255,0.25)", transform: open ? "rotate(0deg)" : "rotate(-90deg)" }}
+        />
+      </button>
+
+      {open && <div className="space-y-3">{children}</div>}
+    </section>
+  );
+}
+
 export default function QuestsPage() {
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
   const completedQuery = api.quest.getCompletedQuests.useQuery();
@@ -102,32 +142,25 @@ export default function QuestsPage() {
     })),
   }));
 
-  const sections: { label: string; statuses: Quest["status"][] }[] = [
-    { label: "Active",    statuses: ["active"] },
-    { label: "Available", statuses: ["available"] },
-    { label: "Completed", statuses: ["completed"] },
-    { label: "Locked",    statuses: ["locked"] },
-  ];
+  const activeQuests = quests.filter(q => !collectedIds.has(q.id));
+  const completedQuests = quests.filter(q => collectedIds.has(q.id));
 
   return (
     <div className="min-h-screen bg-[#0b1020] text-[#E6EDF7]">
       <div className="mx-auto max-w-lg px-4 pb-32 pt-16">
         <h1 className="mb-6 text-xl font-bold">Quests</h1>
 
-        {sections.map(({ label, statuses }) => {
-          const items = quests.filter(q => statuses.includes(q.status));
-          if (items.length === 0) return null;
-          return (
-            <section key={label} className="mb-6">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.3)" }}>
-                {label}
-              </p>
-              <div className="space-y-3">
-                {items.map(q => <QuestCard key={q.id} quest={q} collected={collectedIds.has(q.id)} />)}
-              </div>
-            </section>
-          );
-        })}
+        {activeQuests.length > 0 && (
+          <CollapsibleSection label="Active" count={activeQuests.length}>
+            {activeQuests.map(q => <QuestCard key={q.id} quest={q} collected={false} />)}
+          </CollapsibleSection>
+        )}
+
+        {completedQuests.length > 0 && (
+          <CollapsibleSection label="Completed" count={completedQuests.length} defaultOpen={false}>
+            {completedQuests.map(q => <QuestCard key={q.id} quest={q} collected={true} />)}
+          </CollapsibleSection>
+        )}
       </div>
     </div>
   );
