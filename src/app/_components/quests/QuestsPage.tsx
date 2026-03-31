@@ -15,7 +15,7 @@ function totalProgress(quest: Quest) {
   return quest.objectives.reduce((acc, o) => acc + objectiveProgress(o), 0) / quest.objectives.length;
 }
 
-function QuestCard({ quest, collected }: { quest: Quest; collected: boolean }) {
+function QuestCard({ quest, collected, darkMode }: { quest: Quest; collected: boolean; darkMode: boolean }) {
   const hasObjectives = quest.objectives.length > 0;
   const pct = hasObjectives ? totalProgress(quest) : 1;
   const utils = api.useUtils();
@@ -27,25 +27,34 @@ function QuestCard({ quest, collected }: { quest: Quest; collected: boolean }) {
     },
   });
 
+  const cardBg = darkMode ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)";
+  const cardBorder = darkMode ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(0,0,0,0.08)";
+  const mutedColor = darkMode ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.45)";
+  const xpColor = darkMode ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.3)";
+  const trackBg = darkMode ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)";
+  const titleColor = darkMode ? undefined : "rgb(17,24,39)";
+
   return (
-    <div className="space-y-3 rounded-xl p-4" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.06)" }}>
+    <div className="space-y-3 rounded-xl p-4" style={{ background: cardBg, border: cardBorder }}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold">{quest.icon && <span className="mr-1.5">{quest.icon}</span>}{quest.title}</p>
-          <p className="mt-0.5 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>{quest.description}</p>
+          <p className="text-sm font-semibold" style={titleColor ? { color: titleColor } : undefined}>
+            {quest.icon && <span className="mr-1.5">{quest.icon}</span>}{quest.title}
+          </p>
+          <p className="mt-0.5 text-xs" style={{ color: mutedColor }}>{quest.description}</p>
         </div>
-        <span className="shrink-0 text-xs" style={{ color: "rgba(255,255,255,0.25)" }}>{quest.reward.xp} XP</span>
+        <span className="shrink-0 text-xs" style={{ color: xpColor }}>{quest.reward.xp} XP</span>
       </div>
 
       {quest.objectives.map(obj => {
         const done = objectiveProgress(obj) >= 1;
         return (
           <div key={obj.id} className="space-y-1.5">
-            <div className="flex justify-between text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <div className="flex justify-between text-xs" style={{ color: mutedColor }}>
               <span>{obj.description}</span>
               <span className="tabular-nums">{obj.current} / {obj.target} {obj.unit}</span>
             </div>
-            <div className="h-0.5 w-full overflow-hidden rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
+            <div className="h-0.5 w-full overflow-hidden rounded-full" style={{ background: trackBg }}>
               <div
                 className="h-full rounded-full transition-all duration-700"
                 style={{ width: `${pct * 100}%`, background: done ? "#4ade80" : "#1CE9FD" }}
@@ -57,13 +66,13 @@ function QuestCard({ quest, collected }: { quest: Quest; collected: boolean }) {
 
       {!hasObjectives && (
         <div className="space-y-1.5">
-          <div className="flex justify-between text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+          <div className="flex justify-between text-xs" style={{ color: mutedColor }}>
             <span>Ready to collect</span>
           </div>
-          <div className="h-0.5 w-full overflow-hidden rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <div className="h-0.5 w-full overflow-hidden rounded-full" style={{ background: trackBg }}>
             <div
               className="h-full rounded-full transition-all duration-700"
-              style={{ width: collected ? "100%" : "100%", background: collected ? "rgba(255,255,255,0.15)" : "#1CE9FD" }}
+              style={{ width: "100%", background: collected ? (darkMode ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.1)") : "#1CE9FD" }}
             />
           </div>
         </div>
@@ -76,9 +85,15 @@ function QuestCard({ quest, collected }: { quest: Quest; collected: boolean }) {
           onClick={() => collect.mutate({ questId: quest.id })}
           className="w-full rounded-lg py-2 text-xs font-semibold transition"
           style={{
-            background: collected ? "rgba(255,255,255,0.05)" : "rgba(28,233,253,0.12)",
-            color: collected ? "rgba(255,255,255,0.25)" : "#1CE9FD",
-            border: `1px solid ${collected ? "rgba(255,255,255,0.06)" : "rgba(28,233,253,0.2)"}`,
+            background: collected
+              ? (darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)")
+              : "rgba(28,233,253,0.12)",
+            color: collected
+              ? (darkMode ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.3)")
+              : "#1CE9FD",
+            border: `1px solid ${collected
+              ? (darkMode ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.08)")
+              : "rgba(28,233,253,0.2)"}`,
             cursor: collected ? "default" : "pointer",
           }}
         >
@@ -89,13 +104,19 @@ function QuestCard({ quest, collected }: { quest: Quest; collected: boolean }) {
   );
 }
 
-function CollapsibleSection({ label, count, defaultOpen = true, children }: {
+function CollapsibleSection({ label, count, defaultOpen = true, darkMode, children }: {
   label: string;
   count: number;
   defaultOpen?: boolean;
+  darkMode: boolean;
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(defaultOpen);
+
+  const labelColor = darkMode ? "rgba(255,255,255,0.35)" : "rgba(0,0,0,0.4)";
+  const badgeBg = darkMode ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.06)";
+  const badgeColor = darkMode ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.35)";
+  const chevronColor = darkMode ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.3)";
 
   return (
     <section className="mb-4">
@@ -105,12 +126,12 @@ function CollapsibleSection({ label, count, defaultOpen = true, children }: {
         className="flex w-full items-center justify-between py-2"
       >
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: labelColor }}>
             {label}
           </span>
           <span
             className="rounded-full px-1.5 py-0.5 text-[10px] font-bold tabular-nums"
-            style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.3)" }}
+            style={{ background: badgeBg, color: badgeColor }}
           >
             {count}
           </span>
@@ -118,7 +139,7 @@ function CollapsibleSection({ label, count, defaultOpen = true, children }: {
         <ChevronDown
           size={14}
           className="transition-transform duration-200"
-          style={{ color: "rgba(255,255,255,0.25)", transform: open ? "rotate(0deg)" : "rotate(-90deg)" }}
+          style={{ color: chevronColor, transform: open ? "rotate(0deg)" : "rotate(-90deg)" }}
         />
       </button>
 
@@ -127,7 +148,7 @@ function CollapsibleSection({ label, count, defaultOpen = true, children }: {
   );
 }
 
-export default function QuestsPage() {
+export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) {
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
   const completedQuery = api.quest.getCompletedQuests.useQuery();
   const tilesDiscovered = statsQuery.data?.tilesDiscovered ?? 0;
@@ -149,19 +170,19 @@ export default function QuestsPage() {
   const completedQuests = quests.filter(q => collectedIds.has(q.id));
 
   return (
-    <div className="min-h-screen bg-[#0b1020] text-[#E6EDF7]">
+    <div className={`min-h-screen ${darkMode ? 'bg-[#0b1020] text-[#E6EDF7]' : 'bg-[#f8fafc] text-gray-900'}`}>
       <div className="mx-auto max-w-lg px-4 pb-32 pt-16">
         <h1 className="mb-6 text-xl font-bold">Quests</h1>
 
         {activeQuests.length > 0 && (
-          <CollapsibleSection label="Active" count={activeQuests.length}>
-            {activeQuests.map(q => <QuestCard key={q.id} quest={q} collected={false} />)}
+          <CollapsibleSection label="Active" count={activeQuests.length} darkMode={darkMode}>
+            {activeQuests.map(q => <QuestCard key={q.id} quest={q} collected={false} darkMode={darkMode} />)}
           </CollapsibleSection>
         )}
 
         {completedQuests.length > 0 && (
-          <CollapsibleSection label="Completed" count={completedQuests.length} defaultOpen={false}>
-            {completedQuests.map(q => <QuestCard key={q.id} quest={q} collected={true} />)}
+          <CollapsibleSection label="Completed" count={completedQuests.length} defaultOpen={false} darkMode={darkMode}>
+            {completedQuests.map(q => <QuestCard key={q.id} quest={q} collected={true} darkMode={darkMode} />)}
           </CollapsibleSection>
         )}
       </div>
