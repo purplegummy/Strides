@@ -12,6 +12,7 @@ import { useGeolocation } from "./useGeolocation";
 import { useExploredPoints } from "./useExploredPoints";
 import { useMapPins } from "./useMapPins";
 import { useFogLayer } from "./useFogLayer";
+import { useDeviceHeading } from "./useDeviceHeading";
  
 type MapUser = {
   id: string;
@@ -42,6 +43,7 @@ export function MapClient({ user }: { user: MapUser }) {
   }, []);
  
   // ── Hooks ──────────────────────────────────────────────────────────────────
+  const deviceHeading = useDeviceHeading();
   const geo = useGeolocation();
   const explored = useExploredPoints(geo.position, geo.lastKnownPosition);
   const pins = useMapPins(geo.position, geo.lastKnownPosition, centerOnPin);
@@ -121,7 +123,7 @@ export function MapClient({ user }: { user: MapUser }) {
               latitude={explored.displayPosition.lat}
               anchor="center"
             >
-              <UserPositionMarker />
+              <UserPositionMarker heading={deviceHeading ?? 0} />
             </Marker>
           ) : null}
  

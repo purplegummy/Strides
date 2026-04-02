@@ -25,7 +25,6 @@ function buildCloudTexture(): HTMLCanvasElement {
   canvas.height = size;
   const ctx = canvas.getContext("2d")!;
 
-  // Simple, deterministic xorshift PRNG
   let s = 0x9e3779b9;
   const rand = () => {
     s ^= s << 13;
@@ -42,22 +41,18 @@ function buildCloudTexture(): HTMLCanvasElement {
     const alpha = 0.10 + rand() * 0.18;
     const angle = rand() * Math.PI;
 
-    // Draw each blob at all 9 tile offsets so the texture wraps seamlessly
     for (let dx = -1; dx <= 1; dx++) {
       for (let dy = -1; dy <= 1; dy++) {
         const cx = x + dx * size;
         const cy = y + dy * size;
-
         ctx.save();
         ctx.translate(cx, cy);
         ctx.rotate(angle);
         ctx.scale(1, scaleY);
-
         const g = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
         g.addColorStop(0, `rgba(140, 160, 220, ${alpha})`);
         g.addColorStop(0.55, `rgba(140, 160, 220, ${alpha * 0.35})`);
         g.addColorStop(1, "rgba(140, 160, 220, 0)");
-
         ctx.fillStyle = g;
         ctx.beginPath();
         ctx.arc(0, 0, r, 0, Math.PI * 2);
@@ -70,18 +65,6 @@ function buildCloudTexture(): HTMLCanvasElement {
   return canvas;
 }
 
-/**
- * Renders a semi-transparent fog overlay on a canvas that sits on top of the
- * Mapbox map. Explored points and the user's current position punch circular
- * holes through the fog using `destination-out` compositing with soft radial
- * gradients so the revealed area fades at the edges.
- *
- * A slowly drifting cloud-wisp texture is composited over the base fog fill
- * (but beneath the reveal holes) for visual depth.
- *
- * Redraws on every map move / zoom / resize / rotate / pitch event.
- * The hook is a no-op when `fogEnabled` is false.
- */
 export function useFogLayer(
   mapRef: RefObject<MapRef | null>,
   fogCanvasRef: RefObject<HTMLCanvasElement | null>,
@@ -93,78 +76,143 @@ export function useFogLayer(
   const cloudTextureRef = useRef<HTMLCanvasElement | null>(null);
   const cloudOffsetRef = useRef({ x: 0, y: 0 });
   const animFrameRef = useRef<number | null>(null);
+  const needsRedrawRef = useRef(true);
+  const drawFogRef = useRef<() => void>(() => undefined);
 
-  // Build the cloud texture once when fog is enabled
   useEffect(() => {
     if (!fogEnabled) return;
     cloudTextureRef.current = buildCloudTexture();
   }, [fogEnabled]);
+
+  const resizeCanvas = useCallback(() => {
+    const canvas = fogCanvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    const dpr = window.devicePixelRatio || 1;
+    const w = Math.round(rect.width * dpr);
+    const h = Math.round(rect.height * dpr);
+    if (canvas.width !== w) canvas.width = w;
+    if (canvas.height !== h) canvas.height = h;
+    needsRedrawRef.current = true;
+  }, [fogCanvasRef]);
 
   const drawFog = useCallback(() => {
     if (!fogEnabled) return;
     const map = mapRef.current?.getMap();
     const canvas = fogCanvasRef.current;
     if (!map || !canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    if (rect.width <= 0 || rect.height <= 0) return;
     const dpr = window.devicePixelRatio || 1;
-    const width = Math.round(rect.width * dpr);
-    const height = Math.round(rect.height * dpr);
-    if (canvas.width !== width) canvas.width = width;
-    if (canvas.height !== height) canvas.height = height;
+    const cssWidth = canvas.width / dpr;
+    const cssHeight = canvas.height / dpr;
+    if (cssWidth <= 0 || cssHeight <= 0) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, rect.width, rect.height);
 
-    // 1. Fill with base dark fog
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssWidth, cssHeight);
+
+    const zoom = map.getZoom();
+    const isGlobe = zoom < 4;
+
+    const leftEdge = map.project([-180, 0]);
+    const rightEdge = map.project([180, 0]);
+    const worldWidthPx = Math.max(rightEdge.x - leftEdge.x, 1);
+    const numCopies = Math.min(Math.ceil(cssWidth / worldWidthPx) + 1, 4);
+
+    ctx.save();
+    ctx.beginPath();
+
+    if (isGlobe) {
+      // Get the globe center from the map center point
+      const mapCenter = map.getCenter();
+      const centerPt = map.project([mapCenter.lng, mapCenter.lat]);
+      const globeCenterX = centerPt.x;
+      const globeCenterY = centerPt.y;
+
+      // Get radius by projecting a point 90 degrees away on the equator
+      // and measuring horizontal distance. Multiply by 1.03 to fully cover edge.
+      const eastLimb = map.project([mapCenter.lng + 90, 0]);
+      const westLimb = map.project([mapCenter.lng - 90, 0]);
+      const globeRadius = Math.max((eastLimb.x - westLimb.x) / 2, 0) * 1.03;
+
+      ctx.arc(globeCenterX, globeCenterY, globeRadius, 0, Math.PI * 2);
+      ctx.closePath();
+    } else {
+      // Mercator zoomed in — fog should cover the full canvas, no clipping needed
+      ctx.rect(0, 0, cssWidth, cssHeight);
+    }
+
+    ctx.clip();
+
+    // 1. Base dark fog fill
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = "rgba(10, 12, 20, 0.78)";
-    ctx.fillRect(0, 0, rect.width, rect.height);
+    ctx.fillRect(0, 0, cssWidth, cssHeight);
 
-    // 2. Tile the animated cloud texture over the fog
+    // 2. Animated cloud texture anchored to a geographic point so it
+    // moves with the map when panning
     const cloud = cloudTextureRef.current;
     if (cloud) {
       ctx.globalCompositeOperation = "source-over";
+      const anchor = map.project([0, 0]);
       const { x: ox, y: oy } = cloudOffsetRef.current;
       const tw = CLOUD_TEXTURE_SIZE;
       const th = CLOUD_TEXTURE_SIZE;
-      const startX = (ox % tw) - tw;
-      const startY = (oy % th) - th;
-      for (let tx = startX; tx < rect.width + tw; tx += tw) {
-        for (let ty = startY; ty < rect.height + th; ty += th) {
+      const startX = (((anchor.x + ox) % tw) + tw) % tw - tw;
+      const startY = (((anchor.y + oy) % th) + th) % th - th;
+      for (let tx = startX; tx < cssWidth + tw; tx += tw) {
+        for (let ty = startY; ty < cssHeight + th; ty += th) {
           ctx.drawImage(cloud, tx, ty);
         }
       }
     }
 
-    // 3. Punch holes for explored areas (removes both fog + cloud wisps)
+    // 3. Punch holes for explored areas
     ctx.globalCompositeOperation = "destination-out";
-    const zoom = map.getZoom();
     const pointsToReveal = displayPosition
       ? [...exploredPoints, displayPosition]
       : exploredPoints;
+
     for (const p of pointsToReveal) {
       if (!Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
-      const projected = map.project([p.lng, p.lat]);
       const mPerPx = metersPerPixelAtLat(zoom, p.lat);
       const radiusPx = REVEAL_RADIUS_M / Math.max(mPerPx, 0.000001);
-      const g = ctx.createRadialGradient(
-        projected.x, projected.y, radiusPx * 0.2,
-        projected.x, projected.y, radiusPx,
-      );
-      g.addColorStop(0, "rgba(0,0,0,1)");
-      g.addColorStop(0.45, "rgba(0,0,0,0.95)");
-      g.addColorStop(0.75, "rgba(0,0,0,0.45)");
-      g.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(projected.x, projected.y, radiusPx, 0, Math.PI * 2);
-      ctx.fill();
+      for (let copy = -numCopies; copy <= numCopies; copy++) {
+        const projected = map.project([p.lng + copy * 360, p.lat]);
+        if (
+          projected.x < -radiusPx * 2 ||
+          projected.x > cssWidth + radiusPx * 2 ||
+          projected.y < -radiusPx * 2 ||
+          projected.y > cssHeight + radiusPx * 2
+        ) continue;
+        const g = ctx.createRadialGradient(
+          projected.x, projected.y, radiusPx * 0.2,
+          projected.x, projected.y, radiusPx,
+        );
+        g.addColorStop(0, "rgba(0,0,0,1)");
+        g.addColorStop(0.45, "rgba(0,0,0,0.95)");
+        g.addColorStop(0.75, "rgba(0,0,0,0.45)");
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(projected.x, projected.y, radiusPx, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
+
+    ctx.restore();
   }, [displayPosition, exploredPoints, fogEnabled, mapRef, fogCanvasRef]);
 
-  // Cloud drift animation loop — runs independently of map events
+  // Always keep the ref pointing at the latest drawFog so the animation loop
+  // never needs drawFog in its dependency array
+  useEffect(() => {
+    drawFogRef.current = drawFog;
+  }, [drawFog]);
+
+  // Single animation loop — starts once, never restarts.
+  // Calls drawFog via ref so it always uses the latest version without
+  // needing drawFog in the dependency array (which caused seizures on re-render).
   useEffect(() => {
     if (!fogEnabled || !mapReady) return;
 
@@ -172,11 +220,19 @@ export function useFogLayer(
     const animate = (time: number) => {
       if (lastTime > 0) {
         const dt = time - lastTime;
+        const dx = CLOUD_SPEED_X * dt;
+        const dy = CLOUD_SPEED_Y * dt;
         cloudOffsetRef.current.x =
-          (cloudOffsetRef.current.x + CLOUD_SPEED_X * dt) % CLOUD_TEXTURE_SIZE;
+          (cloudOffsetRef.current.x + dx) % CLOUD_TEXTURE_SIZE;
         cloudOffsetRef.current.y =
-          (cloudOffsetRef.current.y + CLOUD_SPEED_Y * dt) % CLOUD_TEXTURE_SIZE;
-        drawFog();
+          (cloudOffsetRef.current.y + dy) % CLOUD_TEXTURE_SIZE;
+        if (dx > 0.5 || dy > 0.5) {
+          needsRedrawRef.current = true;
+        }
+      }
+      if (needsRedrawRef.current) {
+        drawFogRef.current();
+        needsRedrawRef.current = false;
       }
       lastTime = time;
       animFrameRef.current = requestAnimationFrame(animate);
@@ -186,25 +242,33 @@ export function useFogLayer(
     return () => {
       if (animFrameRef.current != null) cancelAnimationFrame(animFrameRef.current);
     };
-  }, [fogEnabled, mapReady, drawFog]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fogEnabled, mapReady]);
 
+  // Resize on mount and on container resize only — never inside draw loop
   useEffect(() => {
     if (!fogEnabled || !mapReady) return;
     const map = mapRef.current?.getMap();
     if (!map) return;
-    const handler = () => {
-      requestAnimationFrame(drawFog);
-    };
-    handler();
+    resizeCanvas();
+    map.on("resize", resizeCanvas);
+    return () => { map.off("resize", resizeCanvas); };
+  }, [fogEnabled, mapReady, mapRef, resizeCanvas]);
+
+  // Map events only set the dirty flag — the animation loop does the actual draw
+  useEffect(() => {
+    if (!fogEnabled || !mapReady) return;
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+    const handler = () => { needsRedrawRef.current = true; };
+    needsRedrawRef.current = true;
     map.on("move", handler);
     map.on("zoom", handler);
-    map.on("resize", handler);
     map.on("rotate", handler);
     map.on("pitch", handler);
     return () => {
       map.off("move", handler);
       map.off("zoom", handler);
-      map.off("resize", handler);
       map.off("rotate", handler);
       map.off("pitch", handler);
     };
@@ -212,6 +276,6 @@ export function useFogLayer(
 
   useEffect(() => {
     if (!fogEnabled || !mapReady) return;
-    drawFog();
+    needsRedrawRef.current = true;
   }, [drawFog, fogEnabled, mapReady]);
 }
