@@ -12,14 +12,14 @@ export type CityConfig = {
 };
 
 export const CITIES: Record<string, CityConfig> = {
-  atlanta: {
-    id: "atlanta",
-    name: "Atlanta",
+  emory: {
+    id: "emory",
+    name: "Emory Campus",
     bounds: {
-      minLat: 33.65,
-      maxLat: 33.89,
-      minLng: -84.45,
-      maxLng: -84.29,
+      minLat: 33.7865,
+      maxLat: 33.8005,
+      minLng: -84.3310,
+      maxLng: -84.3180,
     },
     gridResolutionM: 100,
   },

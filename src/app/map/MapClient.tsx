@@ -93,24 +93,9 @@ export function MapClient({ user }: { user: MapUser }) {
     setHasCentered(true);
   }, [explored.displayPosition, hasCentered, mapReady, geo.position]);
 
-  const token = env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
-  if (!token) {
-    return (
-      <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-white/80">
-        Missing <code className="text-white">NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN</code>.
-        Add it to your <code className="text-white">.env</code> and restart the dev server.
-      </div>
-    );
-  }
-
-  const hasLocation = !!(geo.position ?? geo.lastKnownPosition);
   const [locationDeniedNoticeVisible, setLocationDeniedNoticeVisible] = useState(true);
   const [isRetryingLocation, setIsRetryingLocation] = useState(false);
   const [retryFailed, setRetryFailed] = useState(false);
-  const showLocationDeniedNotice =
-  locationDeniedNoticeVisible &&
-  geo.geoPermission === "denied";
-
 
   useEffect(() => {
     if (geo.geoStatus === "denied") {
@@ -143,7 +128,6 @@ export function MapClient({ user }: { user: MapUser }) {
 
   const handleRetryLocationPermission = useCallback(() => {
     if (geo.geoPermission === "denied") {
-      // Can't re-prompt — send them to browser settings instructions
       return;
     }
     promptBrowserLocation();
@@ -152,6 +136,19 @@ export function MapClient({ user }: { user: MapUser }) {
   const handleCloseLocationDeniedNotice = useCallback(() => {
     setLocationDeniedNoticeVisible(false);
   }, []);
+
+  const token = env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+  if (!token) {
+    return (
+      <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-white/80">
+        Missing <code className="text-white">NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN</code>.
+        Add it to your <code className="text-white">.env</code> and restart the dev server.
+      </div>
+    );
+  }
+
+  const hasLocation = !!(geo.position ?? geo.lastKnownPosition);
+  const showLocationDeniedNotice = locationDeniedNoticeVisible && geo.geoPermission === "denied";
 
   return (
     <div className="p-0">
@@ -171,7 +168,7 @@ export function MapClient({ user }: { user: MapUser }) {
               latitude={explored.displayPosition.lat}
               anchor="center"
             >
-              <UserPositionMarker heading={deviceHeading ?? 0} />
+              <UserPositionMarker heading={deviceHeading} />
             </Marker>
           ) : null}
 
@@ -226,17 +223,17 @@ export function MapClient({ user }: { user: MapUser }) {
         <p className="mt-2 text-slate-300">
           To get the most out of Strides, we need to know where you are. Sharing your
           location allows us to sync your movement, calculate your progress accurately,
-          and unlock the core features of your journey. Without it, the app can't track
+          and unlock the core features of your journey. Without it, the app can&apos;t track
           your strides!
         </p>
         {geo.geoPermission === "denied" ? (
           <p className="mt-3 text-xs text-slate-400">
             Your browser has blocked location access for this site. To fix this, open
-            your browser's site settings and allow location access, then reload the page.
+            your browser&apos;s site settings and allow location access, then reload the page.
           </p>
         ) : retryFailed ? (
           <p className="mt-3 text-xs text-slate-400">
-            The browser blocked the request. Check your browser's site permissions and
+            The browser blocked the request. Check your browser&apos;s site permissions and
             allow location access for this site.
           </p>
         ) : null}
