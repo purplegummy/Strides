@@ -139,7 +139,7 @@ export const mapRouter = createTRPCRouter({
       ctx.db.exploredPoint.findMany({
         where: { userId },
         orderBy: { createdAt: "asc" },
-        select: { lat: true, lng: true, createdAt: true },
+        select: { lat: true, lng: true, createdAt: true, accuracyM: true },
       }),
       ctx.db.pin.findMany({
         where: { createdById: userId },
