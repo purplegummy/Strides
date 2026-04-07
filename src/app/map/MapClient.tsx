@@ -17,8 +17,8 @@ import { useDeviceHeading } from "./useDeviceHeading";
 type MapUser = {
   id: string;
 };
- 
-export function MapClient({ user }: { user: MapUser }) {
+
+export function MapClient({ user, fogIntensity = 'medium' }: { user: MapUser; fogIntensity?: 'light' | 'medium' | 'heavy' }) {
   const fogEnabled = true;
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -55,6 +55,7 @@ export function MapClient({ user }: { user: MapUser }) {
     explored.exploredPoints,
     explored.displayPosition,
     fogEnabled,
+    fogIntensity,
   );
  
   // ── Handle pin click: select + center ─────────────────────────────────────

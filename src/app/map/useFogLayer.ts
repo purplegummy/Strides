@@ -65,6 +65,8 @@ function buildCloudTexture(): HTMLCanvasElement {
   return canvas;
 }
 
+const FOG_OPACITY = { light: 0.52, medium: 0.78, heavy: 0.93 } as const;
+
 export function useFogLayer(
   mapRef: RefObject<MapRef | null>,
   fogCanvasRef: RefObject<HTMLCanvasElement | null>,
@@ -72,6 +74,7 @@ export function useFogLayer(
   exploredPoints: ExploredPoint[],
   displayPosition: ExploredPoint | null,
   fogEnabled: boolean,
+  fogIntensity: 'light' | 'medium' | 'heavy' = 'medium',
 ) {
   const cloudTextureRef = useRef<HTMLCanvasElement | null>(null);
   const cloudOffsetRef = useRef({ x: 0, y: 0 });
@@ -147,7 +150,7 @@ export function useFogLayer(
 
     // 1. Base dark fog fill
     ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "rgba(10, 12, 20, 0.78)";
+    ctx.fillStyle = `rgba(10, 12, 20, ${FOG_OPACITY[fogIntensity]})`;
     ctx.fillRect(0, 0, cssWidth, cssHeight);
 
     // 2. Animated cloud texture anchored to a geographic point so it
@@ -202,7 +205,7 @@ export function useFogLayer(
     }
 
     ctx.restore();
-  }, [displayPosition, exploredPoints, fogEnabled, mapRef, fogCanvasRef]);
+  }, [displayPosition, exploredPoints, fogEnabled, fogIntensity, mapRef, fogCanvasRef]);
 
   // Always keep the ref pointing at the latest drawFog so the animation loop
   // never needs drawFog in its dependency array

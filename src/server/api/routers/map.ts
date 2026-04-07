@@ -147,11 +147,16 @@ export const mapRouter = createTRPCRouter({
       }),
     ]);
 
-    // Total distance — sum haversine of consecutive points, skip jumps > 1 km
+    // Total distance — sum haversine of consecutive points, skip jumps > 1 km,
+    // poor accuracy (>50 m), or session gaps (>5 min between points)
+    const SESSION_GAP_MS = 5 * 60 * 1000;
+    const MAX_ACCURACY_M = 50;
     let totalDistanceKm = 0;
     for (let i = 1; i < exploredPoints.length; i++) {
       const prev = exploredPoints[i - 1]!;
       const curr = exploredPoints[i]!;
+      if ((prev.accuracyM ?? 0) > MAX_ACCURACY_M || (curr.accuracyM ?? 0) > MAX_ACCURACY_M) continue;
+      if (curr.createdAt.getTime() - prev.createdAt.getTime() > SESSION_GAP_MS) continue;
       const d = haversineKm(prev.lat, prev.lng, curr.lat, curr.lng);
       if (d < 1) totalDistanceKm += d;
     }
@@ -165,12 +170,16 @@ export const mapRouter = createTRPCRouter({
       })
     );
 
-    // Weekly progress — last 7 calendar days
+    // Weekly progress — Mon–Sun of the current week
     const now = new Date();
+    const dowNow = now.getDay(); // 0=Sun, 1=Mon, …, 6=Sat
+    const daysFromMonday = dowNow === 0 ? 6 : dowNow - 1;
+    const monday = new Date(now);
+    monday.setDate(monday.getDate() - daysFromMonday);
+    monday.setHours(0, 0, 0, 0);
     const weeklyProgress = Array.from({ length: 7 }, (_, i) => {
-      const dayStart = new Date(now);
-      dayStart.setDate(dayStart.getDate() - (6 - i));
-      dayStart.setHours(0, 0, 0, 0);
+      const dayStart = new Date(monday);
+      dayStart.setDate(monday.getDate() + i);
       const dayEnd = new Date(dayStart.getTime() + 24 * 60 * 60 * 1000);
 
       const dayPoints = exploredPoints.filter(
@@ -181,6 +190,8 @@ export const mapRouter = createTRPCRouter({
       for (let j = 1; j < dayPoints.length; j++) {
         const prev = dayPoints[j - 1]!;
         const curr = dayPoints[j]!;
+        if ((prev.accuracyM ?? 0) > MAX_ACCURACY_M || (curr.accuracyM ?? 0) > MAX_ACCURACY_M) continue;
+        if (curr.createdAt.getTime() - prev.createdAt.getTime() > SESSION_GAP_MS) continue;
         const d = haversineKm(prev.lat, prev.lng, curr.lat, curr.lng);
         if (d < 1) dayKm += d;
       }
@@ -200,7 +211,7 @@ export const mapRouter = createTRPCRouter({
         id: p.id,
         title: p.title,
         upvotes: p._count.upvotes,
-        location: `${p.lat.toFixed(3)}, ${p.lng.toFixed(3)}`,
+        caption: p.description ?? '',
       }));
 
     const totalUpvotes = userPins.reduce((sum, p) => sum + p._count.upvotes, 0);

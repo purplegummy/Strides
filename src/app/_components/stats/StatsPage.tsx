@@ -1,26 +1,28 @@
 "use client";
 
-import { MapPin, TrendingUp, Award, Target, Calendar, Users, ArrowUp } from 'lucide-react';
+import { MapPin, TrendingUp, Target, Calendar, Users, ArrowUp } from 'lucide-react';
 import { api } from '~/trpc/react';
 import { xpToLevel, xpProgress } from '~/lib/xp';
+import { QUEST_DEFINITIONS } from '../quests/questData';
 
-const ACHIEVEMENTS = [
-  { id: 'first-steps', title: 'First Steps', description: 'Explore your first tile', unlocked: (tilesDiscovered: number) => tilesDiscovered > 0 },
-  { id: 'explorer', title: 'Explorer', description: 'Reach 20% exploration', unlocked: (_: number, pct: number) => pct >= 20 },
-  { id: 'pathfinder', title: 'Pathfinder', description: 'Place 25 pins', unlocked: (_: number, __: number, pinsPlaced: number) => pinsPlaced >= 25 },
-  { id: 'cartographer', title: 'Cartographer', description: 'Reach 50% exploration', unlocked: (_: number, pct: number) => pct >= 50 },
-];
-
-export default function StatsPage({ darkMode = true }: { darkMode?: boolean }) {
+export default function StatsPage({ darkMode = true, units = 'metric' }: { darkMode?: boolean; units?: 'metric' | 'imperial' }) {
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: 'atlanta' });
   const fullStatsQuery = api.map.getStats.useQuery();
   const xpQuery = api.quest.getXp.useQuery();
+  const completedQuery = api.quest.getCompletedQuests.useQuery();
 
   const exploration = statsQuery.data;
   const full = fullStatsQuery.data;
   const xp = xpQuery.data?.xp ?? 0;
   const level = xpToLevel(xp);
   const { current: xpCurrent, next: xpNext } = xpProgress(xp);
+
+  const KM_TO_MI = 0.621371;
+  const toUnit = (km: number) => units === 'imperial' ? Math.round(km * KM_TO_MI * 10) / 10 : Math.round(km * 10) / 10;
+  const unitLabel = units === 'imperial' ? 'mi' : 'km';
+
+  const now = new Date();
+  const todayDate = `${now.getMonth() + 1}/${now.getDate()}`;
 
   const weeklyProgress = full?.weeklyProgress ?? [];
   const maxWeeklyKm = weeklyProgress.length > 0 ? Math.max(...weeklyProgress.map(d => d.km), 0.1) : 1;
@@ -33,13 +35,10 @@ export default function StatsPage({ darkMode = true }: { darkMode?: boolean }) {
   const tilesDiscovered = exploration?.tilesDiscovered ?? 0;
   const totalTiles = exploration?.totalTiles ?? 0;
   const tilesRemaining = totalTiles - tilesDiscovered;
-  const percentage = exploration?.percentage ?? 0;
   const pinsPlaced = full?.pinsPlaced ?? 0;
 
-  const achievements = ACHIEVEMENTS.map(a => ({
-    ...a,
-    isUnlocked: a.unlocked(tilesDiscovered, percentage, pinsPlaced),
-  }));
+  const collectedIds = new Set(completedQuery.data?.map(c => c.questId) ?? []);
+  const completedQuests = QUEST_DEFINITIONS.filter(q => collectedIds.has(q.id));
 
   const t = darkMode
     ? {
@@ -144,14 +143,19 @@ export default function StatsPage({ darkMode = true }: { darkMode?: boolean }) {
                       <div className={`w-full rounded-full h-2 ${t.barBg}`} />
                     </div>
                   ))
-                : weeklyProgress.map((day) => (
+                : weeklyProgress.map((day) => {
+                    const isToday = day.date === todayDate;
+                    return (
                     <div key={day.date}>
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-2">
-                          <span className={`text-sm font-medium w-8 ${t.text}`}>{day.day}</span>
-                          <span className={`text-xs ${t.muted}`}>{day.date}</span>
+                          <span className={`text-sm w-8 ${isToday ? 'font-semibold text-[#00d9ff]' : `font-medium ${t.text}`}`}>{day.day}</span>
+                          {isToday
+                            ? <span className="rounded-full bg-[#00d9ff]/15 px-1.5 py-0.5 text-[10px] font-semibold text-[#00d9ff]">Today</span>
+                            : <span className={`text-xs ${t.muted}`}>{day.date}</span>
+                          }
                         </div>
-                        <span className="text-sm font-semibold text-[#00d9ff]">{day.km} km</span>
+                        <span className={`text-sm font-semibold ${isToday ? 'text-[#00d9ff]' : t.muted}`}>{toUnit(day.km)} {unitLabel}</span>
                       </div>
                       <div className={`w-full rounded-full h-2 overflow-hidden ${t.barBg}`}>
                         <div
@@ -160,19 +164,20 @@ export default function StatsPage({ darkMode = true }: { darkMode?: boolean }) {
                         />
                       </div>
                     </div>
-                  ))}
+                  );
+                  })}
             </div>
             <div className={`text-center pt-5 border-t ${t.divider}`}>
               <p className={`text-2xl mb-1 ${t.text}`}>
                 You walked{' '}
                 <span className="font-bold text-[#00d9ff]">
-                  {fullStatsQuery.isLoading ? '…' : `${totalWeeklyKm.toFixed(1)} km`}
+                  {fullStatsQuery.isLoading ? '…' : `${toUnit(totalWeeklyKm)} ${unitLabel}`}
                 </span>{' '}
                 this week!
               </p>
               {weeklyProgress.length > 0 && (
                 <p className={`text-base ${t.muted}`}>
-                  Average: {(totalWeeklyKm / weeklyProgress.length).toFixed(1)} km/day
+                  Average: {toUnit(totalWeeklyKm / weeklyProgress.length)} {unitLabel}/day
                 </p>
               )}
             </div>
@@ -187,7 +192,7 @@ export default function StatsPage({ darkMode = true }: { darkMode?: boolean }) {
               {
                 icon: <TrendingUp className="w-4 h-4 text-[#00d9ff]" />,
                 label: 'Total Distance',
-                value: fullStatsQuery.isLoading ? '…' : `${full?.totalDistanceKm ?? 0} km`,
+                value: fullStatsQuery.isLoading ? '…' : `${toUnit(full?.totalDistanceKm ?? 0)} ${unitLabel}`,
               },
               {
                 icon: <MapPin className="w-4 h-4 text-[#00d9ff]" />,
@@ -238,62 +243,63 @@ export default function StatsPage({ darkMode = true }: { darkMode?: boolean }) {
                 <p className={`text-sm ${t.muted}`}>No pins yet — go place some!</p>
               ) : (
                 <div className="space-y-3">
-                  {full?.topPins.map((pin, index) => (
+                  {full?.topPins.map((pin, index) => {
+                    const medal = [
+                      { gradient: 'from-[#FFD700] to-[#e6a817]', glow: '0 0 14px rgba(255,215,0,0.55)' },
+                      { gradient: 'from-[#D4D4D4] to-[#a8a8a8]', glow: undefined },
+                      { gradient: 'from-[#CD7F32] to-[#a0522d]', glow: undefined },
+                    ][index]!;
+                    return (
                     <div key={pin.id} className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-gradient-to-br from-[#00d9ff] to-[#00a3cc] rounded-full flex items-center justify-center font-bold text-sm text-white shrink-0">
+                      <div
+                        className={`w-8 h-8 bg-gradient-to-br ${medal.gradient} rounded-full flex items-center justify-center font-bold text-sm text-white shrink-0`}
+                        style={medal.glow ? { boxShadow: medal.glow } : undefined}
+                      >
                         {index + 1}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className={`font-medium text-sm truncate ${t.text}`}>{pin.title}</div>
-                        <div className={`text-xs truncate ${t.muted}`}>{pin.location}</div>
+                        <div className={`text-xs truncate ${t.muted}`}>{pin.caption}</div>
                       </div>
                       <div className="flex items-center gap-1 text-[#00d9ff] text-sm font-semibold shrink-0">
                         <ArrowUp className="w-3.5 h-3.5" />
                         {pin.upvotes}
                       </div>
                     </div>
-                  ))}
+                  );
+                  })}
                 </div>
               )}
             </div>
           </div>
 
           <div>
-            <h2 className={`text-xs font-semibold uppercase tracking-wider mb-3 ml-1 ${t.sectionLabel}`}>Achievements</h2>
+            <h2 className={`text-xs font-semibold uppercase tracking-wider mb-3 ml-1 ${t.sectionLabel}`}>Completed Quests</h2>
             <div className={`border rounded-2xl p-5 ${t.card}`}>
-              <div className="space-y-3">
-                {achievements.map((achievement) => (
-                  <div
-                    key={achievement.id}
-                    className={`flex items-center gap-3 ${achievement.isUnlocked ? '' : 'opacity-40'}`}
-                  >
-                    <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
-                        achievement.isUnlocked
-                          ? 'bg-gradient-to-br from-[#00d9ff] to-[#00a3cc]'
-                          : t.lockedBadge
-                      }`}
-                    >
-                      <Award className="w-5 h-5 text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className={`font-medium text-sm ${t.text}`}>{achievement.title}</div>
-                      <div className={`text-xs ${t.muted}`}>{achievement.description}</div>
-                    </div>
-                    {achievement.isUnlocked && (
-                      <div className="text-[#00d9ff] shrink-0">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path
-                            fillRule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
+              {completedQuery.isLoading ? (
+                <div className="space-y-3">
+                  {[0, 1, 2].map(i => (
+                    <div key={i} className={`h-10 rounded-lg animate-pulse ${t.barBg}`} />
+                  ))}
+                </div>
+              ) : completedQuests.length === 0 ? (
+                <p className={`text-sm ${t.muted}`}>No quests completed yet — go explore!</p>
+              ) : (
+                <div className="space-y-3">
+                  {completedQuests.map(quest => (
+                    <div key={quest.id} className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#00d9ff] to-[#00a3cc] flex items-center justify-center text-lg shrink-0">
+                        {quest.icon ?? '🏆'}
                       </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                      <div className="flex-1 min-w-0">
+                        <div className={`font-medium text-sm ${t.text}`}>{quest.title}</div>
+                        <div className={`text-xs ${t.muted}`}>{quest.description}</div>
+                      </div>
+                      <span className={`text-xs font-semibold shrink-0 ${t.muted}`}>{quest.reward.xp} XP</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
