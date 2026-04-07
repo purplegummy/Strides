@@ -9,16 +9,22 @@ export default function SettingsPage({
   onSignOut,
   darkMode,
   onToggleDarkMode,
+  units,
+  onChangeUnits,
+  fogIntensity,
+  onChangeFogIntensity,
 }: {
   onSignOut: () => void;
   darkMode: boolean;
   onToggleDarkMode: () => void;
+  units: 'metric' | 'imperial';
+  onChangeUnits: (u: 'metric' | 'imperial') => void;
+  fogIntensity: 'light' | 'medium' | 'heavy';
+  onChangeFogIntensity: (v: 'light' | 'medium' | 'heavy') => void;
 }) {
   const [settings, setSettings] = useState({
     soundEffects: true,
     mapStyle: 'satellite',
-    measurementUnits: 'metric',
-    fogIntensity: 'medium',
   });
 
   const toggleSetting = (key: keyof typeof settings) => {
@@ -75,13 +81,24 @@ export default function SettingsPage({
               <SettingSelect
                 label="Units"
                 description="Distance measurement system"
-                options={['Metric (km)', 'Imperial (mi)']}
+                options={[
+                  { label: 'Metric (km)', value: 'metric' },
+                  { label: 'Imperial (mi)', value: 'imperial' },
+                ]}
+                value={units}
+                onChange={v => onChangeUnits(v as 'metric' | 'imperial')}
                 darkMode={darkMode}
               />
               <SettingSelect
                 label="Fog Intensity"
                 description="How much of the map is hidden"
-                options={['Light', 'Medium', 'Heavy']}
+                options={[
+                  { label: 'Light', value: 'light' },
+                  { label: 'Medium', value: 'medium' },
+                  { label: 'Heavy', value: 'heavy' },
+                ]}
+                value={fogIntensity}
+                onChange={v => onChangeFogIntensity(v as 'light' | 'medium' | 'heavy')}
                 darkMode={darkMode}
               />
             </div>
@@ -169,21 +186,30 @@ function SettingSelect({
   description,
   options,
   darkMode,
+  value,
+  onChange,
 }: {
   label: string;
   description: string;
-  options: string[];
+  options: string[] | { label: string; value: string }[];
   darkMode: boolean;
+  value?: string;
+  onChange?: (value: string) => void;
 }) {
+  const normalised = (options as (string | { label: string; value: string })[]).map(o =>
+    typeof o === 'string' ? { label: o, value: o.toLowerCase().replace(/\s+/g, '-') } : o
+  );
   return (
     <div className={`py-3 border-b last:border-b-0 ${darkMode ? 'border-[#1a2540]' : 'border-gray-200'}`}>
       <p className={`text-[16px] font-medium ${darkMode ? 'text-white' : 'text-gray-900'}`}>{label}</p>
       <p className={`text-[14px] mt-1 ${darkMode ? 'text-[#6B7280]' : 'text-gray-500'}`}>{description}</p>
-      <select className={`w-full mt-3 rounded-lg px-4 py-2 text-[14px] focus:outline-none focus:border-[#38bdf8] focus:ring-2 focus:ring-[#38bdf8]/20 ${darkMode ? 'bg-[#1a2540] text-[#E6EDF7] border border-[#1a2540]' : 'bg-gray-50 text-gray-900 border border-gray-200'}`}>
-        {options.map((option, index) => (
-          <option key={index} value={option.toLowerCase().replace(/\s+/g, '-')}>
-            {option}
-          </option>
+      <select
+        className={`w-full mt-3 rounded-lg px-4 py-2 text-[14px] focus:outline-none focus:border-[#38bdf8] focus:ring-2 focus:ring-[#38bdf8]/20 ${darkMode ? 'bg-[#1a2540] text-[#E6EDF7] border border-[#1a2540]' : 'bg-gray-50 text-gray-900 border border-gray-200'}`}
+        value={value}
+        onChange={onChange ? e => onChange(e.target.value) : undefined}
+      >
+        {normalised.map(o => (
+          <option key={o.value} value={o.value}>{o.label}</option>
         ))}
       </select>
     </div>

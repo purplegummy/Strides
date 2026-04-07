@@ -72,6 +72,8 @@ function buildCloudTexture(): HTMLCanvasElement {
   return canvas;
 }
 
+const FOG_OPACITY = { light: 0.52, medium: 0.78, heavy: 0.93 } as const;
+
 export function useFogLayer(
   mapRef: RefObject<MapRef | null>,
   fogCanvasRef: RefObject<HTMLCanvasElement | null>,
@@ -79,6 +81,7 @@ export function useFogLayer(
   exploredPoints: ExploredPoint[],
   displayPosition: ExploredPoint | null,
   fogEnabled: boolean,
+  fogIntensity: 'light' | 'medium' | 'heavy' = 'medium',
 ) {
   const cloudTextureRef = useRef<HTMLCanvasElement | null>(null);
   // Accumulated screen-space pan offset — updated each frame by how many pixels
@@ -180,7 +183,7 @@ export function useFogLayer(
 
     // 1. Base dark fog fill
     ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "rgba(10, 12, 20, 0.78)";
+    ctx.fillStyle = `rgba(10, 12, 20, ${FOG_OPACITY[fogIntensity]})`;
     ctx.fillRect(0, 0, cssWidth, cssHeight);
 
     // 2. Animated cloud texture that moves with map panning but is stable on
@@ -299,7 +302,7 @@ export function useFogLayer(
       visCtx.clearRect(0, 0, canvas.width, canvas.height);
       visCtx.drawImage(offscreen, 0, 0);
     }
-  }, [displayPosition, exploredPoints, fogEnabled, mapRef, fogCanvasRef]);
+  }, [displayPosition, exploredPoints, fogEnabled, fogIntensity, mapRef, fogCanvasRef]);
 
   // Keep ref pointing at latest drawFog closure.
   useEffect(() => {

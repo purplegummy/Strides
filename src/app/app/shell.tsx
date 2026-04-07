@@ -25,6 +25,8 @@ export function AppShell({ user }: { user: MapUser }) {
   const [navTab, setNavTab] = useState<NavTab>("map");
   const [signingOut, setSigningOut] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+  const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
+  const [fogIntensity, setFogIntensity] = useState<'light' | 'medium' | 'heavy'>('medium');
 
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "emory" });
   const xpQuery = api.quest.getXp.useQuery();
@@ -155,7 +157,7 @@ export function AppShell({ user }: { user: MapUser }) {
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
       {/* Map stays mounted regardless of tab */}
-      <MapClient user={user} />
+      <MapClient user={user} fogIntensity={fogIntensity} />
 
       {tab !== "stats" && tab !== "quests" && tab !== "settings" && (
         <div
@@ -211,7 +213,7 @@ export function AppShell({ user }: { user: MapUser }) {
             .stats-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
             .stats-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
           `}</style>
-          <StatsPage darkMode={darkMode} />
+          <StatsPage darkMode={darkMode} units={units} />
         </div>
       )}
 
@@ -287,7 +289,7 @@ export function AppShell({ user }: { user: MapUser }) {
             .settings-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
             .settings-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
           `}</style>
-          <SettingsPage onSignOut={signOut} darkMode={darkMode} onToggleDarkMode={() => setDarkMode(v => !v)} />
+          <SettingsPage onSignOut={signOut} darkMode={darkMode} onToggleDarkMode={() => setDarkMode(v => !v)} units={units} onChangeUnits={setUnits} fogIntensity={fogIntensity} onChangeFogIntensity={setFogIntensity} />
         </div>
       )}
 
