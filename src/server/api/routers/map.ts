@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { QUEST_DEFINITIONS } from "~/app/_components/quests/questData";
 import { getCity } from "~/server/config/cities";
 import {
   computeStreakDays,
@@ -216,6 +217,14 @@ export const mapRouter = createTRPCRouter({
 
     const totalUpvotes = userPins.reduce((sum, p) => sum + p._count.upvotes, 0);
 
+    // Location-based quest visits
+    const locationQuests = QUEST_DEFINITIONS.filter(q => q.location);
+    const visitedLocationIds = locationQuests
+      .filter(q => exploredPoints.some(p =>
+        haversineKm(p.lat, p.lng, q.location!.lat, q.location!.lng) * 1000 <= q.location!.radiusM
+      ))
+      .map(q => q.id);
+
     return {
       joinDate: user.createdAt,
       totalDistanceKm: Math.round(totalDistanceKm * 10) / 10,
@@ -224,6 +233,7 @@ export const mapRouter = createTRPCRouter({
       totalUpvotes,
       topPins,
       weeklyProgress,
+      visitedLocationIds,
     };
   }),
 });

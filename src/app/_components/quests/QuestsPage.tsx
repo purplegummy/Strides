@@ -163,6 +163,7 @@ export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) 
   const completedQuery = api.quest.getCompletedQuests.useQuery();
   const tilesDiscovered = statsQuery.data?.tilesDiscovered ?? 0;
   const pinsPlaced = fullStatsQuery.data?.pinsPlaced ?? 0;
+  const visitedLocationIds = new Set(fullStatsQuery.data?.visitedLocationIds ?? []);
 
   const t = darkMode ? darkTheme : lightTheme;
 
@@ -175,7 +176,10 @@ export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) 
     status: "active" as const,
     objectives: def.objectives.map(obj => ({
       ...obj,
-      current: obj.id === "tiles" ? tilesDiscovered : obj.id === "pins" ? pinsPlaced : 0,
+      current: obj.id === "tiles" ? tilesDiscovered
+        : obj.id === "pins" ? pinsPlaced
+        : obj.id === "location" ? (visitedLocationIds.has(def.id) ? 1 : 0)
+        : 0,
     })),
   }));
 

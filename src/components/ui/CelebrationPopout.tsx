@@ -151,7 +151,7 @@ const typeStyles: Record<
   },
 };
 
-function CelebrationPopout({
+export function CelebrationPopout({
   open,
   type = "achievement",
   title,
