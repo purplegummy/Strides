@@ -13,18 +13,18 @@ import { useExploredPoints } from "./useExploredPoints";
 import { useMapPins } from "./useMapPins";
 import { useFogLayer } from "./useFogLayer";
 import { useDeviceHeading } from "./useDeviceHeading";
- 
+
 type MapUser = {
   id: string;
 };
- 
+
 export function MapClient({ user }: { user: MapUser }) {
   const fogEnabled = true;
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hasCentered, setHasCentered] = useState(false);
   const [mapReady, setMapReady] = useState(false);
- 
+
   // ── Center map so pin appears near bottom-middle of screen ─────────────────
   const centerOnPin = useCallback((pin: { lat: number; lng: number }) => {
     const map = mapRef.current?.getMap();
@@ -41,13 +41,13 @@ export function MapClient({ user }: { user: MapUser }) {
       easing: (t) => t * (2 - t),
     });
   }, []);
- 
+
   // ── Hooks ──────────────────────────────────────────────────────────────────
   const deviceHeading = useDeviceHeading();
   const geo = useGeolocation();
   const explored = useExploredPoints(geo.position, geo.lastKnownPosition);
   const pins = useMapPins(geo.position, geo.lastKnownPosition, centerOnPin);
- 
+
   useFogLayer(
     mapRef,
     fogCanvasRef,
@@ -56,13 +56,13 @@ export function MapClient({ user }: { user: MapUser }) {
     explored.displayPosition,
     fogEnabled,
   );
- 
+
   // ── Handle pin click: select + center ─────────────────────────────────────
   const handlePinClick = useCallback((pin: PinData) => {
     pins.setSelectedPin(pin);
     centerOnPin(pin);
   }, [pins, centerOnPin]);
- 
+
   // ── GPS watch ─────────────────────────────────────────────────────────────
   useEffect(() => {
     geo.startWatch(
@@ -83,7 +83,7 @@ export function MapClient({ user }: { user: MapUser }) {
     return () => geo.clearWatch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [geo.watchNonce]);
- 
+
   useEffect(() => {
     if (!mapReady || hasCentered || geo.position) return;
     const last = explored.displayPosition;
@@ -92,7 +92,7 @@ export function MapClient({ user }: { user: MapUser }) {
     map?.flyTo({ center: [last.lng, last.lat], zoom: 16, essential: true });
     setHasCentered(true);
   }, [explored.displayPosition, hasCentered, mapReady, geo.position]);
- 
+
   const token = env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
   if (!token) {
     return (
@@ -102,9 +102,57 @@ export function MapClient({ user }: { user: MapUser }) {
       </div>
     );
   }
- 
+
   const hasLocation = !!(geo.position ?? geo.lastKnownPosition);
- 
+  const [locationDeniedNoticeVisible, setLocationDeniedNoticeVisible] = useState(true);
+  const [isRetryingLocation, setIsRetryingLocation] = useState(false);
+  const [retryFailed, setRetryFailed] = useState(false);
+  const showLocationDeniedNotice =
+  locationDeniedNoticeVisible &&
+  geo.geoPermission === "denied";
+
+
+  useEffect(() => {
+    if (geo.geoStatus === "denied") {
+      setLocationDeniedNoticeVisible(true);
+    }
+  }, [geo.geoStatus]);
+
+  const promptBrowserLocation = useCallback(() => {
+    if (!("geolocation" in navigator)) {
+      setRetryFailed(true);
+      return;
+    }
+
+    setIsRetryingLocation(true);
+    setRetryFailed(false);
+
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        setIsRetryingLocation(false);
+        setLocationDeniedNoticeVisible(false);
+        geo.requestOnce();
+      },
+      () => {
+        setIsRetryingLocation(false);
+        setRetryFailed(true);
+      },
+      { enableHighAccuracy: false, maximumAge: 0, timeout: 30_000 },
+    );
+  }, [geo]);
+
+  const handleRetryLocationPermission = useCallback(() => {
+    if (geo.geoPermission === "denied") {
+      // Can't re-prompt — send them to browser settings instructions
+      return;
+    }
+    promptBrowserLocation();
+  }, [geo.geoPermission, promptBrowserLocation]);
+
+  const handleCloseLocationDeniedNotice = useCallback(() => {
+    setLocationDeniedNoticeVisible(false);
+  }, []);
+
   return (
     <div className="p-0">
       <div className="relative h-[100dvh] w-full overflow-hidden [&_.mapboxgl-ctrl-logo]:!hidden [&_.mapboxgl-ctrl-attrib]:!hidden">
@@ -126,21 +174,21 @@ export function MapClient({ user }: { user: MapUser }) {
               <UserPositionMarker heading={deviceHeading ?? 0} />
             </Marker>
           ) : null}
- 
+
           {(pins.pinsQuery.data ?? []).map((pin: PinData) => (
             <Marker key={pin.id} longitude={pin.lng} latitude={pin.lat} anchor="bottom">
               <PinMarker pin={pin} onClick={handlePinClick} />
             </Marker>
           ))}
         </Map>
- 
+
         <CompassButton
           mapRef={mapRef}
           displayPosition={explored.displayPosition}
           requestOnce={geo.requestOnce}
           onCentered={() => setHasCentered(true)}
         />
- 
+
         <button
           type="button"
           onClick={pins.handleDropPin}
@@ -161,7 +209,62 @@ export function MapClient({ user }: { user: MapUser }) {
             <circle cx="12" cy="10" r="3" fill="#38bdf8" fillOpacity="0.3" />
           </svg>
         </button>
- 
+
+        {showLocationDeniedNotice ? (
+  <div className="fixed left-1/2 top-1/2 z-50 w-[min(420px,calc(100%-2rem))] -translate-x-1/2 -translate-y-1/2 rounded-3xl border border-white/15 bg-slate-950/95 p-4 text-sm text-slate-100 shadow-[0_30px_80px_rgba(0,0,0,0.45)] backdrop-blur-lg">
+    <button
+      type="button"
+      onClick={handleCloseLocationDeniedNotice}
+      className="absolute right-3 top-3 rounded-full bg-slate-900/90 p-2 text-slate-300 transition hover:bg-slate-800 hover:text-white"
+      aria-label="Close location notice"
+    >
+      ×
+    </button>
+    <div className="flex flex-col gap-3">
+      <div className="leading-6">
+        <div className="font-semibold text-white">Location access needed</div>
+        <p className="mt-2 text-slate-300">
+          To get the most out of Strides, we need to know where you are. Sharing your
+          location allows us to sync your movement, calculate your progress accurately,
+          and unlock the core features of your journey. Without it, the app can't track
+          your strides!
+        </p>
+        {geo.geoPermission === "denied" ? (
+          <p className="mt-3 text-xs text-slate-400">
+            Your browser has blocked location access for this site. To fix this, open
+            your browser's site settings and allow location access, then reload the page.
+          </p>
+        ) : retryFailed ? (
+          <p className="mt-3 text-xs text-slate-400">
+            The browser blocked the request. Check your browser's site permissions and
+            allow location access for this site.
+          </p>
+        ) : null}
+      </div>
+      <div className="flex items-center justify-end gap-3">
+        {geo.geoPermission === "denied" ? (
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="rounded-full bg-slate-800/90 px-4 py-2 text-xs font-semibold text-slate-100 transition hover:bg-slate-700"
+          >
+            Reload page
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={handleRetryLocationPermission}
+            disabled={isRetryingLocation}
+            className="rounded-full bg-slate-800/90 px-4 py-2 text-xs font-semibold text-slate-100 transition hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isRetryingLocation ? "Requesting…" : "Try again"}
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+) : null}
+
         {fogEnabled ? (
           <canvas
             ref={fogCanvasRef}
@@ -169,7 +272,7 @@ export function MapClient({ user }: { user: MapUser }) {
           />
         ) : null}
       </div>
- 
+
       <PinSheet
         pin={pins.selectedPin}
         currentUserId={user.id}
@@ -181,7 +284,7 @@ export function MapClient({ user }: { user: MapUser }) {
         isUpvoting={pins.upvotePin.isPending || pins.undoUpvote.isPending}
         isDeleting={pins.deletePin.isPending}
       />
- 
+
       <CreatePinSheet
         open={pins.createSheetOpen}
         editingPin={pins.editingPin}
