@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+
 
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
@@ -13,6 +14,7 @@ import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
 import QuestsPage from "~/app/_components/quests/QuestsPage";
 import { xpToLevel, xpProgress } from "~/lib/xp";
 import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type MapUser = {
   id: string;
@@ -38,6 +40,7 @@ export function AppShell({ user }: { user: MapUser }) {
   const questsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [settingsClosing, setSettingsClosing] = useState(false);
   const settingsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [celebration, setCelebration] = useState(null);
 
   const closeStats = useCallback(() => {
     setStatsClosing(true);
@@ -82,6 +85,15 @@ export function AppShell({ user }: { user: MapUser }) {
       setSigningOut(false);
     }
   }, [signingOut]);
+
+useEffect(() => {
+  setCelebration({
+    type: "achievement",
+    title: "First Steps",
+    shortText: "Achievement Unlocked",
+    message: "You explored your first area.",
+  });
+}, []);
 
   const overlays = useMemo(() => {
     if (tab !== "profile") return null;
@@ -320,6 +332,15 @@ export function AppShell({ user }: { user: MapUser }) {
           }}
         />
       )}
+  <CelebrationPopout
+    open={!!celebration}
+    type={celebration?.type}
+    title={celebration?.title}
+    shortText={celebration?.shortText}
+    message={celebration?.message}
+    onClose={() => setCelebration(null)}
+  />
+
     </main>
   );
 }
