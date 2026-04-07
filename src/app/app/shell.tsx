@@ -1,8 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-
-
+import CelebrationPopout from "~/components/ui/CelebrationPopout";
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
 import StatsPage from "~/app/_components/stats/StatsPage";
