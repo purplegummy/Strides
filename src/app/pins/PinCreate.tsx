@@ -4,7 +4,7 @@ import type { PinCreateProps } from './types';
 import { themes } from './theme';
 import { PinBubble } from './PinBubble';
  
-export const PinCreate: React.FC<PinCreateProps & { isSubmitting?: boolean }> = ({
+export const PinCreate: React.FC<PinCreateProps> = ({
   theme = 'blue',
   onClose,
   onSubmit,
@@ -92,7 +92,12 @@ export const PinCreate: React.FC<PinCreateProps & { isSubmitting?: boolean }> = 
           font-style: italic;
         }
       `}</style>
-      <PinBubble theme={theme} onClose={onClose}>
+      <PinBubble
+        theme={theme}
+        onClose={onClose}
+        border="2.5px solid rgba(255,255,255,0.15)"
+        pointerColor="#1a5a8a"
+      >
         <div style={{ marginBottom: 10, paddingRight: 36 }}>
           <input
             className={placeholderClass}

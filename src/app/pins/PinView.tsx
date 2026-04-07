@@ -1,6 +1,7 @@
 import React from 'react';
 import type { CSSProperties } from 'react';
 import type { PinViewProps } from './types';
+import { getRarityBorder, getRarityPointerColor } from './types';
 import { themes } from './theme';
 import { PinBubble } from './PinBubble';
 import { UpvoteIcon, DownvoteIcon } from './icons';
@@ -13,6 +14,8 @@ export const PinView: React.FC<PinViewProps> = ({
   onDownvote,
 }) => {
   const t = themes[theme];
+  const border = getRarityBorder(data.score);
+  const pointerColor = getRarityPointerColor(data.score);
  
   const titleStyle: CSSProperties = {
     fontSize: 22,
@@ -70,7 +73,7 @@ export const PinView: React.FC<PinViewProps> = ({
   };
  
   return (
-    <PinBubble theme={theme} onClose={onClose}>
+    <PinBubble theme={theme} onClose={onClose} border={border} pointerColor={pointerColor}>
       <div style={titleStyle}>{data.locationName}</div>
       <div style={subtitleStyle}>
         Uploaded by: {data.uploadedBy} at {data.uploadedAt}
@@ -100,5 +103,4 @@ export const PinView: React.FC<PinViewProps> = ({
     </PinBubble>
   );
 };
- 
  

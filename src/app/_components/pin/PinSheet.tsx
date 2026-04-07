@@ -90,7 +90,7 @@ export function PinSheet({
     id: pin.id,
     locationName: pin.title,
     uploadedBy: pin.creatorName ?? "Unknown",
-    uploadedAt: "",
+    uploadedAt: pin.createdAt ? new Date(pin.createdAt).toLocaleDateString("en-US") : "",
     description: pin.description ?? "",
     score: optimisticTotal,
   };
@@ -199,7 +199,7 @@ export function PinSheet({
             {cfg.label} · {optimisticTotal} {optimisticTotal === 1 ? "upvote" : "upvotes"}
           </span>
         </div>
- 
+
         <PinView
           data={viewData}
           theme={theme}
@@ -236,3 +236,4 @@ export function PinSheet({
     </>
   );
 }
+ 
