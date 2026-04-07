@@ -221,7 +221,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "/Users/prasitdhungyel/strides/generated/prisma",
+      "value": "D:\\test\\Strides\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -230,12 +230,12 @@ const config = {
     "binaryTargets": [
       {
         "fromEnvVar": null,
-        "value": "darwin-arm64",
+        "value": "windows",
         "native": true
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "/Users/prasitdhungyel/strides/prisma/schema.prisma",
+    "sourceFilePath": "D:\\test\\Strides\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -249,6 +249,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
