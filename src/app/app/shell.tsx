@@ -1,6 +1,7 @@
 "use client";
 
-import CelebrationPopout from "~/components/ui/CelebrationPopout";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CelebrationPopout } from "~/components/ui/CelebrationPopout";
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
 import StatsPage from "~/app/_components/stats/StatsPage";
@@ -37,7 +38,13 @@ export function AppShell({ user }: { user: MapUser }) {
   const questsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [settingsClosing, setSettingsClosing] = useState(false);
   const settingsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [celebration, setCelebration] = useState(null);
+  const [celebration, setCelebration] = useState<{
+    type?: "level" | "achievement" | "quest" | "nearby";
+    title: string;
+    shortText: string;
+    message: string;
+    submessage?: string;
+  } | null>(null);
 
   const closeStats = useCallback(() => {
     setStatsClosing(true);
@@ -332,9 +339,9 @@ useEffect(() => {
   <CelebrationPopout
     open={!!celebration}
     type={celebration?.type}
-    title={celebration?.title}
-    shortText={celebration?.shortText}
-    message={celebration?.message}
+    title={celebration?.title ?? ""}
+    shortText={celebration?.shortText ?? ""}
+    message={celebration?.message ?? ""}
     onClose={() => setCelebration(null)}
   />
 
