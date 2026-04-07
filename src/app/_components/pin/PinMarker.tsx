@@ -1,7 +1,7 @@
 "use client";
-
+ 
 import { getRarity, RARITY_CONFIG } from "./pin-rarity";
-
+ 
 export type PinData = {
   id: string;
   title: string;
@@ -12,17 +12,18 @@ export type PinData = {
   myUpvotes: number; // 0, 1, or 2
   createdById: string;
   creatorName?: string | null;
+  createdAt?: Date | string | null; // ← added
 };
-
+ 
 interface PinMarkerProps {
   pin: PinData;
   onClick: (pin: PinData) => void;
 }
-
+ 
 export function PinMarker({ pin, onClick }: PinMarkerProps) {
   const rarity = getRarity(pin.upvotes);
   const cfg = RARITY_CONFIG[rarity];
-
+ 
   return (
     <button
       type="button"
@@ -48,7 +49,7 @@ export function PinMarker({ pin, onClick }: PinMarkerProps) {
           animation: rarity === "legendary" ? "pin-pulse 1.8s ease-in-out infinite" : undefined,
         }}
       />
-
+ 
       {/* Pin dot */}
       <span
         style={{
@@ -65,7 +66,7 @@ export function PinMarker({ pin, onClick }: PinMarkerProps) {
         }}
         className="pin-dot"
       />
-
+ 
       {/* Needle */}
       <span
         style={{
@@ -81,7 +82,7 @@ export function PinMarker({ pin, onClick }: PinMarkerProps) {
           zIndex: 0,
         }}
       />
-
+ 
       <style>{`
         .pin-dot:hover { transform: scale(1.2); }
         @keyframes pin-pulse {
@@ -92,7 +93,7 @@ export function PinMarker({ pin, onClick }: PinMarkerProps) {
     </button>
   );
 }
-
+ 
 function pinSize(rarity: string): string {
   return { common: "14px", notable: "16px", popular: "18px", rare: "20px", legendary: "24px" }[rarity] ?? "14px";
 }
