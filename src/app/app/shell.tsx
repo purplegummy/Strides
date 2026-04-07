@@ -26,7 +26,7 @@ export function AppShell({ user }: { user: MapUser }) {
   const [signingOut, setSigningOut] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
 
-  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
+  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "emory" });
   const xpQuery = api.quest.getXp.useQuery();
   const stats = statsQuery.data;
   const [, setHudOpen] = useState(true);

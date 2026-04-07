@@ -12,7 +12,7 @@ const ACHIEVEMENTS = [
 ];
 
 export default function StatsPage({ darkMode = true }: { darkMode?: boolean }) {
-  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: 'atlanta' });
+  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: 'emory' });
   const fullStatsQuery = api.map.getStats.useQuery();
   const xpQuery = api.quest.getXp.useQuery();
 

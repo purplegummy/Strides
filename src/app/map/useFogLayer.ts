@@ -4,15 +4,22 @@ import { useCallback, useEffect, useRef, type RefObject } from "react";
 import type { MapRef } from "react-map-gl/mapbox";
 import { metersPerPixelAtLat, type ExploredPoint } from "./map-utils";
 
+const BOUNDARY = {
+  minLat: 33.7865,
+  maxLat: 33.8005,
+  minLng: -84.3310,
+  maxLng: -84.3180,
+};
+
 /** How far (meters) around each explored point to "reveal" through the fog. */
 const REVEAL_RADIUS_M = 25;
 
 /** Size of the tileable cloud texture (px). Larger = bigger cloud shapes. */
 const CLOUD_TEXTURE_SIZE = 512;
 
-/** Drift speed in pixels per millisecond. Very slow so it's subtle. */
-const CLOUD_SPEED_X = 0.014;
-const CLOUD_SPEED_Y = 0.006;
+/** Drift speed in pixels per millisecond. */
+const CLOUD_SPEED_X = 0.03;
+const CLOUD_SPEED_Y = 0.012;
 
 /**
  * Builds a tileable cloud-wisp texture on an offscreen canvas.
@@ -74,14 +81,31 @@ export function useFogLayer(
   fogEnabled: boolean,
 ) {
   const cloudTextureRef = useRef<HTMLCanvasElement | null>(null);
+  // Accumulated screen-space pan offset — updated each frame by how many pixels
+  // the previous map center has shifted on screen. Zero delta on pure zoom.
+  const panOffsetRef = useRef({ x: 0, y: 0 });
+  const prevCenterRef = useRef<{ lng: number; lat: number } | null>(null);
+  /** Slow time-based drift so clouds visibly float. */
   const cloudOffsetRef = useRef({ x: 0, y: 0 });
   const animFrameRef = useRef<number | null>(null);
-  const needsRedrawRef = useRef(true);
+  // Offscreen canvas used as a back-buffer so we blit atomically to the
+  // visible canvas, eliminating the clearRect flash during zoom.
+  const offscreenRef = useRef<HTMLCanvasElement | null>(null);
+  // Cached 2D contexts — getContext is not free; cache them after first access.
+  const offscreenCtxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const visCtxRef = useRef<CanvasRenderingContext2D | null>(null);
+  // Gradient cache keyed by rounded radiusPx — gradients are drawn at origin
+  // and positioned via ctx.translate, so they're reusable across points.
+  const gradientCacheRef = useRef<Map<number, CanvasGradient>>(new Map());
+  const lastZoomRef = useRef<number | null>(null);
   const drawFogRef = useRef<() => void>(() => undefined);
 
   useEffect(() => {
     if (!fogEnabled) return;
     cloudTextureRef.current = buildCloudTexture();
+    const offscreen = document.createElement("canvas");
+    offscreenRef.current = offscreen;
+    offscreenCtxRef.current = offscreen.getContext("2d");
   }, [fogEnabled]);
 
   const resizeCanvas = useCallback(() => {
@@ -94,19 +118,29 @@ export function useFogLayer(
     const h = Math.round(rect.height * dpr);
     if (canvas.width !== w) canvas.width = w;
     if (canvas.height !== h) canvas.height = h;
-    needsRedrawRef.current = true;
+    // Cache the visible canvas context after first resize.
+    visCtxRef.current ??= canvas.getContext("2d");
+    if (offscreenRef.current) {
+      offscreenRef.current.width = w;
+      offscreenRef.current.height = h;
+    }
+    // Resizing invalidates gradient objects tied to the old context state.
+    gradientCacheRef.current.clear();
   }, [fogCanvasRef]);
 
   const drawFog = useCallback(() => {
     if (!fogEnabled) return;
     const map = mapRef.current?.getMap();
     const canvas = fogCanvasRef.current;
-    if (!map || !canvas) return;
+    const offscreen = offscreenRef.current;
+    if (!map || !canvas || !offscreen) return;
     const dpr = window.devicePixelRatio || 1;
     const cssWidth = canvas.width / dpr;
     const cssHeight = canvas.height / dpr;
     if (cssWidth <= 0 || cssHeight <= 0) return;
-    const ctx = canvas.getContext("2d");
+
+    // Draw everything onto the offscreen back-buffer first.
+    const ctx = offscreenCtxRef.current;
     if (!ctx) return;
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -114,6 +148,13 @@ export function useFogLayer(
 
     const zoom = map.getZoom();
     const isGlobe = zoom < 4;
+
+    // Gradient radius changes with zoom — clear stale cache entries when zoom changes.
+    const roundedZoom = Math.round(zoom * 4); // quarter-zoom resolution
+    if (lastZoomRef.current !== roundedZoom) {
+      gradientCacheRef.current.clear();
+      lastZoomRef.current = roundedZoom;
+    }
 
     const leftEdge = map.project([-180, 0]);
     const rightEdge = map.project([180, 0]);
@@ -124,22 +165,14 @@ export function useFogLayer(
     ctx.beginPath();
 
     if (isGlobe) {
-      // Get the globe center from the map center point
       const mapCenter = map.getCenter();
       const centerPt = map.project([mapCenter.lng, mapCenter.lat]);
-      const globeCenterX = centerPt.x;
-      const globeCenterY = centerPt.y;
-
-      // Get radius by projecting a point 90 degrees away on the equator
-      // and measuring horizontal distance. Multiply by 1.03 to fully cover edge.
       const eastLimb = map.project([mapCenter.lng + 90, 0]);
       const westLimb = map.project([mapCenter.lng - 90, 0]);
       const globeRadius = Math.max((eastLimb.x - westLimb.x) / 2, 0) * 1.03;
-
-      ctx.arc(globeCenterX, globeCenterY, globeRadius, 0, Math.PI * 2);
+      ctx.arc(centerPt.x, centerPt.y, globeRadius, 0, Math.PI * 2);
       ctx.closePath();
     } else {
-      // Mercator zoomed in — fog should cover the full canvas, no clipping needed
       ctx.rect(0, 0, cssWidth, cssHeight);
     }
 
@@ -150,17 +183,32 @@ export function useFogLayer(
     ctx.fillStyle = "rgba(10, 12, 20, 0.78)";
     ctx.fillRect(0, 0, cssWidth, cssHeight);
 
-    // 2. Animated cloud texture anchored to a geographic point so it
-    // moves with the map when panning
+    // 2. Animated cloud texture that moves with map panning but is stable on
+    // zoom. Each frame we measure how far the previous map center has shifted
+    // on screen (screen-pixel delta). Panning produces a non-zero delta; a
+    // pure zoom keeps the center at the screen midpoint, so delta = 0.
+    const center = map.getCenter();
+    if (prevCenterRef.current) {
+      const prevPx = map.project([prevCenterRef.current.lng, prevCenterRef.current.lat]);
+      panOffsetRef.current.x += prevPx.x - cssWidth / 2;
+      panOffsetRef.current.y += prevPx.y - cssHeight / 2;
+      // Normalize to [0, CLOUD_TEXTURE_SIZE) to prevent float precision loss
+      // over long sessions without changing the visual result.
+      panOffsetRef.current.x = ((panOffsetRef.current.x % CLOUD_TEXTURE_SIZE) + CLOUD_TEXTURE_SIZE) % CLOUD_TEXTURE_SIZE;
+      panOffsetRef.current.y = ((panOffsetRef.current.y % CLOUD_TEXTURE_SIZE) + CLOUD_TEXTURE_SIZE) % CLOUD_TEXTURE_SIZE;
+    }
+    prevCenterRef.current = { lng: center.lng, lat: center.lat };
+
     const cloud = cloudTextureRef.current;
     if (cloud) {
       ctx.globalCompositeOperation = "source-over";
-      const anchor = map.project([0, 0]);
-      const { x: ox, y: oy } = cloudOffsetRef.current;
+      const { x: drift_x, y: drift_y } = cloudOffsetRef.current;
       const tw = CLOUD_TEXTURE_SIZE;
       const th = CLOUD_TEXTURE_SIZE;
-      const startX = (((anchor.x + ox) % tw) + tw) % tw - tw;
-      const startY = (((anchor.y + oy) % th) + th) % th - th;
+      const ox = panOffsetRef.current.x + drift_x;
+      const oy = panOffsetRef.current.y + drift_y;
+      const startX = ((ox % tw) + tw) % tw - tw;
+      const startY = ((oy % th) + th) % th - th;
       for (let tx = startX; tx < cssWidth + tw; tx += tw) {
         for (let ty = startY; ty < cssHeight + th; ty += th) {
           ctx.drawImage(cloud, tx, ty);
@@ -168,16 +216,31 @@ export function useFogLayer(
       }
     }
 
-    // 3. Punch holes for explored areas
+    // 3. Punch holes for explored areas.
+    // Gradients are created at the origin and positioned via translate so they
+    // can be cached by radius — avoiding per-point-per-frame allocations.
     ctx.globalCompositeOperation = "destination-out";
-    const pointsToReveal = displayPosition
-      ? [...exploredPoints, displayPosition]
-      : exploredPoints;
+    const gradientCache = gradientCacheRef.current;
 
-    for (const p of pointsToReveal) {
-      if (!Number.isFinite(p.lat) || !Number.isFinite(p.lng)) continue;
+    const drawPoint = (p: ExploredPoint) => {
+      if (!Number.isFinite(p.lat) || !Number.isFinite(p.lng)) return;
+      if (
+        p.lat < BOUNDARY.minLat || p.lat > BOUNDARY.maxLat ||
+        p.lng < BOUNDARY.minLng || p.lng > BOUNDARY.maxLng
+      ) return;
       const mPerPx = metersPerPixelAtLat(zoom, p.lat);
       const radiusPx = REVEAL_RADIUS_M / Math.max(mPerPx, 0.000001);
+      const cacheKey = Math.round(radiusPx * 4); // quarter-pixel resolution
+      let g = gradientCache.get(cacheKey);
+      if (!g) {
+        g = ctx.createRadialGradient(0, 0, radiusPx * 0.2, 0, 0, radiusPx);
+        g.addColorStop(0, "rgba(0,0,0,1)");
+        g.addColorStop(0.45, "rgba(0,0,0,0.95)");
+        g.addColorStop(0.75, "rgba(0,0,0,0.45)");
+        g.addColorStop(1, "rgba(0,0,0,0)");
+        gradientCache.set(cacheKey, g);
+      }
+      ctx.fillStyle = g;
       for (let copy = -numCopies; copy <= numCopies; copy++) {
         const projected = map.project([p.lng + copy * 360, p.lat]);
         if (
@@ -186,33 +249,65 @@ export function useFogLayer(
           projected.y < -radiusPx * 2 ||
           projected.y > cssHeight + radiusPx * 2
         ) continue;
-        const g = ctx.createRadialGradient(
-          projected.x, projected.y, radiusPx * 0.2,
-          projected.x, projected.y, radiusPx,
-        );
-        g.addColorStop(0, "rgba(0,0,0,1)");
-        g.addColorStop(0.45, "rgba(0,0,0,0.95)");
-        g.addColorStop(0.75, "rgba(0,0,0,0.45)");
-        g.addColorStop(1, "rgba(0,0,0,0)");
-        ctx.fillStyle = g;
+        ctx.save();
+        ctx.translate(projected.x, projected.y);
         ctx.beginPath();
-        ctx.arc(projected.x, projected.y, radiusPx, 0, Math.PI * 2);
+        ctx.arc(0, 0, radiusPx, 0, Math.PI * 2);
         ctx.fill();
+        ctx.restore();
       }
-    }
+    };
+
+    for (const p of exploredPoints) drawPoint(p);
+    if (displayPosition) drawPoint(displayPosition);
+
+    // 4. Boundary outline — soft glow matching the fog cloud palette
+    ctx.globalCompositeOperation = "source-over";
+    const corners = [
+      [BOUNDARY.minLng, BOUNDARY.minLat],
+      [BOUNDARY.maxLng, BOUNDARY.minLat],
+      [BOUNDARY.maxLng, BOUNDARY.maxLat],
+      [BOUNDARY.minLng, BOUNDARY.maxLat],
+    ].map(([lng, lat]) => map.project([lng!, lat!]));
+    ctx.beginPath();
+    ctx.moveTo(corners[0]!.x, corners[0]!.y);
+    for (let i = 1; i < corners.length; i++) ctx.lineTo(corners[i]!.x, corners[i]!.y);
+    ctx.closePath();
+    // Outer glow — wide, very faint
+    ctx.strokeStyle = "rgba(180, 200, 235, 0.12)";
+    ctx.lineWidth = 6;
+    ctx.stroke();
+    // Inner line — thin, muted cool-white matching the cloud texture tone
+    ctx.strokeStyle = "rgba(190, 210, 240, 0.35)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Label at top-right corner
+    const labelPt = corners[2]!; // maxLng, maxLat
+    ctx.font = "500 10px system-ui, sans-serif";
+    ctx.textAlign = "right";
+    ctx.textBaseline = "bottom";
+    ctx.fillStyle = "rgba(190, 210, 240, 0.45)";
+    ctx.fillText("Emory Campus", labelPt.x - 6, labelPt.y - 6);
 
     ctx.restore();
+
+    // Atomic blit from back-buffer to visible canvas — no clearRect flash.
+    const visCtx = visCtxRef.current;
+    if (visCtx) {
+      visCtx.setTransform(1, 0, 0, 1, 0, 0);
+      visCtx.clearRect(0, 0, canvas.width, canvas.height);
+      visCtx.drawImage(offscreen, 0, 0);
+    }
   }, [displayPosition, exploredPoints, fogEnabled, mapRef, fogCanvasRef]);
 
-  // Always keep the ref pointing at the latest drawFog so the animation loop
-  // never needs drawFog in its dependency array
+  // Keep ref pointing at latest drawFog closure.
   useEffect(() => {
     drawFogRef.current = drawFog;
   }, [drawFog]);
 
-  // Single animation loop — starts once, never restarts.
-  // Calls drawFog via ref so it always uses the latest version without
-  // needing drawFog in the dependency array (which caused seizures on re-render).
+  // RAF loop: accumulate cloud drift and call triggerRepaint() so the map
+  // fires render events even when idle, keeping clouds visibly moving.
   useEffect(() => {
     if (!fogEnabled || !mapReady) return;
 
@@ -220,19 +315,12 @@ export function useFogLayer(
     const animate = (time: number) => {
       if (lastTime > 0) {
         const dt = time - lastTime;
-        const dx = CLOUD_SPEED_X * dt;
-        const dy = CLOUD_SPEED_Y * dt;
         cloudOffsetRef.current.x =
-          (cloudOffsetRef.current.x + dx) % CLOUD_TEXTURE_SIZE;
+          (cloudOffsetRef.current.x + CLOUD_SPEED_X * dt) % CLOUD_TEXTURE_SIZE;
         cloudOffsetRef.current.y =
-          (cloudOffsetRef.current.y + dy) % CLOUD_TEXTURE_SIZE;
-        if (dx > 0.5 || dy > 0.5) {
-          needsRedrawRef.current = true;
-        }
-      }
-      if (needsRedrawRef.current) {
-        drawFogRef.current();
-        needsRedrawRef.current = false;
+          (cloudOffsetRef.current.y + CLOUD_SPEED_Y * dt) % CLOUD_TEXTURE_SIZE;
+        // Keep the map rendering so our render-event handler fires every frame.
+        mapRef.current?.getMap()?.triggerRepaint();
       }
       lastTime = time;
       animFrameRef.current = requestAnimationFrame(animate);
@@ -245,7 +333,17 @@ export function useFogLayer(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fogEnabled, mapReady]);
 
-  // Resize on mount and on container resize only — never inside draw loop
+  // Redraw fog in sync with each map GL frame to avoid zoom jitter.
+  useEffect(() => {
+    if (!fogEnabled || !mapReady) return;
+    const map = mapRef.current?.getMap();
+    if (!map) return;
+    const onRender = () => drawFogRef.current();
+    map.on("render", onRender);
+    return () => { map.off("render", onRender); };
+  }, [fogEnabled, mapReady, mapRef]);
+
+  // Resize on mount and container resize.
   useEffect(() => {
     if (!fogEnabled || !mapReady) return;
     const map = mapRef.current?.getMap();
@@ -254,28 +352,4 @@ export function useFogLayer(
     map.on("resize", resizeCanvas);
     return () => { map.off("resize", resizeCanvas); };
   }, [fogEnabled, mapReady, mapRef, resizeCanvas]);
-
-  // Map events only set the dirty flag — the animation loop does the actual draw
-  useEffect(() => {
-    if (!fogEnabled || !mapReady) return;
-    const map = mapRef.current?.getMap();
-    if (!map) return;
-    const handler = () => { needsRedrawRef.current = true; };
-    needsRedrawRef.current = true;
-    map.on("move", handler);
-    map.on("zoom", handler);
-    map.on("rotate", handler);
-    map.on("pitch", handler);
-    return () => {
-      map.off("move", handler);
-      map.off("zoom", handler);
-      map.off("rotate", handler);
-      map.off("pitch", handler);
-    };
-  }, [drawFog, fogEnabled, mapReady, mapRef]);
-
-  useEffect(() => {
-    if (!fogEnabled || !mapReady) return;
-    needsRedrawRef.current = true;
-  }, [drawFog, fogEnabled, mapReady]);
 }

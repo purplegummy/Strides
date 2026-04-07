@@ -18,6 +18,8 @@ function totalProgress(quest: Quest) {
 function QuestCard({ quest, collected, darkMode }: { quest: Quest; collected: boolean; darkMode: boolean }) {
   const hasObjectives = quest.objectives.length > 0;
   const pct = hasObjectives ? totalProgress(quest) : 1;
+  const allObjectivesDone = !hasObjectives || pct >= 1;
+  const [optimisticCollected, setOptimisticCollected] = useState(false);
   const utils = api.useUtils();
 
   const collect = api.quest.collectReward.useMutation({
@@ -26,6 +28,8 @@ function QuestCard({ quest, collected, darkMode }: { quest: Quest; collected: bo
       void utils.quest.getXp.invalidate();
     },
   });
+
+  const isCollected = collected || optimisticCollected;
 
   const cardBg = darkMode ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)";
   const cardBorder = darkMode ? "1px solid rgba(255,255,255,0.06)" : "1px solid rgba(0,0,0,0.08)";
@@ -52,7 +56,7 @@ function QuestCard({ quest, collected, darkMode }: { quest: Quest; collected: bo
           <div key={obj.id} className="space-y-1.5">
             <div className="flex justify-between text-xs" style={{ color: mutedColor }}>
               <span>{obj.description}</span>
-              <span className="tabular-nums">{obj.current} / {obj.target} {obj.unit}</span>
+              <span className="tabular-nums">{Math.min(obj.current, obj.target)} / {obj.target} {obj.unit}</span>
             </div>
             <div className="h-0.5 w-full overflow-hidden rounded-full" style={{ background: trackBg }}>
               <div
@@ -81,23 +85,26 @@ function QuestCard({ quest, collected, darkMode }: { quest: Quest; collected: bo
       {quest.collectible && (
         <button
           type="button"
-          disabled={collected || collect.isPending}
-          onClick={() => collect.mutate({ questId: quest.id })}
+          disabled={isCollected || !allObjectivesDone}
+          onClick={() => {
+            setOptimisticCollected(true);
+            collect.mutate({ questId: quest.id });
+          }}
           className="w-full rounded-lg py-2 text-xs font-semibold transition"
           style={{
-            background: collected
+            background: isCollected || !allObjectivesDone
               ? (darkMode ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.04)")
               : "rgba(28,233,253,0.12)",
-            color: collected
+            color: isCollected || !allObjectivesDone
               ? (darkMode ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.3)")
               : "#1CE9FD",
-            border: `1px solid ${collected
+            border: `1px solid ${isCollected || !allObjectivesDone
               ? (darkMode ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.08)")
               : "rgba(28,233,253,0.2)"}`,
-            cursor: collected ? "default" : "pointer",
+            cursor: isCollected || !allObjectivesDone ? "default" : "pointer",
           }}
         >
-          {collected ? "Collected" : collect.isPending ? "Collecting…" : `Collect ${quest.reward.xp} XP`}
+          {isCollected ? "Collected" : !allObjectivesDone ? "Complete objectives first" : `Collect ${quest.reward.xp} XP`}
         </button>
       )}
     </div>
@@ -149,9 +156,11 @@ function CollapsibleSection({ label, count, defaultOpen = true, darkMode, childr
 }
 
 export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) {
-  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
+  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "emory" });
+  const fullStatsQuery = api.map.getStats.useQuery();
   const completedQuery = api.quest.getCompletedQuests.useQuery();
   const tilesDiscovered = statsQuery.data?.tilesDiscovered ?? 0;
+  const pinsPlaced = fullStatsQuery.data?.pinsPlaced ?? 0;
 
   if (completedQuery.isPending) return null;
 
@@ -162,7 +171,7 @@ export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) 
     status: "active" as const,
     objectives: def.objectives.map(obj => ({
       ...obj,
-      current: obj.id === "tiles" ? tilesDiscovered : 0,
+      current: obj.id === "tiles" ? tilesDiscovered : obj.id === "pins" ? pinsPlaced : 0,
     })),
   }));
 
