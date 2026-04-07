@@ -46,6 +46,7 @@ type Theme = typeof darkTheme;
 
 function QuestCard({ quest, collected, t }: { quest: Quest; collected: boolean; t: Theme }) {
   const hasObjectives = quest.objectives.length > 0;
+  const allObjectivesDone = !hasObjectives || quest.objectives.every(obj => objectiveProgress(obj) >= 1);
   const utils = api.useUtils();
 
   const collect = api.quest.collectReward.useMutation({
@@ -78,7 +79,7 @@ function QuestCard({ quest, collected, t }: { quest: Quest; collected: boolean; 
           <div key={obj.id} className="space-y-1.5">
             <div className={`flex justify-between text-xs ${t.muted}`}>
               <span>{obj.description}</span>
-              <span className="tabular-nums">{obj.current} / {obj.target} {obj.unit}</span>
+              <span className="tabular-nums">{Math.min(obj.current, obj.target)} / {obj.target} {obj.unit}</span>
             </div>
             <div className={`w-full rounded-full h-2 overflow-hidden ${t.barBg}`}>
               <div
@@ -105,15 +106,15 @@ function QuestCard({ quest, collected, t }: { quest: Quest; collected: boolean; 
       {quest.collectible && (
         <button
           type="button"
-          disabled={collected || collect.isPending}
+          disabled={collected || !allObjectivesDone || collect.isPending}
           onClick={() => collect.mutate({ questId: quest.id })}
           className={`w-full rounded-xl py-2.5 text-xs font-semibold transition ${
-            collected
+            collected || !allObjectivesDone
               ? `${t.barBg} ${t.xpColor} border ${t.divider} cursor-default`
               : "bg-[#00d9ff]/10 text-[#00d9ff] border border-[#00d9ff]/20 hover:bg-[#00d9ff]/20"
           }`}
         >
-          {collected ? "Collected" : collect.isPending ? "Collecting…" : `Collect ${quest.reward.xp} XP`}
+          {collected ? "Collected" : !allObjectivesDone ? "Complete objectives first" : `Collect ${quest.reward.xp} XP`}
         </button>
       )}
     </div>
@@ -157,9 +158,11 @@ function CollapsibleSection({ label, count, defaultOpen = true, t, children }: {
 }
 
 export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) {
-  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
+  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "emory" });
+  const fullStatsQuery = api.map.getStats.useQuery();
   const completedQuery = api.quest.getCompletedQuests.useQuery();
   const tilesDiscovered = statsQuery.data?.tilesDiscovered ?? 0;
+  const pinsPlaced = fullStatsQuery.data?.pinsPlaced ?? 0;
 
   const t = darkMode ? darkTheme : lightTheme;
 
@@ -172,7 +175,7 @@ export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) 
     status: "active" as const,
     objectives: def.objectives.map(obj => ({
       ...obj,
-      current: obj.id === "tiles" ? tilesDiscovered : 0,
+      current: obj.id === "tiles" ? tilesDiscovered : obj.id === "pins" ? pinsPlaced : 0,
     })),
   }));
 

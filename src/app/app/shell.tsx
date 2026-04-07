@@ -28,7 +28,7 @@ export function AppShell({ user }: { user: MapUser }) {
   const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
   const [fogIntensity, setFogIntensity] = useState<'light' | 'medium' | 'heavy'>('medium');
 
-  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
+  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "emory" });
   const xpQuery = api.quest.getXp.useQuery();
   const stats = statsQuery.data;
   const [, setHudOpen] = useState(true);

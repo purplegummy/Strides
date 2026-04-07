@@ -90,7 +90,7 @@ export const mapRouter = createTRPCRouter({
    * Used by the ExplorationBar to show tiles discovered, percentage, and streak.
    */
   getExplorationStats: protectedProcedure
-    .input(z.object({ cityId: z.string().default("atlanta") }))
+    .input(z.object({ cityId: z.string().default("emory") }))
     .query(async ({ ctx, input }) => {
       const city = getCity(input.cityId);
       if (!city)
