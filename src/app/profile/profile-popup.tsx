@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Progress } from "./ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./_components/profile/dialog";
+import { Button } from "./_components/profile/button";
+import { Avatar, AvatarFallback, AvatarImage } from "./_components/profile/avatar";
+import { Progress } from "./_components/profile/progress";
 import { User, Info, Award, MapPin, LogOut } from "lucide-react";
 import { useState } from "react";
 
