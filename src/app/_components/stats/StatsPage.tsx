@@ -6,7 +6,7 @@ import { xpToLevel, xpProgress } from '~/lib/xp';
 import { QUEST_DEFINITIONS } from '../quests/questData';
 
 export default function StatsPage({ darkMode = true, units = 'metric' }: { darkMode?: boolean; units?: 'metric' | 'imperial' }) {
-  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: 'atlanta' });
+  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: 'emory' });
   const fullStatsQuery = api.map.getStats.useQuery();
   const xpQuery = api.quest.getXp.useQuery();
   const completedQuery = api.quest.getCompletedQuests.useQuery();
@@ -35,7 +35,6 @@ export default function StatsPage({ darkMode = true, units = 'metric' }: { darkM
   const tilesDiscovered = exploration?.tilesDiscovered ?? 0;
   const totalTiles = exploration?.totalTiles ?? 0;
   const tilesRemaining = totalTiles - tilesDiscovered;
-  const pinsPlaced = full?.pinsPlaced ?? 0;
 
   const collectedIds = new Set(completedQuery.data?.map(c => c.questId) ?? []);
   const completedQuests = QUEST_DEFINITIONS.filter(q => collectedIds.has(q.id));
