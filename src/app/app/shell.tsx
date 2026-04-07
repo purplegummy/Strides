@@ -14,7 +14,6 @@ import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
 import QuestsPage from "~/app/_components/quests/QuestsPage";
 import { xpToLevel, xpProgress } from "~/lib/xp";
 import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 type MapUser = {
   id: string;
