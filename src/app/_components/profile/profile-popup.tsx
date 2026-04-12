@@ -1,7 +1,7 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
-import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Progress } from "./ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
+import { Button } from "./button";
+import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
+import { Progress } from "./progress";
 import { User, Info, Award, MapPin, LogOut } from "lucide-react";
 import { useState } from "react";
 
@@ -13,7 +13,7 @@ export function ProfilePopup({ trigger }: ProfilePopupProps) {
   const [openDialog, setOpenDialog] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'profile' | 'friends'>('profile');
 
-  // Mock game user data
+  // User info
   const player = {
     name: "Username",
     avatar: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=400&h=400&fit=crop",
