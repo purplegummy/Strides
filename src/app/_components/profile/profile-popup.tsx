@@ -1,3 +1,5 @@
+"use client";
+
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./dialog";
 import { Button } from "./button";
 import { Avatar, AvatarFallback, AvatarImage } from "./avatar";
@@ -7,16 +9,20 @@ import { useState } from "react";
 
 interface ProfilePopupProps {
   trigger?: React.ReactNode;
+  user?: {
+    name?: string | null;
+    image?: string | null;
+  };
 }
 
-export function ProfilePopup({ trigger }: ProfilePopupProps) {
+export function ProfilePopup({ trigger, user }: ProfilePopupProps) {
   const [openDialog, setOpenDialog] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'profile' | 'friends'>('profile');
 
   // User info
   const player = {
-    name: "Username",
-    avatar: "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=400&h=400&fit=crop",
+    name: user?.name ?? "Username",
+    avatar: user?.image ?? "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=400&h=400&fit=crop",
     progress: 63.3,
   };
 
