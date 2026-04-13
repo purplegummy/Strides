@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { getSession } from "~/server/better-auth/server";
 import { api, HydrateClient } from "~/trpc/server";
+import { AppShell } from "./shell";
 import { ProfilePopup } from "../_components/profile/profile-popup";
 
 export default async function AppPage() {
@@ -16,14 +17,24 @@ export default async function AppPage() {
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen items-start justify-center p-6">
-        <ProfilePopup
+      <div className="relative">
+        <AppShell
           user={{
-            name: session.user.name,
-            image: session.user.image,
+            id: session.user.id,
+            name: session.user.name ?? undefined,
+            imageUrl: session.user.image ?? undefined,
           }}
         />
-      </main>
+
+        <div className="fixed right-4 top-4 z-50">
+          <ProfilePopup
+            user={{
+              name: session.user.name,
+              image: session.user.image,
+            }}
+          />
+        </div>
+      </div>
     </HydrateClient>
   );
 }
