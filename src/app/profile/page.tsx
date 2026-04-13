@@ -16,13 +16,15 @@ export default async function AppPage() {
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen items-center justify-center p-6">
-        <ProfilePopup
-          user={{
-            name: session.user.name,
-            image: session.user.image,
-          }}
-        />
+      <main className="min-h-screen bg-slate-950 p-6">
+        <div className="mx-auto max-w-5xl">
+          <ProfilePopup
+            user={{
+              name: session.user.name,
+              image: session.user.image,
+            }}
+          />
+        </div>
       </main>
     </HydrateClient>
   );
