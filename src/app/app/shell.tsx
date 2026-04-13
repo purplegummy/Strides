@@ -13,6 +13,7 @@ import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
 import QuestsPage from "~/app/_components/quests/QuestsPage";
 import { xpToLevel, xpProgress } from "~/lib/xp";
 import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
+import { ProfilePopup } from "~/app/_components/profile/profile-popup";
 
 type MapUser = {
   id: string;
@@ -81,76 +82,32 @@ export function AppShell({ user }: { user: MapUser }) {
     }
   }, [signingOut]);
 
-  const overlays = useMemo(() => {
-    if (tab !== "profile") return null;
+const overlays = useMemo(() => {
+  if (tab !== "profile") return null;
 
-    return (
-      <div className="absolute inset-0 z-20 flex flex-col">
-        <div className="flex-1 bg-black/25 backdrop-blur-sm" />
-        <div className="rounded-t-3xl border-t border-white/10 bg-[#0b1020]/95 p-5 pb-28 text-white shadow-[0_-20px_60px_rgba(0,0,0,0.55)]">
-          <div className="mb-4 flex justify-end">
-            <button
-              type="button"
-              onClick={() => setTab("map")}
-              className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/10"
-            >
-              Back to map
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {user.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={user.imageUrl}
-                alt={user.name ? `${user.name}'s avatar` : "Your avatar"}
-                referrerPolicy="no-referrer"
-                className="h-12 w-12 rounded-full object-cover"
-                draggable={false}
-              />
-            ) : (
-              <div className="h-12 w-12 rounded-full bg-white/10" />
-            )}
-            <div className="min-w-0">
-              <div className="truncate text-base font-semibold">
-                {user.name ?? "Profile"}
-              </div>
-              <div className="text-sm text-white/60">Coming soon.</div>
-            </div>
-          </div>
-
-          <div className="mt-5 text-sm text-white/70">
-            This is a placeholder panel. The map stays mounted underneath so
-            switching tabs is instant.
-          </div>
-
-          <button
-            type="button"
-            onClick={signOut}
-            disabled={signingOut}
-            className={[
-              "mt-6 w-full rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition",
-              "hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60",
-            ].join(" ")}
-          >
-            {signingOut ? "Signing out…" : "Sign out"}
-          </button>
-
-          <p className="mt-4 text-center text-[10px] text-white/25">
-            Icon by{" "}
-            <a
-              href="https://icons8.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-white/40"
-            >
-              Icons8
-            </a>
-          </p>
-        </div>
+  return (
+    <div className="absolute inset-0 z-20 flex flex-col bg-[#0b1020] p-6 overflow-y-auto">
+      <div className="mb-4 flex justify-end">
+        <button
+          type="button"
+          onClick={() => setTab("map")}
+          className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/10"
+        >
+          Back to map
+        </button>
       </div>
-    );
-  }, [signOut, signingOut, tab, user.imageUrl, user.name]);
+
+      <div className="mx-auto w-full max-w-5xl">
+        <ProfilePopup
+          user={{
+            name: user.name,
+            image: user.imageUrl,
+          }}
+        />
+      </div>
+    </div>
+  );
+}, [tab, user]);
 
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
