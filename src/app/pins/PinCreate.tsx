@@ -51,6 +51,8 @@ export const PinCreate: React.FC<PinCreateProps> = ({
     ...inputBase,
     fontSize: 20,
     fontWeight: 800,
+    paddingRight: 44,
+    boxSizing: 'border-box',
     background: nameFocused ? t.inputFocusBg : t.inputBg,
     border: `1.5px solid ${nameFocused ? t.inputFocusBorder : t.inputBorder}`,
   };
@@ -98,11 +100,11 @@ export const PinCreate: React.FC<PinCreateProps> = ({
         border="2.5px solid rgba(255,255,255,0.15)"
         pointerColor="#1a5a8a"
       >
-        <div style={{ marginBottom: 10, paddingRight: 36 }}>
+        <div style={{ marginBottom: 10, marginTop: 24 }}>
           <input
             className={placeholderClass}
             style={nameInputStyle}
-            placeholder="Enter a name for the pin..."
+            placeholder="Enter a pin name..."
             value={name}
             onChange={e => setName(e.target.value)}
             onFocus={() => setNameFocused(true)}

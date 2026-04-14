@@ -28,7 +28,8 @@ export const PinBubble: React.FC<PinBubbleProps> = ({
  
   const wrapStyle: CSSProperties = {
     position: 'relative',
-    width,
+    width: '100%',
+    maxWidth: width,
     filter: `drop-shadow(${t.shadow})`,
     fontFamily: "'Nunito', sans-serif",
   };
@@ -53,8 +54,8 @@ export const PinBubble: React.FC<PinBubbleProps> = ({
  
   const closeBtnStyle: CSSProperties = {
     position: 'absolute',
-    top: 14,
-    right: 14,
+    top: 8,
+    right: 10,
     width: 30,
     height: 30,
     borderRadius: '50%',

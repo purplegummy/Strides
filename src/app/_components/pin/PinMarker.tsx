@@ -95,5 +95,5 @@ export function PinMarker({ pin, onClick }: PinMarkerProps) {
 }
  
 function pinSize(rarity: string): string {
-  return { common: "14px", notable: "16px", popular: "18px", rare: "20px", legendary: "24px" }[rarity] ?? "14px";
+  return { common: "20px", notable: "23px", popular: "26px", rare: "29px", legendary: "34px" }[rarity] ?? "20px";
 }

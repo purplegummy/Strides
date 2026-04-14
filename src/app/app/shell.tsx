@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
+import { Toaster } from "sonner";
 import { CelebrationPopout } from "~/components/ui/CelebrationPopout";
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
@@ -120,6 +121,7 @@ export function AppShell({ user }: { user: MapUser }) {
 
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
+      <Toaster position="top-center" theme="dark" richColors />
       {/* Map stays mounted regardless of tab */}
       <MapClient user={user} fogIntensity={fogIntensity} hideControls={tab === "profile"} />
 

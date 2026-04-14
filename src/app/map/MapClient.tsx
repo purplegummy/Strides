@@ -1,7 +1,15 @@
 "use client";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { useCallback, useEffect, useRef, useState } from "react";
-import Map, { Marker, type MapRef } from "react-map-gl/mapbox";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import MapGL, { Marker, type MapRef } from "react-map-gl/mapbox";
+type ClusterFeature = {
+  type: "Feature";
+  id?: number;
+  geometry: { type: "Point"; coordinates: [number, number] };
+  properties: (PinData & { cluster?: false }) | { cluster: true; cluster_id: number; point_count: number };
+};
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const SuperclusterCtor = (require("supercluster") as { default: new (opts: object) => { load: (f: object[]) => void; getClusters: (bbox: number[], zoom: number) => ClusterFeature[]; getClusterExpansionZoom: (id: number) => number } }).default;
 import { env } from "~/env";
 import { PinMarker, type PinData } from "~/app/_components/pin/PinMarker";
 import { PinSheet } from "~/app/_components/pin/PinSheet";
@@ -12,19 +20,13 @@ import { useGeolocation } from "./useGeolocation";
 import { useExploredPoints } from "./useExploredPoints";
 import { useMapPins } from "./useMapPins";
 import { useFogLayer } from "./useFogLayer";
+import { haversineMeters } from "./map-utils";
+
  
 type MapUser = {
   id: string;
 };
  
-// ── Pin bubble geometry ────────────────────────────────────────────────────────
-// The bubble floats above the marker. We want the tip of the pointer triangle
-// (bottom of the bubble) to sit exactly over the pin's map coordinate.
-// Bubble height ≈ 420px, pointer triangle ≈ 32px, rarity tag ≈ 28px,
-// plus 120px bottom offset from the sheet. Total upward offset ≈ 600px.
-// We place the pin tip at 75% down the screen so the bubble has room above.
-const PIN_TIP_TARGET_Y_RATIO = 0.25; // 0 = top, 1 = bottom
-const PIN_BUBBLE_HEIGHT_PX = 580;    // full height from tip to top of bubble
 
 type FogIntensity = "medium" | "light" | "heavy";
 
@@ -34,43 +36,19 @@ type MapClientProps = {
   hideControls?: boolean;
 };
  
-export function MapClient({ user, fogIntensity, hideControls }: MapClientProps) {
+export function MapClient({ user, fogIntensity: _fogIntensity, hideControls }: MapClientProps) {
   const fogEnabled = true;
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hasCentered, setHasCentered] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [zoom, setZoom] = useState(2);
   const selectedPinRef = useRef<PinData | null>(null);
- 
-  // ── Center so the pin's pointer TIP lands at PIN_TIP_TARGET_Y_RATIO ────────
-  const centerOnPin = useCallback((pin: { lat: number; lng: number }) => {
-    const map = mapRef.current?.getMap();
-    if (!map) return;
- 
-    const canvas = map.getCanvas();
-    const screenH = canvas.clientHeight;
- 
-    // Where we want the tip to appear on screen
-    const targetTipY = screenH * PIN_TIP_TARGET_Y_RATIO;
- 
-    // Current screen position of the pin coordinate
-    const pinScreenPos = map.project([pin.lng, pin.lat]);
- 
-    // Shift the map so pinScreenPos.y moves to targetTipY
-    const dy = pinScreenPos.y - targetTipY;
-    const newCenter = map.unproject([pinScreenPos.x, pinScreenPos.y - dy]);
- 
-    map.easeTo({
-      center: [newCenter.lng, newCenter.lat],
-      duration: 500,
-      easing: (t) => t * (2 - t),
-    });
-  }, []);
  
   // ── Hooks ──────────────────────────────────────────────────────────────────
   const geo = useGeolocation();
   const explored = useExploredPoints(geo.position, geo.lastKnownPosition);
-  const pins = useMapPins(geo.position, geo.lastKnownPosition, centerOnPin);
+  const pins = useMapPins(geo.position, geo.lastKnownPosition);
  
   // Keep a ref in sync so the GPS handler can read it without stale closure
   useEffect(() => {
@@ -89,8 +67,7 @@ export function MapClient({ user, fogIntensity, hideControls }: MapClientProps) 
   // ── Handle pin click: select + center ─────────────────────────────────────
   const handlePinClick = useCallback((pin: PinData) => {
     pins.setSelectedPin(pin);
-    centerOnPin(pin);
-  }, [pins, centerOnPin]);
+  }, [pins]);
  
   // ── GPS watch — freeze map movement while a pin popup is open ─────────────
   useEffect(() => {
@@ -128,6 +105,52 @@ export function MapClient({ user, fogIntensity, hideControls }: MapClientProps) 
     setHasCentered(true);
   }, [explored.displayPosition, hasCentered, mapReady, geo.position]);
  
+  // Only show pins that are within 25m of an explored point (fog reveal radius)
+  const visiblePins = useMemo(() => {
+    const allPins = pins.pinsQuery.data ?? [];
+    const ep = explored.exploredPoints;
+    if (ep.length === 0) return [];
+    return allPins.filter((pin) =>
+      ep.some((pt) => haversineMeters(pt, pin) <= 25)
+    );
+  }, [pins.pinsQuery.data, explored.exploredPoints]);
+
+  // Spread pins that share the exact same coordinate so they never overlap
+  const spreadPins = useMemo(() => {
+    const SPREAD_M = 8; // meters between stacked pins
+    const DEG_PER_M_LAT = 1 / 111_000;
+    const groups = new Map<string, PinData[]>();
+    for (const pin of visiblePins) {
+      const key = `${pin.lat.toFixed(6)},${pin.lng.toFixed(6)}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key)!.push(pin);
+    }
+    return visiblePins.map((pin) => {
+      const key = `${pin.lat.toFixed(6)},${pin.lng.toFixed(6)}`;
+      const group = groups.get(key)!;
+      if (group.length === 1) return pin;
+      const idx = group.indexOf(pin);
+      const angle = (2 * Math.PI * idx) / group.length;
+      const dLat = Math.cos(angle) * SPREAD_M * DEG_PER_M_LAT;
+      const dLng = Math.sin(angle) * SPREAD_M * DEG_PER_M_LAT / Math.cos((pin.lat * Math.PI) / 180);
+      return { ...pin, lat: pin.lat + dLat, lng: pin.lng + dLng };
+    });
+  }, [visiblePins]);
+
+  // Cluster nearby pins using supercluster
+  const { clusters, supercluster: sc } = useMemo(() => {
+    const supercluster = new SuperclusterCtor({ radius: 20, maxZoom: 17 });
+    supercluster.load(
+      spreadPins.map((pin) => ({
+        type: "Feature" as const,
+        geometry: { type: "Point" as const, coordinates: [pin.lng, pin.lat] },
+        properties: pin,
+      }))
+    );
+    const clusters = supercluster.getClusters([-180, -85, 180, 85], Math.round(zoom));
+    return { clusters, supercluster };
+  }, [spreadPins, zoom]);
+
   const token = env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
   if (!token) {
     return (
@@ -143,12 +166,13 @@ export function MapClient({ user, fogIntensity, hideControls }: MapClientProps) 
   return (
     <div className="p-0">
       <div className="relative h-[100dvh] w-full overflow-hidden [&_.mapboxgl-ctrl-logo]:!hidden [&_.mapboxgl-ctrl-attrib]:!hidden">
-        <Map
+        <MapGL
           ref={mapRef}
           mapboxAccessToken={token}
           mapStyle="mapbox://styles/mapbox/streets-v12"
           initialViewState={{ latitude: 0, longitude: 0, zoom: 2 }}
           onLoad={() => setMapReady(true)}
+          onZoom={(e) => setZoom(e.viewState.zoom)}
           attributionControl={false}
           reuseMaps
         >
@@ -162,12 +186,56 @@ export function MapClient({ user, fogIntensity, hideControls }: MapClientProps) 
             </Marker>
           ) : null}
  
-          {(pins.pinsQuery.data ?? []).map((pin: PinData) => (
-            <Marker key={pin.id} longitude={pin.lng} latitude={pin.lat} anchor="bottom">
-              <PinMarker pin={pin} onClick={handlePinClick} />
-            </Marker>
-          ))}
-        </Map>
+          {clusters.map((feature) => {
+            const [lng, lat] = feature.geometry.coordinates;
+            const props = feature.properties;
+
+            if ('cluster' in props && props.cluster) {
+              const count = (props as { point_count: number }).point_count;
+              return (
+                <Marker key={`cluster-${feature.id}`} longitude={lng} latitude={lat} anchor="bottom">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const expansionZoom = Math.min(sc.getClusterExpansionZoom(feature.id!), 20);
+                      mapRef.current?.getMap()?.easeTo({ center: [lng, lat], zoom: expansionZoom, duration: 400 });
+                    }}
+                    style={{ all: "unset", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}
+                  >
+                    {/* Glow ring */}
+                    <span style={{ position: "absolute", inset: "-6px 50% -6px 50%", width: 40, transform: "translateX(-50%)", borderRadius: "50%", background: "rgba(56,189,248,0.25)", filter: "blur(6px)" }} />
+                    {/* Dot with count */}
+                    <span style={{
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      width: 34, height: 34, borderRadius: "50%",
+                      background: "rgba(15,23,42,0.9)",
+                      border: "2px solid rgba(100,160,255,0.6)",
+                      color: "#93c5fd", fontSize: 13, fontWeight: 700,
+                      boxShadow: "0 0 10px rgba(56,189,248,0.4), 0 4px 12px rgba(0,0,0,0.5)",
+                      position: "relative", zIndex: 1,
+                    }}>
+                      {count}
+                    </span>
+                    {/* Needle */}
+                    <span style={{
+                      width: 0, height: 0,
+                      borderLeft: "5px solid transparent",
+                      borderRight: "5px solid transparent",
+                      borderTop: "8px solid rgba(100,160,255,0.6)",
+                    }} />
+                  </button>
+                </Marker>
+              );
+            }
+
+            const pin = props as PinData;
+            return (
+              <Marker key={pin.id} longitude={lng} latitude={lat} anchor="bottom">
+                <PinMarker pin={pin} onClick={handlePinClick} />
+              </Marker>
+            );
+          })}
+        </MapGL>
  
         {!hideControls && (
           <>
