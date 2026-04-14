@@ -57,7 +57,7 @@ export function AppShell({ user }: { user: MapUser }) {
 
   const overlays = useMemo(() => {
     if (tab !== "profile") return null;
-
+  
     return (
       <div className="absolute inset-0 z-20 overflow-y-auto bg-[#0b1020]/95 p-6">
         <div className="mb-4 flex justify-end">
@@ -69,18 +69,19 @@ export function AppShell({ user }: { user: MapUser }) {
             Back to map
           </button>
         </div>
-
+  
         <div className="mx-auto w-full max-w-5xl">
-         <ProfilePopup
-                  user={{
-                    name: user.name,
-                    image: user.imageUrl,
-                  }}
+          <ProfilePopup
+            user={{
+              name: user.name,
+              image: user.imageUrl,
+            }}
             onSignOut={signOut}
-            />
+          />
         </div>
+      </div>
     );
-  }, [signOut, signingOut, tab, user.imageUrl, user.name]);
+  }, [signOut, tab, user.imageUrl, user.name]);
 
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
