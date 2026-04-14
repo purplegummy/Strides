@@ -4,15 +4,12 @@ import { useCallback, useMemo, useRef, useState } from "react";
 
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
 import { ProfilePopup } from "~/app/_components/profile/profile-popup";
-import SettingsPage from "~/app/_components/settings/SettingsPage";
 import StatsPage from "~/app/_components/stats/StatsPage";
 import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
 import type { AppTab } from "./tab-nav";
 import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
-import QuestsPage from "~/app/_components/quests/QuestsPage";
-import { xpToLevel, xpProgress } from "~/lib/xp";
 import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
 
 type MapUser = {
@@ -25,18 +22,12 @@ export function AppShell({ user }: { user: MapUser }) {
   const [tab, setTab] = useState<AppTab>("map");
   const [navTab, setNavTab] = useState<NavTab>("map");
   const [signingOut, setSigningOut] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
 
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
-  const xpQuery = api.quest.getXp.useQuery();
   const stats = statsQuery.data;
   const [, setHudOpen] = useState(true);
   const [statsClosing, setStatsClosing] = useState(false);
   const statsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [questsClosing, setQuestsClosing] = useState(false);
-  const questsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [settingsClosing, setSettingsClosing] = useState(false);
-  const settingsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const closeStats = useCallback(() => {
     setStatsClosing(true);
@@ -44,24 +35,6 @@ export function AppShell({ user }: { user: MapUser }) {
       setTab("map");
       setNavTab("map");
       setStatsClosing(false);
-    }, 300);
-  }, []);
-
-  const closeQuests = useCallback(() => {
-    setQuestsClosing(true);
-    questsCloseTimer.current = setTimeout(() => {
-      setTab("map");
-      setNavTab("map");
-      setQuestsClosing(false);
-    }, 300);
-  }, []);
-
-  const closeSettings = useCallback(() => {
-    setSettingsClosing(true);
-    settingsCloseTimer.current = setTimeout(() => {
-      setTab("map");
-      setNavTab("map");
-      setSettingsClosing(false);
     }, 300);
   }, []);
 
@@ -111,10 +84,7 @@ export function AppShell({ user }: { user: MapUser }) {
             type="button"
             onClick={signOut}
             disabled={signingOut}
-            className={[
-              "w-full rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition",
-              "hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60",
-            ].join(" ")}
+            className="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {signingOut ? "Signing out…" : "Sign out"}
           </button>
@@ -127,7 +97,7 @@ export function AppShell({ user }: { user: MapUser }) {
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
       <MapClient user={user} />
 
-      {tab !== "stats" && tab !== "quests" && tab !== "settings" && (
+      {tab !== "stats" && (
         <div
           style={{
             position: "fixed",
@@ -139,20 +109,21 @@ export function AppShell({ user }: { user: MapUser }) {
         >
           <ExplorationBar
             percentage={stats?.percentage ?? 0}
-            tilesDiscovered={stats?.tilesDiscovered ?? 0}
+            tilesDiscovered={stats?.tilesExplored ?? 0}
             totalTiles={stats?.totalTiles ?? 0}
             streakDays={stats?.streakDays ?? 0}
+            level={stats?.level ?? 1}
             onPress={() => setHudOpen((v) => !v)}
           />
         </div>
       )}
 
-      {tab !== "stats" && tab !== "quests" && (
+      {tab !== "stats" && (
         <div className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-20">
           <ProfileBar
             user={user}
-            level={xpToLevel(xpQuery.data?.xp ?? 0)}
-            xpProgress={xpProgress(xpQuery.data?.xp ?? 0)}
+            level={1}
+            xpProgress={{ current: 42, next: 100 }}
             onPress={() => setTab("profile")}
           />
         </div>
@@ -179,7 +150,7 @@ export function AppShell({ user }: { user: MapUser }) {
             .stats-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
             .stats-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
           `}</style>
-          <StatsPage darkMode={darkMode} />
+          <StatsPage />
         </div>
       )}
 
@@ -196,91 +167,14 @@ export function AppShell({ user }: { user: MapUser }) {
         </button>
       )}
 
-      {(tab === "quests" || questsClosing) && (
-        <div
-          className="quests-overlay fixed inset-0 z-30 overflow-y-auto"
-          style={{
-            scrollbarWidth: "thin",
-            scrollbarColor: "rgba(28,233,253,0.18) transparent",
-            animation: questsClosing
-              ? "quests-slide-down 0.3s cubic-bezier(0.32,0.72,0,1) forwards"
-              : "quests-slide-up 0.35s cubic-bezier(0.32,0.72,0,1) forwards",
-          }}
-        >
-          <style>{`
-            @keyframes quests-slide-up   { from { transform: translateY(100%); } to { transform: translateY(0); } }
-            @keyframes quests-slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
-            .quests-overlay::-webkit-scrollbar { width: 4px; }
-            .quests-overlay::-webkit-scrollbar-track { background: transparent; }
-            .quests-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
-            .quests-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
-          `}</style>
-          <QuestsPage darkMode={darkMode} />
-        </div>
-      )}
-
-      {tab === "quests" && !questsClosing && (
-        <button
-          type="button"
-          onClick={closeQuests}
-          className="fixed top-4 right-4 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-[#0F172A]/80 text-white/70 backdrop-blur-sm transition hover:bg-[#1a2540] hover:text-white"
-          aria-label="Close quests"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M1 1l12 12M13 1L1 13" />
-          </svg>
-        </button>
-      )}
-
-      {(tab === "settings" || settingsClosing) && (
-        <div
-          className="settings-overlay fixed inset-0 z-30 overflow-y-auto"
-          style={{
-            scrollbarWidth: "thin",
-            scrollbarColor: "rgba(28,233,253,0.18) transparent",
-            animation: settingsClosing
-              ? "settings-slide-down 0.3s cubic-bezier(0.32,0.72,0,1) forwards"
-              : "settings-slide-up 0.35s cubic-bezier(0.32,0.72,0,1) forwards",
-          }}
-        >
-          <style>{`
-            @keyframes settings-slide-up   { from { transform: translateY(100%); } to { transform: translateY(0); } }
-            @keyframes settings-slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
-            .settings-overlay::-webkit-scrollbar { width: 4px; }
-            .settings-overlay::-webkit-scrollbar-track { background: transparent; }
-            .settings-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
-            .settings-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
-          `}</style>
-          <SettingsPage
-            onSignOut={signOut}
-            darkMode={darkMode}
-            onToggleDarkMode={() => setDarkMode((v) => !v)}
-          />
-        </div>
-      )}
-
-      {tab === "settings" && !settingsClosing && (
-        <button
-          type="button"
-          onClick={closeSettings}
-          className="fixed top-4 right-4 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-[#0F172A]/80 text-white/70 backdrop-blur-sm transition hover:bg-[#1a2540] hover:text-white"
-          aria-label="Close settings"
-        >
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <path d="M1 1l12 12M13 1L1 13" />
-          </svg>
-        </button>
-      )}
-
       {tab === "map" && (
         <RadialNavButton
           activeTab={navTab}
           onTabChange={(t) => {
             setNavTab(t);
             if (t === "map") setTab("map");
-            else if (t === "quests") setTab("quests");
             else if (t === "stats") setTab("stats");
-            else if (t === "settings") setTab("settings");
+            else if (t === "settings") setTab("profile");
           }}
         />
       )}
