@@ -13,7 +13,7 @@ interface ProfilePopupProps {
   onSignOut?: () => void;
 }
 
-export function ProfilePopup({ user }: ProfilePopupProps) {
+export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
   const [activeTab, setActiveTab] = useState<"profile" | "friends">("profile");
   const [activePanel, setActivePanel] = useState<
     "information" | "achievements" | "pins" | "logout" | null
