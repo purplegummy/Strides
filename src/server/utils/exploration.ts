@@ -39,9 +39,8 @@ export function getTilesInRadius(
   const centerY = Math.floor(lat / cellLat);
   const centerX = Math.floor(lng / cellLng);
 
-  // At 100m cells, 25m radius hits 1-4 cells. Use 3x3 neighborhood for alignment with map reveal.
   const keys = new Set<string>();
-  const radiusCells = Math.ceil(radiusM / city.gridResolutionM) || 1;
+  const radiusCells = Math.floor(radiusM / city.gridResolutionM);
   for (let dy = -radiusCells; dy <= radiusCells; dy++) {
     for (let dx = -radiusCells; dx <= radiusCells; dx++) {
       keys.add(`${centerY + dy}_${centerX + dx}`);

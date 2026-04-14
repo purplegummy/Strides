@@ -24,7 +24,7 @@ export const PinView: React.FC<PinViewProps> = ({
     color: t.titleColor,
     lineHeight: 1.2,
     marginBottom: 4,
-    paddingRight: 36,
+    paddingRight: 44,
   };
  
   const subtitleStyle: CSSProperties = {

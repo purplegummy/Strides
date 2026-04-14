@@ -132,7 +132,7 @@ export const mapRouter = createTRPCRouter({
   getStats: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
 
-    const [user, exploredPoints, userPins] = await Promise.all([
+    const [user, exploredPoints, userPins, upvotesGiven] = await Promise.all([
       ctx.db.user.findUniqueOrThrow({
         where: { id: userId },
         select: { createdAt: true },
@@ -146,6 +146,7 @@ export const mapRouter = createTRPCRouter({
         where: { createdById: userId },
         include: { _count: { select: { upvotes: true } } },
       }),
+      ctx.db.pinUpvote.count({ where: { userId } }),
     ]);
 
     // Total distance — sum haversine of consecutive points, skip jumps > 1 km,
@@ -231,6 +232,7 @@ export const mapRouter = createTRPCRouter({
       daysActive: distinctDays.size,
       pinsPlaced: userPins.length,
       totalUpvotes,
+      upvotesGiven,
       topPins,
       weeklyProgress,
       visitedLocationIds,

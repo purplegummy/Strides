@@ -1,6 +1,7 @@
 "use client";
- 
+
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
 import { api } from "~/trpc/react";
 import type { PinData } from "~/app/_components/pin/PinMarker";
 import type { ExploredPoint } from "./map-utils";
@@ -28,6 +29,9 @@ export function useMapPins(
       if (onPinCreated) {
         onPinCreated({ lat: createdPin.lat, lng: createdPin.lng });
       }
+    },
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
  
