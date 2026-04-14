@@ -91,7 +91,7 @@ export function MapClient({ user, fogIntensity, hideControls }: MapClientProps) 
     const map = mapRef.current?.getMap();
     if (!map || !mapReady) return;
     const update = () => {
-      const visible = map.getZoom() >= 13;
+      const visible = map.getZoom() >= 14;
       for (const q of locationQuests) {
         const el = questMarkerRefs.current[q.id];
         if (!el) continue;
