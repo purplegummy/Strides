@@ -1,5 +1,11 @@
 import type { QuestDefinition } from "./types";
 
+export type LocationMarker = {
+  id: string;
+  icon: string;
+  location: { lat: number; lng: number; name: string };
+};
+
 export const QUEST_DEFINITIONS: QuestDefinition[] = [
   {
     id: "first-pin",
@@ -159,5 +165,34 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
       label: "250 XP",
     },
     collectible: true,
+  },
+];
+
+/** Standalone map markers not yet tied to a quest */
+export const LOCATION_MARKERS: LocationMarker[] = [
+  {
+    id: "the-quad",
+    icon: "🌳",
+    location: { lat: 33.79073039369105, lng: -84.32449262890229, name: "The Quad" },
+  },
+  {
+    id: "mcdonough-field",
+    icon: "🎫",
+    location: { lat: 33.794067540034035, lng: -84.32508053559074, name: "McDonough Field" },
+  },
+  {
+    id: "cox-hall",
+    icon: "🖥️",
+    location: { lat: 33.792301468700124, lng: -84.32334799620519, name: "Cox Hall" },
+  },
+  {
+    id: "woodruff-library",
+    icon: "📖",
+    location: { lat: 33.79088688383609, lng: -84.32324104312072, name: "Woodruff Library" },
+  },
+  {
+    id: "emory-student-center",
+    icon: "🏫",
+    location: { lat: 33.7935321317431, lng: -84.32408878880749, name: "Emory Student Center" },
   },
 ];

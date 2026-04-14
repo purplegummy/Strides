@@ -21,10 +21,24 @@ import { useExploredPoints } from "./useExploredPoints";
 import { useMapPins } from "./useMapPins";
 import { useFogLayer } from "./useFogLayer";
 import { haversineMeters } from "./map-utils";
-import { QUEST_DEFINITIONS } from "~/app/_components/quests/questData";
+import { QUEST_DEFINITIONS, LOCATION_MARKERS } from "~/app/_components/quests/questData";
 import { api } from "~/trpc/react";
 
-const locationQuests = QUEST_DEFINITIONS.filter((q) => q.location);
+// Normalise quest locations and standalone markers into one shape
+const locationQuests = [
+  ...QUEST_DEFINITIONS.filter((q) => q.location).map((q) => ({
+    id: q.id,
+    icon: q.icon ?? "📍",
+    location: q.location!,
+    isQuest: true,
+  })),
+  ...LOCATION_MARKERS.map((m) => ({
+    id: m.id,
+    icon: m.icon,
+    location: m.location,
+    isQuest: false,
+  })),
+];
 
  
 type MapUser = {
@@ -76,10 +90,12 @@ export function MapClient({ user, fogIntensity }: MapClientProps) {
     const map = mapRef.current?.getMap();
     if (!map || !mapReady) return;
     const update = () => {
+      const visible = map.getZoom() >= 13;
       for (const q of locationQuests) {
         const el = questMarkerRefs.current[q.id];
         if (!el) continue;
-        const pt = map.project([q.location!.lng, q.location!.lat]);
+        if (!visible) { el.style.visibility = "hidden"; continue; }
+        const pt = map.project([q.location.lng, q.location.lat]);
         el.style.left = `${pt.x}px`;
         el.style.top = `${pt.y}px`;
         el.style.visibility = "visible";
@@ -334,7 +350,7 @@ export function MapClient({ user, fogIntensity }: MapClientProps) {
                       color: tooltipColor,
                     }}
                   >
-                    {q.location!.name ?? q.title}
+                    {q.location.name}
                   </div>
                   {/* Circle */}
                   <div
