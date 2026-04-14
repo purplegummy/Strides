@@ -58,7 +58,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
     ],
     reward: { xp: 100, label: "100 XP" },
     collectible: true,
-    location: { lat: 33.793311, lng: -84.325104, radiusM: 75 },
+    location: { lat: 33.793311, lng: -84.325104, radiusM: 75, name: "Woodruff PE Center" },
   },
   {
     id: "white-hall-visit",
@@ -78,7 +78,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
     ],
     reward: { xp: 100, label: "100 XP" },
     collectible: true,
-    location: { lat: 33.790755, lng: -84.325904, radiusM: 40 },
+    location: { lat: 33.790755, lng: -84.325904, radiusM: 40, name: "White Hall" },
   },
   {
     id: "msc-visit",
@@ -98,7 +98,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
     ],
     reward: { xp: 100, label: "100 XP" },
     collectible: true,
-    location: { lat: 33.790170, lng: -84.326702, radiusM: 50 },
+    location: { lat: 33.790170, lng: -84.326702, radiusM: 50, name: "Math & Science Center" },
   },
   {
     id: "first-upvote",
