@@ -35,7 +35,7 @@ type MapClientProps = {
   fogIntensity: FogIntensity; // Add this
 };
  
-export function MapClient({ user, fogIntensity }: MapClientProps) {
+export function MapClient({ user, fogIntensity: _fogIntensity }: MapClientProps) {
   const fogEnabled = true;
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -148,7 +148,7 @@ export function MapClient({ user, fogIntensity }: MapClientProps) {
     );
     const clusters = supercluster.getClusters([-180, -85, 180, 85], Math.round(zoom));
     return { clusters, supercluster };
-  }, [visiblePins, zoom]);
+  }, [spreadPins, zoom]);
 
   const token = env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
   if (!token) {
@@ -186,7 +186,7 @@ export function MapClient({ user, fogIntensity }: MapClientProps) {
           ) : null}
  
           {clusters.map((feature) => {
-            const [lng, lat] = feature.geometry.coordinates as [number, number];
+            const [lng, lat] = feature.geometry.coordinates;
             const props = feature.properties;
 
             if ('cluster' in props && props.cluster) {
@@ -196,7 +196,7 @@ export function MapClient({ user, fogIntensity }: MapClientProps) {
                   <button
                     type="button"
                     onClick={() => {
-                      const expansionZoom = Math.min(sc.getClusterExpansionZoom(feature.id as number), 20);
+                      const expansionZoom = Math.min(sc.getClusterExpansionZoom(feature.id!), 20);
                       mapRef.current?.getMap()?.easeTo({ center: [lng, lat], zoom: expansionZoom, duration: 400 });
                     }}
                     style={{ all: "unset", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", position: "relative" }}
