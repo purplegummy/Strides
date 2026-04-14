@@ -104,7 +104,7 @@ export const PinCreate: React.FC<PinCreateProps> = ({
           <input
             className={placeholderClass}
             style={nameInputStyle}
-            placeholder="Enter a name for the pin..."
+            placeholder="Enter a pin name..."
             value={name}
             onChange={e => setName(e.target.value)}
             onFocus={() => setNameFocused(true)}
