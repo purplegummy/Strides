@@ -1,10 +1,27 @@
 import { redirect } from "next/navigation";
 
 import { getSession } from "~/server/better-auth/server";
+import { ProfilePopup } from "../_components/profile/profile-popup";
 
-export default async function ProfilePage() {
+export default async function AppPage() {
   const session = await getSession();
-  if (!session?.user) redirect("/");
-  redirect("/app");
-}
 
+  if (!session?.user) {
+    redirect("/");
+  }
+
+  return (
+    <>
+      <main className="min-h-screen bg-slate-950 p-6">
+        <div className="mx-auto max-w-5xl">
+          <ProfilePopup
+            user={{
+              name: session.user.name,
+              image: session.user.image,
+            }}
+          />
+        </div>
+      </main>
+    </>
+  );
+}

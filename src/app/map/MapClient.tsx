@@ -32,10 +32,11 @@ type FogIntensity = "medium" | "light" | "heavy";
 
 type MapClientProps = {
   user: MapUser;
-  fogIntensity: FogIntensity; // Add this
+  fogIntensity: FogIntensity;
+  hideControls?: boolean;
 };
  
-export function MapClient({ user, fogIntensity: _fogIntensity }: MapClientProps) {
+export function MapClient({ user, fogIntensity: _fogIntensity, hideControls }: MapClientProps) {
   const fogEnabled = true;
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -236,33 +237,37 @@ export function MapClient({ user, fogIntensity: _fogIntensity }: MapClientProps)
           })}
         </MapGL>
  
-        <CompassButton
-          mapRef={mapRef}
-          displayPosition={explored.displayPosition}
-          requestOnce={geo.requestOnce}
-          onCentered={() => setHasCentered(true)}
-        />
- 
-        <button
-          type="button"
-          onClick={pins.handleDropPin}
-          disabled={!hasLocation}
-          className={[
-            "absolute bottom-4 right-3 z-30",
-            "grid h-14 w-14 place-items-center rounded-2xl",
-            "border border-[#656A73]/40 bg-[#0F172A]/60 text-[#E6EDF7] backdrop-blur",
-            "shadow-[0_12px_40px_rgba(0,0,0,0.55)] transition",
-            "hover:bg-[#0F172A]/75 active:scale-[0.98]",
-            "disabled:opacity-40 disabled:cursor-not-allowed",
-          ].join(" ")}
-          aria-label="Drop a pin at your location"
-          title={hasLocation ? "Drop a pin here" : "Waiting for GPS…"}
-        >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#BFC8D9" strokeWidth="2">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" fill="#38bdf8" fillOpacity="0.3" />
-          </svg>
-        </button>
+        {!hideControls && (
+          <>
+            <CompassButton
+              mapRef={mapRef}
+              displayPosition={explored.displayPosition}
+              requestOnce={geo.requestOnce}
+              onCentered={() => setHasCentered(true)}
+            />
+
+            <button
+              type="button"
+              onClick={pins.handleDropPin}
+              disabled={!hasLocation}
+              className={[
+                "absolute bottom-4 right-3 z-30",
+                "grid h-14 w-14 place-items-center rounded-2xl",
+                "border border-[#656A73]/40 bg-[#0F172A]/60 text-[#E6EDF7] backdrop-blur",
+                "shadow-[0_12px_40px_rgba(0,0,0,0.55)] transition",
+                "hover:bg-[#0F172A]/75 active:scale-[0.98]",
+                "disabled:opacity-40 disabled:cursor-not-allowed",
+              ].join(" ")}
+              aria-label="Drop a pin at your location"
+              title={hasLocation ? "Drop a pin here" : "Waiting for GPS…"}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#BFC8D9" strokeWidth="2">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                <circle cx="12" cy="10" r="3" fill="#38bdf8" fillOpacity="0.3" />
+              </svg>
+            </button>
+          </>
+        )}
  
         {fogEnabled ? (
           <canvas

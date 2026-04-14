@@ -4,14 +4,15 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import { CelebrationPopout } from "~/components/ui/CelebrationPopout";
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
+import { ProfilePopup } from "~/app/_components/profile/profile-popup";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
 import StatsPage from "~/app/_components/stats/StatsPage";
+import QuestsPage from "~/app/_components/quests/QuestsPage";
 import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
 import type { AppTab } from "./tab-nav";
 import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
-import QuestsPage from "~/app/_components/quests/QuestsPage";
 import { xpToLevel, xpProgress } from "~/lib/xp";
 import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
 
@@ -91,85 +92,41 @@ export function AppShell({ user }: { user: MapUser }) {
     }
   }, [signingOut]);
 
-
   const overlays = useMemo(() => {
     if (tab !== "profile") return null;
 
     return (
-      <div className="absolute inset-0 z-20 flex flex-col">
-        <div className="flex-1 bg-black/25 backdrop-blur-sm" />
-        <div className="rounded-t-3xl border-t border-white/10 bg-[#0b1020]/95 p-5 pb-28 text-white shadow-[0_-20px_60px_rgba(0,0,0,0.55)]">
-          <div className="mb-4 flex justify-end">
-            <button
-              type="button"
-              onClick={() => setTab("map")}
-              className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/10"
-            >
-              Back to map
-            </button>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {user.imageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                src={user.imageUrl}
-                alt={user.name ? `${user.name}'s avatar` : "Your avatar"}
-                referrerPolicy="no-referrer"
-                className="h-12 w-12 rounded-full object-cover"
-                draggable={false}
-              />
-            ) : (
-              <div className="h-12 w-12 rounded-full bg-white/10" />
-            )}
-            <div className="min-w-0">
-              <div className="truncate text-base font-semibold">
-                {user.name ?? "Profile"}
-              </div>
-              <div className="text-sm text-white/60">Coming soon.</div>
-            </div>
-          </div>
-
-          <div className="mt-5 text-sm text-white/70">
-            This is a placeholder panel. The map stays mounted underneath so
-            switching tabs is instant.
-          </div>
-
+      <div className="absolute inset-0 z-20 overflow-y-auto bg-[#0b1020]/95 p-6">
+        <div className="mb-4 flex justify-end">
           <button
             type="button"
-            onClick={signOut}
-            disabled={signingOut}
-            className={[
-              "mt-6 w-full rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition",
-              "hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60",
-            ].join(" ")}
+            onClick={() => setTab("map")}
+            className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/10"
           >
-            {signingOut ? "Signing out…" : "Sign out"}
+            Back to map
           </button>
+        </div>
 
-          <p className="mt-4 text-center text-[10px] text-white/25">
-            Icon by{" "}
-            <a
-              href="https://icons8.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-white/40"
-            >
-              Icons8
-            </a>
-          </p>
+        <div className="mx-auto w-full max-w-5xl">
+          <ProfilePopup
+            user={{
+              name: user.name,
+              image: user.imageUrl,
+            }}
+            onSignOut={signOut}
+          />
         </div>
       </div>
     );
-  }, [signOut, signingOut, tab, user.imageUrl, user.name]);
+  }, [signOut, tab, user.imageUrl, user.name]);
 
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
       <Toaster position="top-center" theme="dark" richColors />
       {/* Map stays mounted regardless of tab */}
-      <MapClient user={user} fogIntensity={fogIntensity} />
+      <MapClient user={user} fogIntensity={fogIntensity} hideControls={tab === "profile"} />
 
-      {tab !== "stats" && tab !== "quests" && tab !== "settings" && (
+      {tab !== "stats" && tab !== "quests" && tab !== "settings" && tab !== "profile" && (
         <div
           style={{
             position: "fixed",
@@ -189,7 +146,7 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {tab !== "stats" && tab !== "quests" && (
+      {tab !== "stats" && tab !== "quests" && tab !== "profile" && (
         <div className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-20">
           <ProfileBar
             user={user}
@@ -200,7 +157,6 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {/* Overlays/panels */}
       {overlays}
 
       {/* Stats overlay */}
@@ -227,7 +183,6 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {/* X button — outside the animated div so fixed positioning works */}
       {tab === "stats" && !statsClosing && (
         <button
           type="button"
@@ -265,7 +220,6 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {/* X button for quests */}
       {tab === "quests" && !questsClosing && (
         <button
           type="button"
@@ -303,7 +257,6 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {/* X button for settings */}
       {tab === "settings" && !settingsClosing && (
         <button
           type="button"
@@ -330,15 +283,15 @@ export function AppShell({ user }: { user: MapUser }) {
           }}
         />
       )}
-  <CelebrationPopout
-    open={!!celebration}
-    type={celebration?.type}
-    title={celebration?.title ?? ""}
-    shortText={celebration?.shortText ?? ""}
-    message={celebration?.message ?? ""}
-    onClose={() => setCelebration(null)}
-  />
 
+      <CelebrationPopout
+        open={!!celebration}
+        type={celebration?.type}
+        title={celebration?.title ?? ""}
+        shortText={celebration?.shortText ?? ""}
+        message={celebration?.message ?? ""}
+        onClose={() => setCelebration(null)}
+      />
     </main>
   );
 }
