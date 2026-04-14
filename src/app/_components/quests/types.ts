@@ -25,7 +25,7 @@ export interface QuestDefinition {
   /** If true, shows a collect button that awards XP once */
   collectible?: boolean;
   /** If set, the objective with id matching this is a location visit check */
-  location?: { lat: number; lng: number; radiusM: number };
+  location?: { lat: number; lng: number; radiusM: number; name?: string };
 }
 
 /** Quest with live progress injected */
