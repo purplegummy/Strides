@@ -227,26 +227,32 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
             )}
 
             {activePanel === "logout" && (
-              <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-red-300">Logout</h2>
-                <p className="text-sm text-purple-200">
-                  Are you sure you want to logout?
-                </p>
-                <div className="flex justify-end gap-2">
-                  <button
-                    onClick={onSignOut}
-                    className="rounded-xl bg-red-400 px-4 py-2 text-white hover:bg-red-500"
-                          >
-                    Logout
-                  </button>
-                    Cancel
-                  </Button>
-                  <Button className="bg-red-400 text-white hover:bg-red-500">
-                    Logout
-                  </Button>
+               <div className="space-y-4">
+               <h2 className="text-lg font-semibold text-red-300">Logout</h2>
+
+                  <p className="text-sm text-purple-200">
+                    Are you sure you want to logout?
+                  </p>
+              
+                  <div className="flex justify-end gap-2">
+                    {/* Cancel */}
+                    <button
+                      onClick={() => setActivePanel(null)}
+                      className="rounded-xl bg-black/20 px-4 py-2 text-purple-300 hover:bg-black/30"
+                    >
+                      Cancel
+                    </button>
+              
+                    {/* Confirm Logout */}
+                    <button
+                      onClick={onSignOut}
+                      className="rounded-xl bg-red-400 px-4 py-2 text-white hover:bg-red-500"
+                    >
+                      Logout
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         </div>
       ) : (
