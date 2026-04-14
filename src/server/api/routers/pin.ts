@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
  
@@ -45,6 +46,23 @@ export const pinRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      const startOfDay = new Date();
+      startOfDay.setHours(0, 0, 0, 0);
+
+      const todayCount = await ctx.db.pin.count({
+        where: {
+          createdById: ctx.session.user.id,
+          createdAt: { gte: startOfDay },
+        },
+      });
+
+      if (todayCount >= 2) {
+        throw new TRPCError({
+          code: "TOO_MANY_REQUESTS",
+          message: "You can only drop 2 pins per day.",
+        });
+      }
+
       return ctx.db.pin.create({
         data: {
           title: input.title,

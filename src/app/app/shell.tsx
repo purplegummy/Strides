@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Toaster } from "sonner";
 import { CelebrationPopout } from "~/components/ui/CelebrationPopout";
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
@@ -90,14 +91,6 @@ export function AppShell({ user }: { user: MapUser }) {
     }
   }, [signingOut]);
 
-useEffect(() => {
-  setCelebration({
-    type: "achievement",
-    title: "First Steps",
-    shortText: "Achievement Unlocked",
-    message: "You explored your first area.",
-  });
-}, []);
 
   const overlays = useMemo(() => {
     if (tab !== "profile") return null;
@@ -172,6 +165,7 @@ useEffect(() => {
 
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
+      <Toaster position="top-center" theme="dark" richColors />
       {/* Map stays mounted regardless of tab */}
       <MapClient user={user} fogIntensity={fogIntensity} />
 
