@@ -233,10 +233,12 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
                   Are you sure you want to logout?
                 </p>
                 <div className="flex justify-end gap-2">
-                  <Button
-                    onClick={() => setActivePanel(null)}
-                    className="bg-black/20 text-purple-300 hover:bg-black/30"
-                  >
+                  <button
+                    onClick={onSignOut}
+                    className="rounded-xl bg-red-400 px-4 py-2 text-white hover:bg-red-500"
+                          >
+                    Logout
+                  </button>
                     Cancel
                   </Button>
                   <Button className="bg-red-400 text-white hover:bg-red-500">
