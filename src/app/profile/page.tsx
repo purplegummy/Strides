@@ -1,7 +1,6 @@
 import { redirect } from "next/navigation";
 
 import { getSession } from "~/server/better-auth/server";
-import { api, HydrateClient } from "~/trpc/server";
 import { ProfilePopup } from "../_components/profile/profile-popup";
 
 export default async function AppPage() {
@@ -11,11 +10,8 @@ export default async function AppPage() {
     redirect("/");
   }
 
-  void api.quest.getXp.prefetch();
-  void api.quest.getCompletedQuests.prefetch();
-
   return (
-    <HydrateClient>
+    <>
       <main className="min-h-screen bg-slate-950 p-6">
         <div className="mx-auto max-w-5xl">
           <ProfilePopup
@@ -26,6 +22,6 @@ export default async function AppPage() {
           />
         </div>
       </main>
-    </HydrateClient>
+    </>
   );
 }

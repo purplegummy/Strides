@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { CelebrationPopout } from "~/components/ui/CelebrationPopout";
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
@@ -91,15 +91,6 @@ export function AppShell({ user }: { user: MapUser }) {
     }
   }, [signingOut]);
 
-  useEffect(() => {
-    setCelebration({
-      type: "achievement",
-      title: "First Steps",
-      shortText: "Achievement Unlocked",
-      message: "You explored your first area.",
-    });
-  }, []);
-
   const overlays = useMemo(() => {
     if (tab !== "profile") return null;
 
@@ -130,9 +121,9 @@ export function AppShell({ user }: { user: MapUser }) {
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
       {/* Map stays mounted regardless of tab */}
-      <MapClient user={user} fogIntensity={fogIntensity} />
+      <MapClient user={user} fogIntensity={fogIntensity} hideControls={tab === "profile"} />
 
-      {tab !== "stats" && tab !== "quests" && tab !== "settings" && (
+      {tab !== "stats" && tab !== "quests" && tab !== "settings" && tab !== "profile" && (
         <div
           style={{
             position: "fixed",
@@ -152,7 +143,7 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {tab !== "stats" && tab !== "quests" && (
+      {tab !== "stats" && tab !== "quests" && tab !== "profile" && (
         <div className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-20">
           <ProfileBar
             user={user}
