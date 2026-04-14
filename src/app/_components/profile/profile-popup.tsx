@@ -10,6 +10,7 @@ interface ProfilePopupProps {
     name?: string | null;
     image?: string | null;
   };
+  onSignOut?: () => void;
 }
 
 export function ProfilePopup({ user }: ProfilePopupProps) {
