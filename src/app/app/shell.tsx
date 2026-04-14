@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
+import { ProfilePopup } from "~/app/_components/profile/profile-popup";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
 import StatsPage from "~/app/_components/stats/StatsPage";
 import { MapClient } from "~/app/map/MapClient";
@@ -13,7 +14,6 @@ import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
 import QuestsPage from "~/app/_components/quests/QuestsPage";
 import { xpToLevel, xpProgress } from "~/lib/xp";
 import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
-import { ProfilePopup } from "~/app/_components/profile/profile-popup";
 
 type MapUser = {
   id: string;
@@ -82,36 +82,49 @@ export function AppShell({ user }: { user: MapUser }) {
     }
   }, [signingOut]);
 
-const overlays = useMemo(() => {
-  if (tab !== "profile") return null;
+  const overlays = useMemo(() => {
+    if (tab !== "profile") return null;
 
-  return (
-    <div className="absolute inset-0 z-20 flex flex-col bg-[#0b1020] p-6 overflow-y-auto">
-      <div className="mb-4 flex justify-end">
-        <button
-          type="button"
-          onClick={() => setTab("map")}
-          className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/10"
-        >
-          Back to map
-        </button>
-      </div>
+    return (
+      <div className="absolute inset-0 z-20 overflow-y-auto bg-[#0b1020]/95 p-6">
+        <div className="mb-4 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setTab("map")}
+            className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/10"
+          >
+            Back to map
+          </button>
+        </div>
 
-      <div className="mx-auto w-full max-w-5xl">
-        <ProfilePopup
-          user={{
-            name: user.name,
-            image: user.imageUrl,
-          }}
-        />
+        <div className="mx-auto w-full max-w-5xl">
+          <ProfilePopup
+            user={{
+              name: user.name,
+              image: user.imageUrl,
+            }}
+          />
+        </div>
+
+        <div className="mx-auto mt-4 w-full max-w-5xl">
+          <button
+            type="button"
+            onClick={signOut}
+            disabled={signingOut}
+            className={[
+              "w-full rounded-2xl bg-white/10 px-4 py-3 text-sm font-semibold text-white transition",
+              "hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60",
+            ].join(" ")}
+          >
+            {signingOut ? "Signing out…" : "Sign out"}
+          </button>
+        </div>
       </div>
-    </div>
-  );
-}, [tab, user]);
+    );
+  }, [signOut, signingOut, tab, user.imageUrl, user.name]);
 
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
-      {/* Map stays mounted regardless of tab */}
       <MapClient user={user} />
 
       {tab !== "stats" && tab !== "quests" && tab !== "settings" && (
@@ -129,7 +142,7 @@ const overlays = useMemo(() => {
             tilesDiscovered={stats?.tilesDiscovered ?? 0}
             totalTiles={stats?.totalTiles ?? 0}
             streakDays={stats?.streakDays ?? 0}
-            onPress={() => setHudOpen(v => !v)}
+            onPress={() => setHudOpen((v) => !v)}
           />
         </div>
       )}
@@ -145,10 +158,8 @@ const overlays = useMemo(() => {
         </div>
       )}
 
-      {/* Overlays/panels */}
       {overlays}
 
-      {/* Stats overlay */}
       {(tab === "stats" || statsClosing) && (
         <div
           className="stats-overlay fixed inset-0 z-30 overflow-y-auto"
@@ -172,7 +183,6 @@ const overlays = useMemo(() => {
         </div>
       )}
 
-      {/* X button — outside the animated div so fixed positioning works */}
       {tab === "stats" && !statsClosing && (
         <button
           type="button"
@@ -186,7 +196,6 @@ const overlays = useMemo(() => {
         </button>
       )}
 
-      {/* Quests overlay */}
       {(tab === "quests" || questsClosing) && (
         <div
           className="quests-overlay fixed inset-0 z-30 overflow-y-auto"
@@ -210,7 +219,6 @@ const overlays = useMemo(() => {
         </div>
       )}
 
-      {/* X button for quests */}
       {tab === "quests" && !questsClosing && (
         <button
           type="button"
@@ -224,7 +232,6 @@ const overlays = useMemo(() => {
         </button>
       )}
 
-      {/* Settings overlay */}
       {(tab === "settings" || settingsClosing) && (
         <div
           className="settings-overlay fixed inset-0 z-30 overflow-y-auto"
@@ -244,11 +251,14 @@ const overlays = useMemo(() => {
             .settings-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
             .settings-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
           `}</style>
-          <SettingsPage onSignOut={signOut} darkMode={darkMode} onToggleDarkMode={() => setDarkMode(v => !v)} />
+          <SettingsPage
+            onSignOut={signOut}
+            darkMode={darkMode}
+            onToggleDarkMode={() => setDarkMode((v) => !v)}
+          />
         </div>
       )}
 
-      {/* X button for settings */}
       {tab === "settings" && !settingsClosing && (
         <button
           type="button"
@@ -262,7 +272,6 @@ const overlays = useMemo(() => {
         </button>
       )}
 
-      {/* Radial navigation button — hidden while any interface is open */}
       {tab === "map" && (
         <RadialNavButton
           activeTab={navTab}
