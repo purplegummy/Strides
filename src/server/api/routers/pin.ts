@@ -1,13 +1,13 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-
+ 
 const MAX_UPVOTES_PER_USER = 2;
-
+ 
 export const pinRouter = createTRPCRouter({
   // ── Get all pins (with caller's upvote count) ──────────────────────────────
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id;
-
+ 
     const pins = await ctx.db.pin.findMany({
       orderBy: { createdAt: "desc" },
       include: {
@@ -19,7 +19,7 @@ export const pinRouter = createTRPCRouter({
         _count: { select: { upvotes: true } },
       },
     });
-
+ 
     return pins.map((pin) => ({
       id: pin.id,
       title: pin.title,
@@ -30,9 +30,10 @@ export const pinRouter = createTRPCRouter({
       myUpvotes: pin.upvotes.length,
       createdById: pin.createdById,
       creatorName: pin.createdBy.name,
+      createdAt: pin.createdAt, // ← added
     }));
   }),
-
+ 
   // ── Create a pin at the caller's location ──────────────────────────────────
   create: protectedProcedure
     .input(
@@ -54,7 +55,7 @@ export const pinRouter = createTRPCRouter({
         },
       });
     }),
-
+ 
   // ── Update a pin (owner only) ──────────────────────────────────────────────
   update: protectedProcedure
     .input(
@@ -74,7 +75,7 @@ export const pinRouter = createTRPCRouter({
         data: { title: input.title, description: input.description ?? null },
       });
     }),
-
+ 
   // ── Delete a pin (owner only) ──────────────────────────────────────────────
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
@@ -86,43 +87,43 @@ export const pinRouter = createTRPCRouter({
       await ctx.db.pin.delete({ where: { id: input.id } });
       return { success: true };
     }),
-
+ 
   // ── Upvote a pin ───────────────────────────────────────────────────────────
   upvote: protectedProcedure
     .input(z.object({ pinId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-
+ 
       const existing = await ctx.db.pinUpvote.count({
         where: { pinId: input.pinId, userId },
       });
-
+ 
       if (existing >= MAX_UPVOTES_PER_USER) {
         throw new Error("Maximum upvotes reached for this pin");
       }
-
+ 
       await ctx.db.pinUpvote.create({
         data: { pinId: input.pinId, userId },
       });
-
+ 
       return { success: true };
     }),
-
+ 
   // ── Undo one upvote ────────────────────────────────────────────────────────
   undoUpvote: protectedProcedure
     .input(z.object({ pinId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id;
-
+ 
       const latest = await ctx.db.pinUpvote.findFirst({
         where: { pinId: input.pinId, userId },
         orderBy: { createdAt: "desc" },
       });
-
+ 
       if (!latest) return { success: false };
-
+ 
       await ctx.db.pinUpvote.delete({ where: { id: latest.id } });
-
+ 
       return { success: true };
     }),
 });

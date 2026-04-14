@@ -181,7 +181,10 @@ export function useGeolocation() {
 
   /** Fire a single getCurrentPosition request (low-accuracy, 30s timeout). */
   const requestOnce = useCallback(
-    (callbacks?: { onPosition?: (pt: ExploredPoint) => void }) => {
+    (callbacks?: {
+      onPosition?: (pt: ExploredPoint) => void;
+      onError?: (err: GeolocationPositionError) => void;
+    }) => {
       if (!("geolocation" in navigator)) {
         setGeoStatus("unavailable");
         setGeoError("Geolocation API not available in this browser.");
@@ -194,7 +197,10 @@ export function useGeolocation() {
           const pt = handlePositionSuccess(pos);
           callbacks?.onPosition?.(pt);
         },
-        handlePositionError,
+        (err) => {
+          handlePositionError(err);
+          callbacks?.onError?.(err);
+        },
         { enableHighAccuracy: false, maximumAge: 30_000, timeout: 30_000 },
       );
     },

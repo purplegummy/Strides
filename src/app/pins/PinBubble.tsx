@@ -8,6 +8,8 @@ interface PinBubbleProps {
   onClose?: () => void;
   children: React.ReactNode;
   width?: number;
+  border?: string;
+  pointerColor?: string;
 }
  
 export const PinBubble: React.FC<PinBubbleProps> = ({
@@ -15,8 +17,14 @@ export const PinBubble: React.FC<PinBubbleProps> = ({
   onClose,
   children,
   width = 380,
+  border,
+  pointerColor,
 }) => {
   const t = themes[theme];
+ 
+  // Fall back to a subtle default if no border/pointer provided
+  const resolvedBorder = border ?? '2.5px solid rgba(255,255,255,0.15)';
+  const resolvedPointer = pointerColor ?? '#1a5a8a';
  
   const wrapStyle: CSSProperties = {
     position: 'relative',
@@ -30,7 +38,7 @@ export const PinBubble: React.FC<PinBubbleProps> = ({
     borderRadius: 22,
     padding: '22px 22px 22px 22px',
     background: t.bubbleBackground,
-    border: t.bubbleBorder,
+    border: resolvedBorder,
     minHeight: 200,
   };
  
@@ -40,7 +48,7 @@ export const PinBubble: React.FC<PinBubbleProps> = ({
     margin: '0 auto',
     borderLeft: '28px solid transparent',
     borderRight: '28px solid transparent',
-    borderTop: `32px solid ${t.pointerColor}`,
+    borderTop: `32px solid ${resolvedPointer}`,
   };
  
   const closeBtnStyle: CSSProperties = {
@@ -84,3 +92,4 @@ export const PinBubble: React.FC<PinBubbleProps> = ({
     </div>
   );
 };
+ 

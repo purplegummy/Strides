@@ -12,29 +12,53 @@ import { useGeolocation } from "./useGeolocation";
 import { useExploredPoints } from "./useExploredPoints";
 import { useMapPins } from "./useMapPins";
 import { useFogLayer } from "./useFogLayer";
-import { useDeviceHeading } from "./useDeviceHeading";
  
 type MapUser = {
   id: string;
 };
  
-export function MapClient({ user }: { user: MapUser }) {
+// ── Pin bubble geometry ────────────────────────────────────────────────────────
+// The bubble floats above the marker. We want the tip of the pointer triangle
+// (bottom of the bubble) to sit exactly over the pin's map coordinate.
+// Bubble height ≈ 420px, pointer triangle ≈ 32px, rarity tag ≈ 28px,
+// plus 120px bottom offset from the sheet. Total upward offset ≈ 600px.
+// We place the pin tip at 75% down the screen so the bubble has room above.
+const PIN_TIP_TARGET_Y_RATIO = 0.25; // 0 = top, 1 = bottom
+const PIN_BUBBLE_HEIGHT_PX = 580;    // full height from tip to top of bubble
+
+type FogIntensity = "medium" | "light" | "heavy";
+
+type MapClientProps = {
+  user: MapUser;
+  fogIntensity: FogIntensity; // Add this
+};
+ 
+export function MapClient({ user, fogIntensity }: MapClientProps) {
   const fogEnabled = true;
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hasCentered, setHasCentered] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const selectedPinRef = useRef<PinData | null>(null);
  
-  // ── Center map so pin appears near bottom-middle of screen ─────────────────
+  // ── Center so the pin's pointer TIP lands at PIN_TIP_TARGET_Y_RATIO ────────
   const centerOnPin = useCallback((pin: { lat: number; lng: number }) => {
     const map = mapRef.current?.getMap();
     if (!map) return;
+ 
     const canvas = map.getCanvas();
     const screenH = canvas.clientHeight;
+ 
+    // Where we want the tip to appear on screen
+    const targetTipY = screenH * PIN_TIP_TARGET_Y_RATIO;
+ 
+    // Current screen position of the pin coordinate
     const pinScreenPos = map.project([pin.lng, pin.lat]);
-    const targetY = screenH * 0.7;
-    const offsetY = pinScreenPos.y - targetY;
-    const newCenter = map.unproject([pinScreenPos.x, pinScreenPos.y - offsetY]);
+ 
+    // Shift the map so pinScreenPos.y moves to targetTipY
+    const dy = pinScreenPos.y - targetTipY;
+    const newCenter = map.unproject([pinScreenPos.x, pinScreenPos.y - dy]);
+ 
     map.easeTo({
       center: [newCenter.lng, newCenter.lat],
       duration: 500,
@@ -43,10 +67,14 @@ export function MapClient({ user }: { user: MapUser }) {
   }, []);
  
   // ── Hooks ──────────────────────────────────────────────────────────────────
-  const deviceHeading = useDeviceHeading();
   const geo = useGeolocation();
   const explored = useExploredPoints(geo.position, geo.lastKnownPosition);
   const pins = useMapPins(geo.position, geo.lastKnownPosition, centerOnPin);
+ 
+  // Keep a ref in sync so the GPS handler can read it without stale closure
+  useEffect(() => {
+    selectedPinRef.current = pins.selectedPin;
+  }, [pins.selectedPin]);
  
   useFogLayer(
     mapRef,
@@ -63,7 +91,7 @@ export function MapClient({ user }: { user: MapUser }) {
     centerOnPin(pin);
   }, [pins, centerOnPin]);
  
-  // ── GPS watch ─────────────────────────────────────────────────────────────
+  // ── GPS watch — freeze map movement while a pin popup is open ─────────────
   useEffect(() => {
     geo.startWatch(
       { enableHighAccuracy: true, maximumAge: 2_000, timeout: 60_000 },
@@ -71,12 +99,18 @@ export function MapClient({ user }: { user: MapUser }) {
         onPosition: (pt) => {
           explored.samplePoint(pt);
           const map = mapRef.current?.getMap();
+ 
           if (!hasCentered) {
             map?.flyTo({ center: [pt.lng, pt.lat], zoom: 17, essential: true });
             setHasCentered(true);
-          } else {
-            map?.easeTo({ center: [pt.lng, pt.lat], duration: 500 });
+            return;
           }
+ 
+          // Don't pan the map while a pin popup is open — it would
+          // move the map out from under the bubble
+          if (selectedPinRef.current) return;
+ 
+          map?.easeTo({ center: [pt.lng, pt.lat], duration: 500 });
         },
       },
     );
@@ -123,7 +157,7 @@ export function MapClient({ user }: { user: MapUser }) {
               latitude={explored.displayPosition.lat}
               anchor="center"
             >
-              <UserPositionMarker heading={deviceHeading ?? 0} />
+              <UserPositionMarker />
             </Marker>
           ) : null}
  
@@ -192,3 +226,4 @@ export function MapClient({ user }: { user: MapUser }) {
     </div>
   );
 }
+ 

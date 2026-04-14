@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
-
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { CelebrationPopout } from "~/components/ui/CelebrationPopout";
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
 import StatsPage from "~/app/_components/stats/StatsPage";
@@ -26,8 +26,10 @@ export function AppShell({ user }: { user: MapUser }) {
   const [navTab, setNavTab] = useState<NavTab>("map");
   const [signingOut, setSigningOut] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+  const [units, setUnits] = useState<'metric' | 'imperial'>('metric');
+  const [fogIntensity, setFogIntensity] = useState<'light' | 'medium' | 'heavy'>('medium');
 
-  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "atlanta" });
+  const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "emory" });
   const xpQuery = api.quest.getXp.useQuery();
   const stats = statsQuery.data;
   const [, setHudOpen] = useState(true);
@@ -37,6 +39,13 @@ export function AppShell({ user }: { user: MapUser }) {
   const questsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [settingsClosing, setSettingsClosing] = useState(false);
   const settingsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [celebration, setCelebration] = useState<{
+    type?: "level" | "achievement" | "quest" | "nearby";
+    title: string;
+    shortText: string;
+    message: string;
+    submessage?: string;
+  } | null>(null);
 
   const closeStats = useCallback(() => {
     setStatsClosing(true);
@@ -82,8 +91,17 @@ export function AppShell({ user }: { user: MapUser }) {
     }
   }, [signingOut]);
 
-const overlays = useMemo(() => {
-  if (tab !== "profile") return null;
+  useEffect(() => {
+    setCelebration({
+      type: "achievement",
+      title: "First Steps",
+      shortText: "Achievement Unlocked",
+      message: "You explored your first area.",
+    });
+  }, []);
+
+  const overlays = useMemo(() => {
+    if (tab !== "profile") return null;
 
   return (
     <div className="absolute inset-0 z-20 flex flex-col bg-[#0b1020] p-6 overflow-y-auto">
@@ -112,7 +130,7 @@ const overlays = useMemo(() => {
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
       {/* Map stays mounted regardless of tab */}
-      <MapClient user={user} />
+      <MapClient user={user} fogIntensity={fogIntensity} />
 
       {tab !== "stats" && tab !== "quests" && tab !== "settings" && (
         <div
@@ -168,7 +186,7 @@ const overlays = useMemo(() => {
             .stats-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
             .stats-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
           `}</style>
-          <StatsPage darkMode={darkMode} />
+          <StatsPage darkMode={darkMode} units={units} />
         </div>
       )}
 
@@ -244,7 +262,7 @@ const overlays = useMemo(() => {
             .settings-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
             .settings-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
           `}</style>
-          <SettingsPage onSignOut={signOut} darkMode={darkMode} onToggleDarkMode={() => setDarkMode(v => !v)} />
+          <SettingsPage onSignOut={signOut} darkMode={darkMode} onToggleDarkMode={() => setDarkMode(v => !v)} units={units} onChangeUnits={setUnits} fogIntensity={fogIntensity} onChangeFogIntensity={setFogIntensity} />
         </div>
       )}
 
@@ -275,6 +293,15 @@ const overlays = useMemo(() => {
           }}
         />
       )}
+  <CelebrationPopout
+    open={!!celebration}
+    type={celebration?.type}
+    title={celebration?.title ?? ""}
+    shortText={celebration?.shortText ?? ""}
+    message={celebration?.message ?? ""}
+    onClose={() => setCelebration(null)}
+  />
+
     </main>
   );
 }
