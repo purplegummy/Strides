@@ -71,25 +71,14 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
 
         <div className="mx-auto w-full max-w-5xl">
-          <ProfilePopup
-            user={{
-              name: user.name,
-              image: user.imageUrl,
-            }}
-          />
+         <ProfilePopup
+                  user={{
+                    name: user.name,
+                    image: user.imageUrl,
+                  }}
+            onSignOut={signOut}
+            />
         </div>
-
-        <div className="mx-auto mt-4 w-full max-w-5xl">
-          <button
-            type="button"
-            onClick={signOut}
-            disabled={signingOut}
-            className="w-full rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {signingOut ? "Signing out…" : "Sign out"}
-          </button>
-        </div>
-      </div>
     );
   }, [signOut, signingOut, tab, user.imageUrl, user.name]);
 
