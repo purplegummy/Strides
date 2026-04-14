@@ -54,8 +54,8 @@ export const PinBubble: React.FC<PinBubbleProps> = ({
  
   const closeBtnStyle: CSSProperties = {
     position: 'absolute',
-    top: 14,
-    right: 14,
+    top: 8,
+    right: 10,
     width: 30,
     height: 30,
     borderRadius: '50%',
