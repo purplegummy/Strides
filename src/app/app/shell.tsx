@@ -4,17 +4,17 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import { Toaster } from "sonner";
 import { CelebrationPopout } from "~/components/ui/CelebrationPopout";
 import { ProfileBar } from "~/app/_components/profile/ProfileBar";
+import { ProfilePopup } from "~/app/_components/profile/profile-popup";
 import SettingsPage from "~/app/_components/settings/SettingsPage";
 import StatsPage from "~/app/_components/stats/StatsPage";
+import QuestsPage from "~/app/_components/quests/QuestsPage";
 import { MapClient } from "~/app/map/MapClient";
 import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
 import type { AppTab } from "./tab-nav";
 import ExplorationBar from "~/app/_components/exploration/ExplorationBar";
-import QuestsPage from "~/app/_components/quests/QuestsPage";
 import { xpToLevel, xpProgress } from "~/lib/xp";
 import { RadialNavButton, type NavTab } from "~/components/RadialNavButton";
-import { ProfilePopup } from "~/app/_components/profile/profile-popup";
 
 type MapUser = {
   id: string;
@@ -95,29 +95,30 @@ export function AppShell({ user }: { user: MapUser }) {
   const overlays = useMemo(() => {
     if (tab !== "profile") return null;
 
-  return (
-    <div className="absolute inset-0 z-20 flex flex-col bg-[#0b1020] p-6 overflow-y-auto">
-      <div className="mb-4 flex justify-end">
-        <button
-          type="button"
-          onClick={() => setTab("map")}
-          className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/10"
-        >
-          Back to map
-        </button>
-      </div>
+    return (
+      <div className="absolute inset-0 z-20 overflow-y-auto bg-[#0b1020]/95 p-6">
+        <div className="mb-4 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setTab("map")}
+            className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs font-semibold text-white/90 transition hover:bg-white/10"
+          >
+            Back to map
+          </button>
+        </div>
 
-      <div className="mx-auto w-full max-w-5xl">
-        <ProfilePopup
-          user={{
-            name: user.name,
-            image: user.imageUrl,
-          }}
-        />
+        <div className="mx-auto w-full max-w-5xl">
+          <ProfilePopup
+            user={{
+              name: user.name,
+              image: user.imageUrl,
+            }}
+            onSignOut={signOut}
+          />
+        </div>
       </div>
-    </div>
-  );
-}, [tab, user]);
+    );
+  }, [signOut, tab, user.imageUrl, user.name]);
 
   return (
     <main className="relative min-h-[100dvh] bg-[#0b1020] text-white">
@@ -156,7 +157,6 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {/* Overlays/panels */}
       {overlays}
 
       {/* Stats overlay */}
@@ -183,7 +183,6 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {/* X button — outside the animated div so fixed positioning works */}
       {tab === "stats" && !statsClosing && (
         <button
           type="button"
@@ -221,7 +220,6 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {/* X button for quests */}
       {tab === "quests" && !questsClosing && (
         <button
           type="button"
@@ -259,7 +257,6 @@ export function AppShell({ user }: { user: MapUser }) {
         </div>
       )}
 
-      {/* X button for settings */}
       {tab === "settings" && !settingsClosing && (
         <button
           type="button"
@@ -286,15 +283,15 @@ export function AppShell({ user }: { user: MapUser }) {
           }}
         />
       )}
-  <CelebrationPopout
-    open={!!celebration}
-    type={celebration?.type}
-    title={celebration?.title ?? ""}
-    shortText={celebration?.shortText ?? ""}
-    message={celebration?.message ?? ""}
-    onClose={() => setCelebration(null)}
-  />
 
+      <CelebrationPopout
+        open={!!celebration}
+        type={celebration?.type}
+        title={celebration?.title ?? ""}
+        shortText={celebration?.shortText ?? ""}
+        message={celebration?.message ?? ""}
+        onClose={() => setCelebration(null)}
+      />
     </main>
   );
 }
