@@ -158,9 +158,8 @@ export function SignInForm() {
     <div className="min-h-screen w-full flex items-center justify-center py-8 relative bg-[#020617]">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40 blur-sm"
-        style={{ backgroundImage: `url(${backgroundImage.src ?? backgroundImage})` }}
+        style={{ backgroundImage: "url('/sign-in-bg.png')" }}
       />
-
       <div className="relative z-10">
         <div className="rounded-xl p-8 shadow-md border-4 bg-[#1e293b] border-[#06b6d4]/40">
           <div className="w-full max-w-md mx-auto px-6">
