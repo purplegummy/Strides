@@ -24,7 +24,6 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
     avatar:
       user?.image ??
       "https://images.unsplash.com/photo-1511367461989-f85a21fda167?w=400&h=400&fit=crop",
-    progress: 63.3,
   };
 
   const friends = [
@@ -88,21 +87,6 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
                 {player.name}
               </h1>
             </div>
-
-            <div className="w-full max-w-md space-y-1">
-              <div className="flex justify-end">
-                <span className="text-xs text-white/70">
-                  {player.progress}%
-                </span>
-              </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-[#0f172a]/70 border border-white/10">
-                <div
-                  className="h-full bg-[#06b6d4] transition-all duration-300"
-                  style={{ width: `${player.progress}%` }}
-                />
-              </div>
-            </div>
-          </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
             <button
