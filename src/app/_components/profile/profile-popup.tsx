@@ -49,13 +49,13 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
   ];
 
   return (
-    <div className="w-full max-w-5xl rounded-2xl border-2 border-[#656A73]/40 bg-gradient-to-b from-blue-950 to-blue-900 p-6 text-white shadow-2xl">
-      <div className="mb-6 flex gap-2 border-b border-[#656A73]/40">
+    <div className="w-full max-w-5xl rounded-2xl border-2 border-[#06b6d4] bg-[#17233d] p-6 text-white shadow-2xl">
+      <div className="mb-6 flex gap-2 border-b border-white/20">
         <button
           className={`flex-1 h-11 text-sm transition-all ${
             activeTab === "profile"
-              ? "text-purple-100 border-b-2 border-[#656A73]/40"
-              : "text-purple-300 border-b-2 border-transparent"
+              ? "text-white border-b-2 border-[#06b6d4]"
+              : "text-white/70 border-b-2 border-transparent hover:text-white"
           }`}
           onClick={() => setActiveTab("profile")}
         >
@@ -64,8 +64,8 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
         <button
           className={`flex-1 h-11 text-sm transition-all ${
             activeTab === "friends"
-              ? "text-purple-100 border-b-2 border-[#656A73]/40"
-              : "text-purple-300 border-b-2 border-transparent"
+              ? "text-white border-b-2 border-[#06b6d4]"
+              : "text-white/70 border-b-2 border-transparent hover:text-white"
           }`}
           onClick={() => setActiveTab("friends")}
         >
@@ -76,26 +76,28 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
       {activeTab === "profile" ? (
         <div className="space-y-6">
           <div className="flex flex-col items-center gap-4">
-            <Avatar className="size-24 border-4 border-[#656A73]/40">
+            <Avatar className="size-24 border-4 border-[#06b6d4]/40">
               <AvatarImage src={player.avatar} alt={player.name} />
-              <AvatarFallback>{player.name[0]}</AvatarFallback>
+              <AvatarFallback className="bg-[#0f172a] text-white">
+                {player.name[0]}
+              </AvatarFallback>
             </Avatar>
 
             <div className="text-center">
-              <h1 className="text-2xl font-semibold text-purple-100">
+              <h1 className="text-2xl font-semibold text-white">
                 {player.name}
               </h1>
             </div>
 
             <div className="w-full max-w-md space-y-1">
               <div className="flex justify-end">
-                <span className="text-xs text-purple-300">
+                <span className="text-xs text-white/70">
                   {player.progress}%
                 </span>
               </div>
-              <div className="h-2 w-full overflow-hidden rounded-full bg-black/20">
+              <div className="h-2 w-full overflow-hidden rounded-full bg-[#0f172a]/70 border border-white/10">
                 <div
-                  className="h-full bg-sky-400 transition-all duration-300"
+                  className="h-full bg-[#06b6d4] transition-all duration-300"
                   style={{ width: `${player.progress}%` }}
                 />
               </div>
@@ -107,75 +109,76 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
               onClick={() => setActivePanel("information")}
               className="group flex flex-col items-center gap-2"
             >
-              <div className="flex size-16 items-center justify-center rounded-full border-2 border-blue-400/30 bg-black/20 transition-all hover:scale-110 hover:border-blue-400 hover:bg-blue-400/20">
-                <Info className="size-7 text-blue-400" />
+              <div className="flex size-16 items-center justify-center rounded-full border-2 border-[#06b6d4]/30 bg-[#0f172a]/60 transition-all hover:scale-110 hover:border-[#06b6d4] hover:bg-[#06b6d4]/10">
+                <Info className="size-7 text-[#06b6d4]" />
               </div>
-              <span className="text-xs text-purple-300">Info</span>
+              <span className="text-xs text-white/70">Info</span>
             </button>
 
             <button
               onClick={() => setActivePanel("achievements")}
               className="group flex flex-col items-center gap-2"
             >
-              <div className="flex size-16 items-center justify-center rounded-full border-2 border-orange-400/30 bg-black/20 transition-all hover:scale-110 hover:border-orange-400 hover:bg-orange-400/20">
-                <Award className="size-7 text-orange-400" />
+              <div className="flex size-16 items-center justify-center rounded-full border-2 border-[#06b6d4]/30 bg-[#0f172a]/60 transition-all hover:scale-110 hover:border-[#06b6d4] hover:bg-[#06b6d4]/10">
+                <Award className="size-7 text-[#06b6d4]" />
               </div>
-              <span className="text-xs text-purple-300">Achievements</span>
+              <span className="text-xs text-white/70">Achievements</span>
             </button>
 
             <button
               onClick={() => setActivePanel("pins")}
               className="group flex flex-col items-center gap-2"
             >
-              <div className="flex size-16 items-center justify-center rounded-full border-2 border-green-400/30 bg-black/20 transition-all hover:scale-110 hover:border-green-400 hover:bg-green-400/20">
-                <MapPin className="size-7 text-green-400" />
+              <div className="flex size-16 items-center justify-center rounded-full border-2 border-[#06b6d4]/30 bg-[#0f172a]/60 transition-all hover:scale-110 hover:border-[#06b6d4] hover:bg-[#06b6d4]/10">
+                <MapPin className="size-7 text-[#06b6d4]" />
               </div>
-              <span className="text-xs text-purple-300">My Pins</span>
+              <span className="text-xs text-white/70">My Pins</span>
             </button>
 
             <button
               onClick={() => setActivePanel("logout")}
               className="group flex flex-col items-center gap-2"
             >
-              <div className="flex size-16 items-center justify-center rounded-full border-2 border-red-400/30 bg-black/20 transition-all hover:scale-110 hover:border-red-400 hover:bg-red-400/20">
+              <div className="flex size-16 items-center justify-center rounded-full border-2 border-red-400/30 bg-[#0f172a]/60 transition-all hover:scale-110 hover:border-red-400 hover:bg-red-400/10">
                 <LogOut className="size-7 text-red-400" />
               </div>
-              <span className="text-xs text-purple-300">Logout</span>
+              <span className="text-xs text-white/70">Logout</span>
             </button>
           </div>
 
-          <div className="rounded-xl bg-black/20 p-4">
+          <div className="rounded-xl border border-white/10 bg-[#0f172a]/60 p-4">
             {activePanel === null && (
-              <div className="flex items-center gap-3 text-purple-200">
-                <User className="size-5 text-blue-300" />
+              <div className="flex items-center gap-3 text-white/80">
+                <User className="size-5 text-[#06b6d4]" />
                 <p>Select an option to view more details.</p>
               </div>
             )}
 
             {activePanel === "information" && (
               <div className="space-y-3">
-                <h2 className="text-lg font-semibold text-blue-300">
+                <h2 className="text-lg font-semibold text-[#06b6d4]">
                   Information
                 </h2>
-                <div className="rounded-lg bg-black/20 p-3">
-                  <p className="text-sm text-purple-200">
-                    <span className="font-semibold text-blue-400">
+                <div className="rounded-lg border border-white/10 bg-[#0f172a]/60 p-3">
+                  <p className="text-sm text-white/80">
+                    <span className="font-semibold text-[#06b6d4]">
                       Username:
                     </span>{" "}
                     {player.name}
                   </p>
                 </div>
-                <div className="rounded-lg bg-black/20 p-3">
-                  <p className="text-sm text-purple-200">
-                    <span className="font-semibold text-blue-400">
+                <div className="rounded-lg border border-white/10 bg-[#0f172a]/60 p-3">
+                  <p className="text-sm text-white/80">
+                    <span className="font-semibold text-[#06b6d4]">
                       Member Since:
                     </span>{" "}
-                    January 2026
                   </p>
                 </div>
-                <div className="rounded-lg bg-black/20 p-3">
-                  <p className="text-sm text-purple-200">
-                    <span className="font-semibold text-blue-400">Status:</span>{" "}
+                <div className="rounded-lg border border-white/10 bg-[#0f172a]/60 p-3">
+                  <p className="text-sm text-white/80">
+                    <span className="font-semibold text-[#06b6d4]">
+                      Status:
+                    </span>{" "}
                     Online
                   </p>
                 </div>
@@ -184,7 +187,7 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
 
             {activePanel === "achievements" && (
               <div className="space-y-3">
-                <h2 className="text-lg font-semibold text-orange-300">
+                <h2 className="text-lg font-semibold text-[#06b6d4]">
                   Achievements
                 </h2>
                 {[
@@ -194,12 +197,12 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="flex items-center gap-3 rounded-lg bg-black/20 p-3"
+                    className="flex items-center gap-3 rounded-lg border border-white/10 bg-[#0f172a]/60 p-3"
                   >
-                    <Award className="size-6 flex-shrink-0 text-yellow-400" />
+                    <Award className="size-6 flex-shrink-0 text-[#06b6d4]" />
                     <div>
-                      <p className="font-semibold text-purple-100">{item}</p>
-                      <p className="text-xs text-purple-300">
+                      <p className="font-semibold text-white">{item}</p>
+                      <p className="text-xs text-white/70">
                         Achievement unlocked on *Date*
                       </p>
                     </div>
@@ -210,16 +213,18 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
 
             {activePanel === "pins" && (
               <div className="space-y-3">
-                <h2 className="text-lg font-semibold text-green-300">My Pins</h2>
+                <h2 className="text-lg font-semibold text-[#06b6d4]">
+                  My Pins
+                </h2>
                 {["My Pin 1", "My Pin 2", "Friend 4's Pin"].map((pin) => (
                   <div
                     key={pin}
-                    className="flex items-center gap-3 rounded-lg bg-black/20 p-3"
+                    className="flex items-center gap-3 rounded-lg border border-white/10 bg-[#0f172a]/60 p-3"
                   >
-                    <MapPin className="size-6 flex-shrink-0 text-green-400" />
+                    <MapPin className="size-6 flex-shrink-0 text-[#06b6d4]" />
                     <div>
-                      <p className="font-semibold text-purple-100">{pin}</p>
-                      <p className="text-xs text-purple-300">Made on *Date*</p>
+                      <p className="font-semibold text-white">{pin}</p>
+                      <p className="text-xs text-white/70">Made on *Date*</p>
                     </div>
                   </div>
                 ))}
@@ -227,55 +232,55 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
             )}
 
             {activePanel === "logout" && (
-               <div className="space-y-4">
-               <h2 className="text-lg font-semibold text-red-300">Logout</h2>
+              <div className="space-y-4">
+                <h2 className="text-lg font-semibold text-red-300">Logout</h2>
 
-                  <p className="text-sm text-purple-200">
-                    Are you sure you want to logout?
-                  </p>
-              
-                  <div className="flex justify-end gap-2">
-                    {/* Cancel */}
-                    <button
-                      onClick={() => setActivePanel(null)}
-                      className="rounded-xl bg-black/20 px-4 py-2 text-purple-300 hover:bg-black/30"
-                    >
-                      Cancel
-                    </button>
-              
-                    {/* Confirm Logout */}
-                    <button
-                      onClick={onSignOut}
-                      className="rounded-xl bg-red-400 px-4 py-2 text-white hover:bg-red-500"
-                    >
-                      Logout
-                    </button>
-                  </div>
+                <p className="text-sm text-white/80">
+                  Are you sure you want to logout?
+                </p>
+
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => setActivePanel(null)}
+                    className="rounded-xl border border-white/20 bg-[#0f172a]/60 px-4 py-2 text-white/70 hover:bg-[#0f172a]"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={onSignOut}
+                    className="rounded-xl bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                  >
+                    Logout
+                  </button>
                 </div>
-              )}
+              </div>
+            )}
           </div>
         </div>
       ) : (
         <div className="space-y-3">
-          <h2 className="text-lg font-semibold text-green-300">Friends</h2>
+          <h2 className="text-lg font-semibold text-[#06b6d4]">Friends</h2>
           {friends.map((friend) => (
             <div
               key={friend.name}
-              className="flex items-center gap-3 rounded-lg bg-black/20 p-3"
+              className="flex items-center gap-3 rounded-lg border border-white/10 bg-[#0f172a]/60 p-3"
             >
-              <Avatar className="size-12 flex-shrink-0 border-2 border-[#656A73]/40">
+              <Avatar className="size-12 flex-shrink-0 border-2 border-[#06b6d4]/30">
                 <AvatarImage src={friend.avatar} />
-                <AvatarFallback>{friend.name[0]}</AvatarFallback>
+                <AvatarFallback className="bg-[#0f172a] text-white">
+                  {friend.name[0]}
+                </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="truncate font-semibold text-purple-100">
+                <p className="truncate font-semibold text-white">
                   {friend.name}
                 </p>
                 <p
                   className={`text-xs ${
                     friend.status === "online"
-                      ? "text-green-400"
-                      : "text-purple-400"
+                      ? "text-[#06b6d4]"
+                      : "text-white/60"
                   }`}
                 >
                   {friend.status === "online" ? "Online" : "Offline"}
