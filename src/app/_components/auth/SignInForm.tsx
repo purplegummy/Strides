@@ -101,7 +101,7 @@ function EyeOffIcon() {
 
 
 const baseInput =
-  "w-full pl-11 py-3 rounded-xl border border-black/10 bg-white/60 text-slate-800 placeholder:text-slate-400 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#A9D6E5]";
+  "w-full pl-11 py-3 rounded-xl border border-white/30 bg-[#0f172a]/50 text-white placeholder:text-white/50 transition-all focus:outline-none focus:ring-2 focus:ring-[#06b6d4] focus:border-[#06b6d4]";
 
 export function SignInForm() {
   const router = useRouter();
