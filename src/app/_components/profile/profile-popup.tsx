@@ -273,7 +273,7 @@ export function ProfilePopup({ user, onSignOut }: ProfilePopupProps) {
             </div>
           ))}
         </div>
-      )}
+      )
     </div>
   );
 }
