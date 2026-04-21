@@ -100,7 +100,8 @@ function EyeOffIcon() {
 }
 
 const baseInput =
-  "w-full pl-11 py-3 rounded-xl border border-black/10 bg-white/60 text-slate-800 placeholder:text-slate-400 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#A9D6E5]";
+  "w-full pl-11 py-3 rounded-xl border border-white/30 bg-[#0f172a]/50 text-white placeholder:text-white/50 transition-all focus:outline-none focus:ring-2 focus:ring-[#06b6d4] focus:border-[#06b6d4]";
+
 
 export function SignInForm() {
   const router = useRouter();
@@ -152,27 +153,27 @@ export function SignInForm() {
     router.refresh();
   };
 
+
+
   return (
-    <div className="w-full max-w-md mx-auto">
-      {/* Header */}
+    <div className="w-full max-w-[390px] rounded-2xl border border-[#06b6d4]/50 bg-[#182844] px-8 py-10 shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-medium text-slate-800">
+        <h1 className="text-3xl font-semibold text-white">
           {isSignUp ? "Create Account" : "Strides"}
         </h1>
-        <p className="mt-1 text-slate-500">
+        <p className="mt-2 text-lg text-white/80">
           {isSignUp ? "Sign up to get started" : "Sign in to continue"}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        {/* Name field — sign up only */}
         {isSignUp && (
           <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm font-medium text-slate-700">
+            <label htmlFor="name" className="block text-sm font-semibold text-white">
               Full Name
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#00c8ff]">
                 <UserIcon />
               </span>
               <input
@@ -188,13 +189,12 @@ export function SignInForm() {
           </div>
         )}
 
-        {/* Email */}
         <div className="space-y-2">
-          <label htmlFor="email" className="block text-sm font-medium text-slate-700">
+          <label htmlFor="email" className="block text-sm font-semibold text-white">
             Email Address
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#00c8ff]">
               <MailIcon />
             </span>
             <input
@@ -209,13 +209,12 @@ export function SignInForm() {
           </div>
         </div>
 
-        {/* Password */}
         <div className="space-y-2">
-          <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+          <label htmlFor="password" className="block text-sm font-semibold text-white">
             Password
           </label>
           <div className="relative">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#00c8ff]">
               <LockIcon />
             </span>
             <input
@@ -230,95 +229,99 @@ export function SignInForm() {
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 transition-colors hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#00c8ff] transition-colors hover:text-white"
             >
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
             </button>
           </div>
         </div>
 
-        {/* Remember me / Forgot password */}
         {!isSignUp && (
-          <div className="flex items-center justify-between">
-            <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+          <div className="flex items-center justify-between gap-4">
+            <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-white">
               <input
                 type="checkbox"
-                className="h-4 w-4 rounded border-black/10 accent-[#A9D6E5]"
+                className="h-4 w-4 rounded border-white/20 accent-[#06b6d4]"
               />
               Remember me
             </label>
-            <button type="button" className="text-sm text-[#2D5A8E] hover:underline">
+            <button type="button" className="text-sm font-semibold text-[#00c8ff] hover:underline">
               Forgot password?
             </button>
           </div>
         )}
 
-        {/* Accept terms — sign up only */}
         {isSignUp && (
           <label className="flex cursor-pointer items-start gap-2">
             <input
               type="checkbox"
               required
-              className="mt-0.5 h-4 w-4 rounded border-black/10 accent-[#A9D6E5]"
+              className="mt-0.5 h-4 w-4 rounded border-white/20 accent-[#06b6d4]"
             />
-            <span className="text-sm text-slate-500">
+            <span className="text-sm text-white/70">
               I agree to the{" "}
-              <button type="button" className="text-[#2D5A8E] hover:underline">
+              <button type="button" className="text-[#00c8ff] hover:underline">
                 Terms of Service
               </button>{" "}
               and{" "}
-              <button type="button" className="text-[#2D5A8E] hover:underline">
+              <button type="button" className="text-[#00c8ff] hover:underline">
                 Privacy Policy
               </button>
             </span>
           </label>
         )}
 
-        {/* Error message */}
         {error && (
-          <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">{error}</p>
+          <p className="rounded-lg border border-red-400/20 bg-red-500/10 px-4 py-2 text-sm text-red-300">
+            {error}
+          </p>
         )}
 
-        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-xl bg-[#2D5A8E] py-3 font-medium text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+          className="w-full rounded-2xl bg-[#1eb4d2] py-3 text-xl font-semibold text-white transition-all hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {loading ? (isSignUp ? "Creating account…" : "Signing in…") : isSignUp ? "Sign Up" : "Sign In"}
+          {loading
+            ? isSignUp
+              ? "Creating account..."
+              : "Signing in..."
+            : isSignUp
+              ? "Sign Up"
+              : "Sign In"}
         </button>
       </form>
 
-      {/* Toggle sign in / sign up */}
-      <div className="mt-6 text-center">
-        <p className="text-sm text-slate-500">
+      <div className="mt-7 text-center">
+        <p className="text-sm text-white/80">
           {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
-          <button onClick={toggleMode} className="font-medium text-[#2D5A8E] hover:underline">
+          <button onClick={toggleMode} className="font-semibold text-[#00c8ff] hover:underline">
             {isSignUp ? "Sign In" : "Sign Up"}
           </button>
         </p>
       </div>
 
-      {/* Divider */}
       <div className="mt-8">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-black/10" />
+            <div className="w-full border-t border-white/20" />
           </div>
           <div className="relative flex justify-center text-sm">
-            <span className="bg-[#D0EAF5] px-4 text-slate-500">Or continue with</span>
+            <span className="bg-[#182844] px-4 text-white/85">Or continue with</span>
           </div>
         </div>
 
-        {/* OAuth buttons */}
         <div className="mt-6 grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={async () => {
-              const res = await authClient.signIn.social({ provider: "google", callbackURL: "/app" });
+              const res = await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/app",
+              });
               if (res.data?.url) window.location.href = res.data.url;
             }}
-            className="flex items-center justify-center gap-2 rounded-xl border border-black/10 px-4 py-3 text-sm text-slate-700 transition-all hover:bg-white/40 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 rounded-xl border border-white/25 px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-white/10 active:scale-[0.98]"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">
               <path
@@ -344,10 +347,13 @@ export function SignInForm() {
           <button
             type="button"
             onClick={async () => {
-              const res = await authClient.signIn.social({ provider: "github", callbackURL: "/app" });
+              const res = await authClient.signIn.social({
+                provider: "github",
+                callbackURL: "/app",
+              });
               if (res.data?.url) window.location.href = res.data.url;
             }}
-            className="flex items-center justify-center gap-2 rounded-xl border border-black/10 px-4 py-3 text-sm text-slate-700 transition-all hover:bg-white/40 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 rounded-xl border border-white/25 px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-white/10 active:scale-[0.98]"
           >
             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
               <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.839 9.49.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0112 6.836c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.167 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
