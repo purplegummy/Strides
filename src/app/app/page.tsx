@@ -11,8 +11,11 @@ export default async function AppPage() {
     redirect("/");
   }
 
-  void api.quest.getXp.prefetch();
-  void api.quest.getCompletedQuests.prefetch();
+  await Promise.all([
+    api.quest.getXp.prefetch(),
+    api.quest.getCompletedQuests.prefetch(),
+    api.map.getExplorationStats.prefetch({ cityId: "emory" }),
+  ]);
 
   return (
     <HydrateClient>

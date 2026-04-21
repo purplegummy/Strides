@@ -21,6 +21,24 @@ import { useExploredPoints } from "./useExploredPoints";
 import { useMapPins } from "./useMapPins";
 import { useFogLayer } from "./useFogLayer";
 import { haversineMeters } from "./map-utils";
+import { QUEST_DEFINITIONS, LOCATION_MARKERS } from "~/app/_components/quests/questData";
+import { api } from "~/trpc/react";
+
+// Normalise quest locations and standalone markers into one shape
+const locationQuests = [
+  ...QUEST_DEFINITIONS.filter((q) => q.location).map((q) => ({
+    id: q.id,
+    icon: q.icon ?? "📍",
+    location: q.location!,
+    isQuest: true,
+  })),
+  ...LOCATION_MARKERS.map((m) => ({
+    id: m.id,
+    icon: m.icon,
+    location: m.location,
+    isQuest: false,
+  })),
+];
 
  
 type MapUser = {
@@ -36,19 +54,22 @@ type MapClientProps = {
   hideControls?: boolean;
 };
  
-export function MapClient({ user, fogIntensity: _fogIntensity, hideControls }: MapClientProps) {
+export function MapClient({ user, fogIntensity, hideControls }: MapClientProps) {
   const fogEnabled = true;
   const mapRef = useRef<MapRef | null>(null);
   const fogCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [hasCentered, setHasCentered] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [zoom, setZoom] = useState(2);
+  const questMarkerRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const selectedPinRef = useRef<PinData | null>(null);
  
   // ── Hooks ──────────────────────────────────────────────────────────────────
   const geo = useGeolocation();
   const explored = useExploredPoints(geo.position, geo.lastKnownPosition);
   const pins = useMapPins(geo.position, geo.lastKnownPosition);
+  const completedQuestsQuery = api.quest.getCompletedQuests.useQuery();
+  const completedQuestIds = new Set(completedQuestsQuery.data?.map((c) => c.questId) ?? []);
  
   // Keep a ref in sync so the GPS handler can read it without stale closure
   useEffect(() => {
@@ -62,8 +83,30 @@ export function MapClient({ user, fogIntensity: _fogIntensity, hideControls }: M
     explored.exploredPoints,
     explored.displayPosition,
     fogEnabled,
+    fogIntensity,
   );
  
+  // ── Quest location markers — direct DOM update, no React re-renders ────────
+  useEffect(() => {
+    const map = mapRef.current?.getMap();
+    if (!map || !mapReady) return;
+    const update = () => {
+      const visible = map.getZoom() >= 14;
+      for (const q of locationQuests) {
+        const el = questMarkerRefs.current[q.id];
+        if (!el) continue;
+        if (!visible) { el.style.visibility = "hidden"; continue; }
+        const pt = map.project([q.location.lng, q.location.lat]);
+        el.style.left = `${pt.x}px`;
+        el.style.top = `${pt.y}px`;
+        el.style.visibility = "visible";
+      }
+    };
+    update();
+    map.on("move", update);
+    return () => { map.off("move", update); };
+  }, [mapReady]);
+
   // ── Handle pin click: select + center ─────────────────────────────────────
   const handlePinClick = useCallback((pin: PinData) => {
     pins.setSelectedPin(pin);
@@ -275,6 +318,78 @@ export function MapClient({ user, fogIntensity: _fogIntensity, hideControls }: M
             className="pointer-events-none absolute inset-0 h-full w-full"
           />
         ) : null}
+
+        {/* Quest location markers — above the fog so players can see where to go */}
+        <div className="pointer-events-none absolute inset-0">
+          {locationQuests.map((q) => {
+            const done = completedQuestIds.has(q.id);
+            const borderColor = done ? "rgba(120,120,130,0.6)" : "rgba(251,191,36,0.75)";
+            const glowColor = done ? "rgba(120,120,130,0.2)" : "rgba(251,191,36,0.35)";
+            const tooltipBorder = done ? "1px solid rgba(120,120,130,0.4)" : "1px solid rgba(251,191,36,0.45)";
+            const tooltipColor = done ? "#9ca3af" : "#fde68a";
+            const needleColor = done ? "rgba(120,120,130,0.6)" : "rgba(251,191,36,0.75)";
+            return (
+              <div
+                key={q.id}
+                ref={(el) => { questMarkerRefs.current[q.id] = el; }}
+                className="group pointer-events-auto"
+                style={{
+                  position: "absolute",
+                  visibility: "hidden",
+                  transform: "translate(-50%, -100%)",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  cursor: "default",
+                  opacity: done ? 0.55 : 1,
+                }}
+              >
+                {/* Pin body — tooltip anchors to this */}
+                <div style={{ position: "relative" }}>
+                  {/* Tooltip */}
+                  <div
+                    className="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded px-2 py-1 text-xs font-medium opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                    style={{
+                      background: "rgba(15,23,42,0.92)",
+                      border: tooltipBorder,
+                      color: tooltipColor,
+                    }}
+                  >
+                    {q.location.name}
+                  </div>
+                  {/* Circle */}
+                  <div
+                    style={{
+                      width: 34,
+                      height: 34,
+                      borderRadius: "50%",
+                      background: "rgba(15,23,42,0.88)",
+                      border: `2px solid ${borderColor}`,
+                      boxShadow: `0 0 10px ${glowColor}`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 18,
+                      lineHeight: 1,
+                    }}
+                  >
+                    {q.icon}
+                  </div>
+                </div>
+                {/* Needle */}
+                <div
+                  style={{
+                    width: 0,
+                    height: 0,
+                    borderLeft: "5px solid transparent",
+                    borderRight: "5px solid transparent",
+                    borderTop: `8px solid ${needleColor}`,
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
       </div>
  
       <PinSheet
