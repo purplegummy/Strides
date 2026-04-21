@@ -155,13 +155,13 @@ export function SignInForm() {
 
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center py-8 relative bg-[#020617]">
+    <div className="min-h-screen w-full flex items-center justify-center relative bg-[#020617]">
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40 blur-sm"
         style={{ backgroundImage: "url('/sign-in-bg.png')" }}
       />
       <div className="relative z-10">
-        <div className="rounded-xl p-8 shadow-md border-4 bg-[#1e293b] border-[#06b6d4]/40">
+        <div className="w-full">
           <div className="w-full max-w-md mx-auto px-6">
             <div className="mb-8 text-center">
               <h1 className="text-3xl font-medium text-white">
@@ -313,7 +313,7 @@ export function SignInForm() {
                   <div className="w-full border-t border-white/30" />
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="bg-[#1e293b] px-4 text-white/70">Or continue with</span>
+                  <span className="bg-transparent px-4 text-white/70">Or continue with</span>
                 </div>
               </div>
 
