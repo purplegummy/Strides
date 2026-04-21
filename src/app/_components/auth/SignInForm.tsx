@@ -99,6 +99,7 @@ function EyeOffIcon() {
   );
 }
 
+
 const baseInput =
   "w-full pl-11 py-3 rounded-xl border border-black/10 bg-white/60 text-slate-800 placeholder:text-slate-400 transition-all focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#A9D6E5]";
 
