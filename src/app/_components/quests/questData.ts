@@ -145,6 +145,25 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
     collectible: true,
   },
   {
+    id: "influencer",
+    title: "Influencer",
+    description: "Drop pins worth talking about. Get 10 upvotes across all your pins.",
+    lore: "The best explorers don't just find places — they make others want to visit them.",
+    category: "social",
+    difficulty: "medium",
+    icon: "🌟",
+    objectives: [
+      {
+        id: "upvotes_received",
+        description: "Receive upvotes on your pins",
+        target: 10,
+        unit: "upvotes",
+      },
+    ],
+    reward: { xp: 300, label: "300 XP" },
+    collectible: true,
+  },
+  {
     id: "emory-scout",
     title: "Emory Scout",
     description: "Explore Emory Campus and reveal what lies beyond the fog.",
