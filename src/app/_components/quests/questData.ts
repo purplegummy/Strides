@@ -155,7 +155,7 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
     objectives: [
       {
         id: "leaderboard_rank_1",
-        description: "Reach rank #1 on the XP leaderboard",
+        description: "Reach rank #1 on the Explorer leaderboard",
         target: 1,
         unit: "rank",
       },

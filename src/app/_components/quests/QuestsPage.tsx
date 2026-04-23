@@ -170,9 +170,9 @@ export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) 
   const visitedLocationIds = new Set(fullStatsQuery.data?.visitedLocationIds ?? []);
 
   const leaderboardEntries = leaderboardQuery.data ?? [];
-  const sortedByXp = [...leaderboardEntries].sort((a, b) => b.xp - a.xp);
-  const myRank = sortedByXp.findIndex(e => e.isCurrentUser) + 1;
-  const isRankOne = myRank === 1 && sortedByXp.length > 0 ? 1 : 0;
+  const sortedByTiles = [...leaderboardEntries].sort((a, b) => b.tilesDiscovered - a.tilesDiscovered);
+  const myRank = sortedByTiles.findIndex(e => e.isCurrentUser) + 1;
+  const isRankOne = myRank === 1 && sortedByTiles.length > 0 ? 1 : 0;
 
   const t = darkMode ? darkTheme : lightTheme;
 
