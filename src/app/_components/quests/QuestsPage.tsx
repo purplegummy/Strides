@@ -164,6 +164,7 @@ export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) 
   const tilesDiscovered = statsQuery.data?.tilesDiscovered ?? 0;
   const pinsPlaced = fullStatsQuery.data?.pinsPlaced ?? 0;
   const upvotesGiven = fullStatsQuery.data?.upvotesGiven ?? 0;
+  const upvotesReceived = fullStatsQuery.data?.totalUpvotes ?? 0;
   const totalDistanceKm = fullStatsQuery.data?.totalDistanceKm ?? 0;
   const visitedLocationIds = new Set(fullStatsQuery.data?.visitedLocationIds ?? []);
 
@@ -181,6 +182,7 @@ export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) 
       current: obj.id === "tiles" ? tilesDiscovered
         : obj.id === "pins" ? pinsPlaced
         : obj.id === "upvotes_given" ? upvotesGiven
+        : obj.id === "upvotes_received" ? upvotesReceived
         : obj.id === "distance" ? totalDistanceKm
         : obj.id === "location" ? (visitedLocationIds.has(def.id) ? 1 : 0)
         : 0,

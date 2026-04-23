@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Map, ScrollText, BarChart2, Settings, X, Menu } from "lucide-react";
+import { Trophy, ScrollText, BarChart2, Settings, X, Menu } from "lucide-react";
 
-export type NavTab = "map" | "quests" | "stats" | "settings";
+export type NavTab = "map" | "leaderboard" | "quests" | "stats" | "settings";
 
 interface NavNode {
   id: NavTab;
@@ -12,7 +12,7 @@ interface NavNode {
 }
 
 const NAV_NODES: NavNode[] = [
-  { id: "map", label: "Map", icon: Map },
+  { id: "leaderboard", label: "Leaderboard", icon: Trophy },
   { id: "quests", label: "Quests", icon: ScrollText },
   { id: "stats", label: "Stats", icon: BarChart2 },
   { id: "settings", label: "Settings", icon: Settings },

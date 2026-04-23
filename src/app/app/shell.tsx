@@ -9,6 +9,7 @@ import SettingsPage from "~/app/_components/settings/SettingsPage";
 import StatsPage from "~/app/_components/stats/StatsPage";
 import QuestsPage from "~/app/_components/quests/QuestsPage";
 import { MapClient } from "~/app/map/MapClient";
+import LeaderboardPage from "~/app/_components/leaderboard/LeaderboardPage";
 import { authClient } from "~/server/better-auth/client";
 import { api } from "~/trpc/react";
 import type { AppTab } from "./tab-nav";
@@ -40,6 +41,8 @@ export function AppShell({ user }: { user: MapUser }) {
   const questsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [settingsClosing, setSettingsClosing] = useState(false);
   const settingsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [leaderboardClosing, setLeaderboardClosing] = useState(false);
+  const leaderboardCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [celebration, setCelebration] = useState<{
     type?: "level" | "achievement" | "quest" | "nearby";
     title: string;
@@ -72,6 +75,15 @@ export function AppShell({ user }: { user: MapUser }) {
       setTab("map");
       setNavTab("map");
       setSettingsClosing(false);
+    }, 300);
+  }, []);
+
+  const closeLeaderboard = useCallback(() => {
+    setLeaderboardClosing(true);
+    leaderboardCloseTimer.current = setTimeout(() => {
+      setTab("map");
+      setNavTab("map");
+      setLeaderboardClosing(false);
     }, 300);
   }, []);
 
@@ -126,7 +138,7 @@ export function AppShell({ user }: { user: MapUser }) {
       {/* Map stays mounted regardless of tab */}
       <MapClient user={user} fogIntensity={fogIntensity} hideControls={tab === "profile"} />
 
-      {tab !== "stats" && tab !== "quests" && tab !== "settings" && tab !== "profile" && (
+      {tab !== "stats" && tab !== "quests" && tab !== "settings" && tab !== "profile" && tab !== "leaderboard" && (
         <div
           style={{
             position: "fixed",
@@ -141,12 +153,13 @@ export function AppShell({ user }: { user: MapUser }) {
             tilesDiscovered={stats?.tilesDiscovered ?? 0}
             totalTiles={stats?.totalTiles ?? 0}
             streakDays={stats?.streakDays ?? 0}
-            onPress={() => setHudOpen(v => !v)}
+            level={xpToLevel(xpQuery.data?.xp ?? 0)}
+            onPress={() => { setTab("stats"); setNavTab("stats"); }}
           />
         </div>
       )}
 
-      {tab !== "stats" && tab !== "quests" && tab !== "profile" && (
+      {tab !== "stats" && tab !== "quests" && tab !== "leaderboard" && tab !== "profile" && (
         <div className="absolute bottom-[max(1.25rem,env(safe-area-inset-bottom))] left-5 z-20">
           <ProfileBar
             user={user}
@@ -270,6 +283,43 @@ export function AppShell({ user }: { user: MapUser }) {
         </button>
       )}
 
+      {/* Leaderboard overlay */}
+      {(tab === "leaderboard" || leaderboardClosing) && (
+        <div
+          className="leaderboard-overlay fixed inset-0 z-30 overflow-y-auto"
+          style={{
+            scrollbarWidth: "thin",
+            scrollbarColor: "rgba(28,233,253,0.18) transparent",
+            animation: leaderboardClosing
+              ? "leaderboard-slide-down 0.3s cubic-bezier(0.32,0.72,0,1) forwards"
+              : "leaderboard-slide-up 0.35s cubic-bezier(0.32,0.72,0,1) forwards",
+          }}
+        >
+          <style>{`
+            @keyframes leaderboard-slide-up   { from { transform: translateY(100%); } to { transform: translateY(0); } }
+            @keyframes leaderboard-slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
+            .leaderboard-overlay::-webkit-scrollbar { width: 4px; }
+            .leaderboard-overlay::-webkit-scrollbar-track { background: transparent; }
+            .leaderboard-overlay::-webkit-scrollbar-thumb { background: rgba(28,233,253,0.18); border-radius: 2px; }
+            .leaderboard-overlay::-webkit-scrollbar-thumb:hover { background: rgba(28,233,253,0.35); }
+          `}</style>
+              <LeaderboardPage darkMode={darkMode} />
+        </div>
+      )}
+
+      {tab === "leaderboard" && !leaderboardClosing && (
+        <button
+          type="button"
+          onClick={closeLeaderboard}
+          className="fixed top-4 right-4 z-40 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-[#0F172A]/80 text-white/70 backdrop-blur-sm transition hover:bg-[#1a2540] hover:text-white"
+          aria-label="Close leaderboard"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M1 1l12 12M13 1L1 13" />
+          </svg>
+        </button>
+      )}
+
       {/* Radial navigation button — hidden while any interface is open */}
       {tab === "map" && (
         <RadialNavButton
@@ -277,6 +327,7 @@ export function AppShell({ user }: { user: MapUser }) {
           onTabChange={(t) => {
             setNavTab(t);
             if (t === "map") setTab("map");
+            else if (t === "leaderboard") setTab("leaderboard");
             else if (t === "quests") setTab("quests");
             else if (t === "stats") setTab("stats");
             else if (t === "settings") setTab("settings");
