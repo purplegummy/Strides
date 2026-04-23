@@ -161,12 +161,18 @@ export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) 
   const statsQuery = api.map.getExplorationStats.useQuery({ cityId: "emory" });
   const fullStatsQuery = api.map.getStats.useQuery();
   const completedQuery = api.quest.getCompletedQuests.useQuery();
+  const leaderboardQuery = api.leaderboard.getLeaderboard.useQuery();
   const tilesDiscovered = statsQuery.data?.tilesDiscovered ?? 0;
   const pinsPlaced = fullStatsQuery.data?.pinsPlaced ?? 0;
   const upvotesGiven = fullStatsQuery.data?.upvotesGiven ?? 0;
   const upvotesReceived = fullStatsQuery.data?.totalUpvotes ?? 0;
   const totalDistanceKm = fullStatsQuery.data?.totalDistanceKm ?? 0;
   const visitedLocationIds = new Set(fullStatsQuery.data?.visitedLocationIds ?? []);
+
+  const leaderboardEntries = leaderboardQuery.data ?? [];
+  const sortedByTiles = [...leaderboardEntries].sort((a, b) => b.tilesDiscovered - a.tilesDiscovered);
+  const myRank = sortedByTiles.findIndex(e => e.isCurrentUser) + 1;
+  const isRankOne = myRank === 1 && sortedByTiles.length > 0 ? 1 : 0;
 
   const t = darkMode ? darkTheme : lightTheme;
 
@@ -183,6 +189,7 @@ export default function QuestsPage({ darkMode = true }: { darkMode?: boolean }) 
         : obj.id === "pins" ? pinsPlaced
         : obj.id === "upvotes_given" ? upvotesGiven
         : obj.id === "upvotes_received" ? upvotesReceived
+        : obj.id === "leaderboard_rank_1" ? isRankOne
         : obj.id === "distance" ? totalDistanceKm
         : obj.id === "location" ? (visitedLocationIds.has(def.id) ? 1 : 0)
         : 0,

@@ -145,6 +145,25 @@ export const QUEST_DEFINITIONS: QuestDefinition[] = [
     collectible: true,
   },
   {
+    id: "top-of-the-world",
+    title: "Top of the World",
+    description: "Reach #1 on the leaderboard.",
+    lore: "There can only be one. The fog bows to those who conquer it all.",
+    category: "challenge",
+    difficulty: "legendary",
+    icon: "👑",
+    objectives: [
+      {
+        id: "leaderboard_rank_1",
+        description: "Reach rank #1 on the Explorer leaderboard",
+        target: 1,
+        unit: "rank",
+      },
+    ],
+    reward: { xp: 500, label: "500 XP" },
+    collectible: true,
+  },
+  {
     id: "influencer",
     title: "Influencer",
     description: "Drop pins worth talking about. Get 10 upvotes across all your pins.",
