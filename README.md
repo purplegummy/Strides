@@ -1,84 +1,71 @@
 # Strides
-**A Gamified Real-World Exploration Web App**
 
-Strides is a mobile-first web application that turns the real world into an interactive game map. Users unlock areas of the map by physically walking, discover hidden location-based pins left by others, and earn progress through exploration and engagement.
+**A mobile-first, gamified real-world exploration platform built with Next.js, TypeScript, PostgreSQL, Prisma, tRPC, and Mapbox.**
 
----
+Strides turns physical exploration into an interactive game. As users move through the real world, they uncover areas of a fog-covered map, discover location-based pins, track exploration progress, and interact with places discovered by other users.
 
-## Project Overview
+The project combines geospatial data, persistent user state, authentication, and interactive mapping into a single full-stack application.
 
-Strides gamifies real-world movement using geolocation, maps, and lightweight social mechanics. The system encourages exploration, outdoor activity, and local discovery through game-like progression systems.
+## Tech Stack
 
-The app combines:
-- Real-time location tracking  
-- Map-based fog-of-war exploration  
-- Hidden location discoveries  
-- Social appreciation mechanics  
-- Badges and challenges  
+- **Frontend:** Next.js, React, TypeScript, Tailwind CSS
+- **Backend:** tRPC, Next.js server routes
+- **Database:** PostgreSQL, Prisma ORM
+- **Authentication:** Better Auth
+- **Maps & Geospatial:** Mapbox
+- **Data Fetching / State:** React Query
+- **Validation:** Zod
 
----
+## Features
 
-## Core Concept
+- Interactive Mapbox-powered exploration map
+- Fog-of-war style discovery system
+- Persistent exploration progress tied to user accounts
+- Location-based points of interest and map markers
+- Authentication and user-specific data
+- Database-backed exploration and discovery state
+- Mobile-first responsive interface
+- Full-stack type safety with TypeScript and tRPC
 
-When users open Strides on their phone:
+## Technical Highlights
 
-1. The map appears mostly covered in “fog.”
-2. As users walk in real life, areas they visit become unlocked.
-3. Users can discover hidden pins left by others.
-4. Pins gain engagement and evolve into rarity tiers.
-5. Users earn badges, track progress, and compete on leaderboards.
+- Designed a full-stack architecture connecting a Next.js frontend with PostgreSQL through Prisma and tRPC
+- Built geospatial exploration mechanics that translate real-world movement into persistent map progress
+- Implemented authenticated user state so exploration data can be stored and restored across sessions
+- Integrated Mapbox for interactive maps, geographic data, and location-based UI
+- Used schema validation and typed API procedures to keep data consistent between the frontend and backend
 
-The goal is to turn everyday environments into a game world.
+## Local Development
 
----
-
-
-## Key Features (Planned)
-
-### Exploration System
-- Fog-of-war map overlay
-- Tile-based discovery tracking
-- Exploration percentage progress
-
-### Hidden Pins
-- Users place location-based pins
-- Pins are hidden until discovered
-- Discovery notifications
-
-### Pin Appreciation System
-- Users can mark pins as “enjoyed”
-- Provides social proof
-- No messaging or comments
-
-### Pin Rarity Evolution
-
-Pins change color based on engagement:
-
-| Tier | Meaning |
-|------|---------|
-| Gray | Common |
-| Green | Notable |
-| Blue | Popular |
-| Purple | Rare |
-| Gold | Legendary |
-
----
-
-### Gamification
-- Explorer badges
-- Creator badges
-- Daily/weekly/monthly challenges
-
-### Leaderboards
-- Compare exploration stats
-- Track badge achievements
-
----
-
-## Installation (Development)
+Clone the repository:
 
 ```bash
-git clone <https://github.com/purplegummy/Strides>
+git clone https://github.com/purplegummy/Strides.git
 cd Strides
+```
+
+Install dependencies:
+
+```bash
 npm install
+```
+
+Create an environment file using the provided example:
+
+```bash
+cp .env.example .env
+```
+
+Configure the required environment variables, then initialize the database and run the development server:
+
+```bash
 npm run dev
+```
+
+Open `http://localhost:3000` in your browser.
+
+## About
+
+Strides was built as a team project exploring how everyday movement can be turned into a more interactive and rewarding experience. Instead of treating a map as something users simply view, the application is designed so that real-world exploration actively changes the user's experience.
+
+The project involved work across geospatial interfaces, relational databases, authentication, API design, and persistent user state.
